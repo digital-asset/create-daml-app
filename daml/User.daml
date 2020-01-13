@@ -28,13 +28,3 @@ template User with
         assert $ friend `elem` friends
         archive self
         create this with friends = delete friend friends
-
-    -- NOTE(MH):This is a workaround for issue
-    -- https://github.com/digital-asset/daml/issues/3219.
-    -- Our tests want to clean the ledger in the end and according to the
-    -- issue using the `Archive` choice for that purpose does not work over
-    -- the HTTP JSON API.
-    choice Delete: ()
-      controller party
-      do
-        pure ()

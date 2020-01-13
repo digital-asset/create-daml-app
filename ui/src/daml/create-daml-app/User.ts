@@ -10,13 +10,6 @@ import packageId from './packageId';
 const moduleName = 'User';
 const templateId = (entityName: string): daml.TemplateId => ({packageId, moduleName, entityName});
 
-export type Delete = {
-}
-export const Delete: daml.Serializable<Delete> = ({
-  decoder: () => jtv.object({
-  }),
-});
-
 export type RemoveFriend = {
   friend: daml.Party;
 }
@@ -43,7 +36,6 @@ export const User: daml.Template<User, daml.Party> & {
   AddFriend: daml.Choice<User, AddFriend, daml.ContractId<User> >;
   RemoveFriend: daml.Choice<User, RemoveFriend, daml.ContractId<User> >;
   Archive: daml.Choice<User, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive, {} >;
-  Delete: daml.Choice<User, Delete, {} >;
 } = {
   templateId: templateId('User'),
   keyDecoder: () => daml.Party.decoder(),
@@ -67,12 +59,6 @@ export const User: daml.Template<User, daml.Party> & {
     template: () => User,
     choiceName: 'Archive',
     argumentDecoder: pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive.decoder,
-    resultDecoder: () => daml.Unit.decoder(),
-  },
-  Delete: {
-    template: () => User,
-    choiceName: 'Delete',
-    argumentDecoder: Delete.decoder,
     resultDecoder: () => daml.Unit.decoder(),
   },
 };
