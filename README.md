@@ -45,8 +45,8 @@ git clone https://github.com/digital-asset/create-daml-app.git
 Once you have copy of this project, you need to install its dependencies
 by calling
 ```
-yarn workspaces run build
 yarn install
+yarn workspaces run build
 ```
 at the root of the repository.
 
