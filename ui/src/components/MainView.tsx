@@ -6,7 +6,7 @@ import { User } from '../daml/create-daml-app/User';
 import { Party } from '@digitalasset/daml-json-types';
 
 export type Props = {
-  myUser: User | null;
+  myUser: User | undefined;
   allUsers: User[];
   onAddFriend: (friend: Party) => Promise<boolean>;
   onRemoveFriend: (friend: Party) => Promise<void>;
