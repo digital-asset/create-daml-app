@@ -39,7 +39,7 @@ equally well.
 First, you need to obtain a copy of this project, either by clicking the
 "Use this template" button above or by cloning this repository directly via
 ```
-git clone https://github.com/hurryabit/create-daml-app.git
+git clone https://github.com/digital-asset/create-daml-app.git
 ```
 
 Once you have copy of this project, you need to install its dependencies
