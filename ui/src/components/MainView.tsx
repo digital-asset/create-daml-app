@@ -58,7 +58,7 @@ const MainView: React.FC<Props> = (props) => {
               </Header>
               <Divider />
               <UserList
-                users={props.allUsers}
+                users={props.allUsers.sort((user1, user2) => user1.party.localeCompare(user2.party))}
                 onAddFriend={props.onAddFriend}
               />
             </Segment>
