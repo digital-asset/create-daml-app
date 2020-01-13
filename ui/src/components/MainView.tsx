@@ -59,10 +59,7 @@ const MainView: React.FC<Props> = (props) => {
               <Divider />
               <UserList
                 users={props.allUsers}
-                action={{
-                  icon: 'add user',
-                  onClick: props.onAddFriend
-                }}
+                onAddFriend={props.onAddFriend}
               />
             </Segment>
           </Grid.Column>
