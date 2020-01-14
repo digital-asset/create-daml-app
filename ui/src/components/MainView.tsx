@@ -3,13 +3,18 @@ import { Container, Grid, Header, Icon, Segment, Divider } from 'semantic-ui-rea
 import PartyListEdit from './PartyListEdit';
 import UserList from './UserList';
 import { User } from '../daml/create-daml-app/User';
+import { Post } from '../daml/create-daml-app/Post';
 import { Party } from '@digitalasset/daml-json-types';
+import PostEdit from './PostEdit';
+import Feed from './Feed';
 
 export type Props = {
   myUser: User | null;
   allUsers: User[];
+  posts: Post[];
   onAddFriend: (friend: Party) => Promise<boolean>;
   onRemoveFriend: (friend: Party) => Promise<void>;
+  onPost: (content: string, parties: string) => Promise<boolean>;
   onReload: () => void;
 }
 
@@ -25,7 +30,11 @@ const MainView: React.FC<Props> = (props) => {
             <Header as='h1' size='huge' color='blue' textAlign='center' style={{padding: '1ex 0em 0ex 0em'}}>
                 {props.myUser ? `Welcome, ${props.myUser.party}!` : 'Loading...'}
             </Header>
+          </Grid.Column>
+        </Grid.Row>
 
+        <Grid.Row stretched>
+          <Grid.Column>
             <Segment>
               <Header as='h2'>
                 <Icon name='user' />
@@ -64,6 +73,23 @@ const MainView: React.FC<Props> = (props) => {
                   onClick: props.onAddFriend
                 }}
               />
+            </Segment>
+          </Grid.Column>
+
+          <Grid.Column>
+            <Segment>
+              <Header as='h2'>
+                <Icon name='pencil square' />
+                <Header.Content>
+                  Posts
+                  <Header.Subheader>Share a post with some friends</Header.Subheader>
+                </Header.Content>
+              </Header>
+              <PostEdit
+                writePost={props.onPost}
+              />
+            <Divider />
+            <Feed posts={props.posts} />
             </Segment>
           </Grid.Column>
         </Grid.Row>

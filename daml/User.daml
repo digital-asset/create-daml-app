@@ -3,6 +3,8 @@ module User where
 
 import DA.List
 
+import Post
+
 template User with
     party: Party
     friends: [Party]
@@ -28,3 +30,10 @@ template User with
         assert $ friend `elem` friends
         archive self
         create this with friends = delete friend friends
+
+    nonconsuming choice WritePost: ContractId Post with
+        content: Text
+        sharingWith: [Party]
+      controller party
+      do
+        create Post with author = party, ..

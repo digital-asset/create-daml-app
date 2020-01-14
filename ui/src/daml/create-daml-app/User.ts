@@ -6,9 +6,22 @@ import * as daml from '@digitalasset/daml-json-types';
 
 import * as pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template from './../d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/DA/Internal/Template';
 
+import * as Post from './Post';
+
 import packageId from './packageId';
 const moduleName = 'User';
 const templateId = (entityName: string): daml.TemplateId => ({packageId, moduleName, entityName});
+
+export type WritePost = {
+  content: string;
+  sharingWith: daml.Party[];
+}
+export const WritePost: daml.Serializable<WritePost> = ({
+  decoder: () => jtv.object({
+    content: daml.Text.decoder(),
+    sharingWith: daml.List(daml.Party).decoder(),
+  }),
+});
 
 export type RemoveFriend = {
   friend: daml.Party;
@@ -36,6 +49,7 @@ export const User: daml.Template<User, daml.Party> & {
   AddFriend: daml.Choice<User, AddFriend, daml.ContractId<User> >;
   RemoveFriend: daml.Choice<User, RemoveFriend, daml.ContractId<User> >;
   Archive: daml.Choice<User, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive, {} >;
+  WritePost: daml.Choice<User, WritePost, daml.ContractId<Post.Post> >;
 } = {
   templateId: templateId('User'),
   keyDecoder: () => daml.Party.decoder(),
@@ -60,6 +74,12 @@ export const User: daml.Template<User, daml.Party> & {
     choiceName: 'Archive',
     argumentDecoder: pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive.decoder,
     resultDecoder: () => daml.Unit.decoder(),
+  },
+  WritePost: {
+    template: () => User,
+    choiceName: 'WritePost',
+    argumentDecoder: WritePost.decoder,
+    resultDecoder: () => daml.ContractId(Post.Post).decoder(),
   },
 };
 daml.registerTemplate(User);
