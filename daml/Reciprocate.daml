@@ -12,6 +12,7 @@ trigger = runTrigger $ Trigger
   , updateState = \_acs _message () -> ()
   , rule
   , registeredTemplates = AllInDar
+  , heartbeat = None
   }
   where
     rule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
