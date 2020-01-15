@@ -1,15 +1,15 @@
 import * as immutable from 'immutable';
-import { Template } from '@digitalasset/daml-json-types';
-import { CreateEvent, Query } from '@digitalasset/daml-ledger-fetch';
+import { Template, lookupTemplate } from '@digitalasset/daml-json-types';
+import { CreateEvent, Query, Event } from '@digitalasset/daml-ledger-fetch';
 import * as TemplateStore from './templateStore';
 
 export type Store = {
   templateStores: immutable.Map<Template<object, unknown>, TemplateStore.Store<object, unknown>>;
 }
 
-export const empty: Store = {
+export const empty = (): Store => ({
   templateStores: immutable.Map(),
-};
+});
 
 export const setTemplateLoading = <T extends object>(store: Store, template: Template<T>) => ({
   ...store,
@@ -49,3 +49,17 @@ export const setFetchByKeyResult = <T extends object, K>(store: Store, template:
   templateStores: store.templateStores.update(template, (templateStore = TemplateStore.empty()) =>
     TemplateStore.setFetchByKeyResult(templateStore, key, contract))
 });
+
+export const addEvents = (store: Store, events: Event<object>[]): Store => {
+  const eventsByTemplateId = immutable.List(events).groupBy((event) =>
+    'created' in event ? event.created.templateId : event.archived.templateId);
+  let templateStores = store.templateStores;
+  eventsByTemplateId.forEach((events, templateId) => {
+    const template = lookupTemplate(templateId);
+    if (templateStores.has(template)) {
+      templateStores = templateStores.update(template, (templateStore) =>
+        TemplateStore.addEvents(templateStore, events.valueSeq().toArray()));
+    }
+  });
+  return {templateStores};
+}

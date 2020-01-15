@@ -1,5 +1,6 @@
 import * as immutable from 'immutable';
-import { CreateEvent, Query } from '@digitalasset/daml-ledger-fetch';
+import { Event, Query, CreateEvent} from '@digitalasset/daml-ledger-fetch';
+import { ContractId } from '@digitalasset/daml-json-types'
 
 export type QueryResult<T extends object, K> = {
   contracts: CreateEvent<T, K>[];
@@ -45,6 +46,41 @@ export const setQueryResult = <T extends object, K>(store: Store<T, K>, query: Q
   ...store,
   queryResults: store.queryResults.set(query, {contracts, loading: false})
 });
+
+// TODO(MH): We need to update the key lookups as well.
+export const addEvents = <T extends object, K>(store: Store<T, K>, events: Event<T, K>[]): Store<T, K> => {
+  const archived: Set<ContractId<T>> = new Set();
+  const created: CreateEvent<T, K>[] = [];
+  for (const event of events) {
+    if ('created' in event) {
+      created.push(event.created);
+    } else {
+      archived.add(event.archived.contractId);
+    }
+  }
+  const queryResults = store.queryResults.map((queryResult, query) => {
+    const contracts = queryResult.contracts
+      .concat(created.filter((event) => payloadMatchesQuery(event.payload, query)))
+      .filter((contract) => !archived.has(contract.contractId));
+    return {...queryResult, contracts};
+  });
+  return {...store, queryResults};
+}
+
+export const payloadMatchesQuery = <T>(payload: T, query: Query<T>): boolean => {
+  if (typeof payload === 'object' && typeof query === 'object') {
+    const keys = Object.keys(query) as (keyof T & keyof Query<T>)[]
+    return keys.reduce<boolean>(
+      // TODO(MH): We should consider some form of crashing/logging when the
+      // `key` below is not a key of `payload`.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (acc, key) => acc && key in payload && payloadMatchesQuery(payload[key], query[key] as any),
+      true,
+    );
+  } else {
+    return typeof payload === typeof query && payload === query
+  }
+}
 
 export const setFetchByKeyLoading = <T extends object, K>(store: Store<T, K>, key: K): Store<T, K> => ({
   ...store,
