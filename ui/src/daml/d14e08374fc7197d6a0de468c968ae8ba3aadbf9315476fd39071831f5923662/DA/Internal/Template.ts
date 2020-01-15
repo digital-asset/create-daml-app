@@ -9,4 +9,4 @@ export type Archive = {
 export const Archive: daml.Serializable<Archive> = ({
   decoder: () => jtv.object({
   }),
-});
+})

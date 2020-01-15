@@ -11,7 +11,7 @@ export const Min = <a>(a: daml.Serializable<a>): daml.Serializable<Min<a>> => ({
   decoder: () => jtv.object({
     unpack: a.decoder(),
   }),
-});
+})
 
 export type Max<a> = {
   unpack: a;
@@ -20,4 +20,4 @@ export const Max = <a>(a: daml.Serializable<a>): daml.Serializable<Max<a>> => ({
   decoder: () => jtv.object({
     unpack: a.decoder(),
   }),
-});
+})

@@ -11,4 +11,4 @@ export const Map = <k_a9I7, v_a9I8>(k_a9I7: daml.Serializable<k_a9I7>, v_a9I8: d
   decoder: () => jtv.object({
     textMap: daml.TextMap(v_a9I8).decoder(),
   }),
-});
+})

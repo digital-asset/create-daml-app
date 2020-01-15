@@ -11,4 +11,4 @@ export const Unit = <a>(a: daml.Serializable<a>): daml.Serializable<Unit<a>> => 
   decoder: () => jtv.object({
     _1: a.decoder(),
   }),
-});
+})
