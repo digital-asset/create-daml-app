@@ -11,4 +11,4 @@ export const Down = <a>(a: daml.Serializable<a>): daml.Serializable<Down<a>> => 
   decoder: () => jtv.object({
     unpack: a.decoder(),
   }),
-});
+})

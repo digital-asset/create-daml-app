@@ -1,5 +1,5 @@
 import { Template } from "@digitalasset/daml-json-types";
-import { CreateEvent, Query } from '@digitalasset/daml-ledger-fetch';
+import { CreateEvent, Query, Event } from '@digitalasset/daml-ledger-fetch';
 import * as LedgerStore from './ledgerStore';
 
 enum ActionType {
@@ -7,6 +7,7 @@ enum ActionType {
   SetQueryResult,
   SetFetchByKeyLoading,
   SetFetchByKeyResult,
+  AddEvents,
 }
 
 type SetQueryLoadingAction<T extends object> = {
@@ -35,11 +36,17 @@ type SetFetchByKeyResultAction<T extends object, K> = {
   contract: CreateEvent<T, K> | null;
 }
 
+type AddEventsAction = {
+  type: typeof ActionType.AddEvents;
+  events: Event<object>[];
+}
+
 export type Action =
   | SetQueryLoadingAction<object>
   | SetQueryResultAction<object>
   | SetFetchByKeyLoadingAction<object, unknown>
   | SetFetchByKeyResultAction<object, unknown>
+  | AddEventsAction
 
 export const setQueryLoading = <T extends object>(template: Template<T>, query: Query<T>): SetQueryLoadingAction<T> => ({
   type: ActionType.SetQueryLoading,
@@ -67,6 +74,11 @@ export const setFetchByKeyResult = <T extends object, K>(template: Template<T, K
   contract,
 });
 
+export const addEvents= (events: Event<object>[]): AddEventsAction => ({
+  type: ActionType.AddEvents,
+  events,
+});
+
 export const reducer = (ledgerStore: LedgerStore.Store, action: Action): LedgerStore.Store => {
   switch (action.type) {
     case ActionType.SetQueryLoading: {
@@ -80,6 +92,9 @@ export const reducer = (ledgerStore: LedgerStore.Store, action: Action): LedgerS
     }
     case ActionType.SetFetchByKeyResult: {
       return LedgerStore.setFetchByKeyResult(ledgerStore, action.template, action.key, action.contract);
+    }
+    case ActionType.AddEvents: {
+      return LedgerStore.addEvents(ledgerStore, action.events);
     }
   }
 }

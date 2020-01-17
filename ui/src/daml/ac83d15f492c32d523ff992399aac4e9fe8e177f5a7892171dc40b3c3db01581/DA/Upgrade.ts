@@ -4,9 +4,9 @@
 import * as jtv from '@mojotech/json-type-validation';
 import * as daml from '@digitalasset/daml-json-types';
 
-export type MetaEquiv<m1_a4Kz, m2_a4KA> = {
+export type MetaEquiv<m1_a4NE, m2_a4NF> = {
 }
-export const MetaEquiv = <m1_a4Kz, m2_a4KA>(m1_a4Kz: daml.Serializable<m1_a4Kz>, m2_a4KA: daml.Serializable<m2_a4KA>): daml.Serializable<MetaEquiv<m1_a4Kz, m2_a4KA>> => ({
+export const MetaEquiv = <m1_a4NE, m2_a4NF>(m1_a4NE: daml.Serializable<m1_a4NE>, m2_a4NF: daml.Serializable<m2_a4NF>): daml.Serializable<MetaEquiv<m1_a4NE, m2_a4NF>> => ({
   decoder: () => jtv.object({
   }),
-});
+})

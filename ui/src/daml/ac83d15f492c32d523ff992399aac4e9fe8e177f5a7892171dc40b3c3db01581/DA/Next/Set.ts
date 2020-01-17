@@ -11,4 +11,4 @@ export const Set = <a_aan4>(a_aan4: daml.Serializable<a_aan4>): daml.Serializabl
   decoder: () => jtv.object({
     textMap: daml.TextMap(daml.Unit).decoder(),
   }),
-});
+})

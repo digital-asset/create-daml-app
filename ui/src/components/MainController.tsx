@@ -54,7 +54,7 @@ const MainController: React.FC = () => {
   }, [reload]);
 
   const props = {
-    myUser: myUser.contract?.payload ?? null,
+    myUser: myUser.contract?.payload,
     allUsers: allUsers.contracts.map((user) => user.payload),
     posts: posts.contracts.map((post) => post.payload),
     onAddFriend: addFriend,

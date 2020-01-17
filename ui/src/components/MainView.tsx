@@ -9,7 +9,7 @@ import PostEdit from './PostEdit';
 import Feed from './Feed';
 
 export type Props = {
-  myUser: User | null;
+  myUser: User | undefined;
   allUsers: User[];
   posts: Post[];
   onAddFriend: (friend: Party) => Promise<boolean>;
@@ -67,11 +67,8 @@ const MainView: React.FC<Props> = (props) => {
               </Header>
               <Divider />
               <UserList
-                users={props.allUsers}
-                action={{
-                  icon: 'add user',
-                  onClick: props.onAddFriend
-                }}
+                users={props.allUsers.sort((user1, user2) => user1.party.localeCompare(user2.party))}
+                onAddFriend={props.onAddFriend}
               />
             </Segment>
           </Grid.Column>

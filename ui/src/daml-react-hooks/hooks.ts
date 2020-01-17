@@ -1,12 +1,12 @@
-import { Template, Choice, ContractId, lookupTemplate } from "@digitalasset/daml-json-types";
-import { Event, Query, CreateEvent } from '@digitalasset/daml-ledger-fetch';
+import { Template, Choice, ContractId } from "@digitalasset/daml-json-types";
+import { Query, CreateEvent } from '@digitalasset/daml-ledger-fetch';
 import { useEffect, useMemo, useState, useContext } from "react";
 import * as LedgerStore from './ledgerStore';
 import * as TemplateStore from './templateStore';
-import { setQueryLoading, setQueryResult, setFetchByKeyLoading, setFetchByKeyResult } from "./reducer";
+import { setQueryLoading, setQueryResult, setFetchByKeyLoading, setFetchByKeyResult, addEvents } from "./reducer";
 import { DamlLedgerState, DamlLedgerContext } from './context';
 
-const useDamlState = (): DamlLedgerState => {
+export const useDamlState = (): DamlLedgerState => {
   const state = useContext(DamlLedgerContext);
   if (!state) {
     throw Error("Trying to use DamlLedgerContext before initializing.")
@@ -91,17 +91,6 @@ const reloadTemplate = async <T extends object, K>(state: DamlLedgerState, templ
   }
 }
 
-const reloadEvents = async (state: DamlLedgerState, events: Event<object>[]) => {
-  // TODO(MH): This is a sledge hammer approach. We completely reload every
-  // single template that has been touched by the events. A future optimization
-  // would be to remove the archived templates from their tables and add the
-  // created templates wherever they match.
-  const templates = new Set(events.map((event) =>
-    lookupTemplate('created' in event ? event.created.templateId : event.archived.templateId)
-  ));
-  await Promise.all(Array.from(templates).map((template) => reloadTemplate(state, template)));
-}
-
 /// React Hook that returns a function to exercise a choice and a boolean
 /// indicator whether the exercise is currently running.
 export const useExercise = <T extends object, C, R>(choice: Choice<T, C, R>): [(cid: ContractId<T>, argument: C) => Promise<R>, boolean] => {
@@ -111,11 +100,8 @@ export const useExercise = <T extends object, C, R>(choice: Choice<T, C, R>): [(
   const exercise = async (cid: ContractId<T>, argument: C) => {
     setLoading(true);
     const [result, events] = await state.ledger.exercise(choice, cid, argument);
+    state.dispatch(addEvents(events));
     setLoading(false);
-    // NOTE(MH): We want to signal the UI that the exercise is finished while
-    // were still updating the affected templates "in the backgound".
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    reloadEvents(state, events);
     return result;
   }
   return [exercise, loading];
@@ -130,11 +116,8 @@ export const usePseudoExerciseByKey = <T extends object, C, R>(choice: Choice<T,
   const exercise = async (key: Query<T>, argument: C) => {
     setLoading(true);
     const [result, events] = await state.ledger.pseudoExerciseByKey(choice, key, argument);
+    state.dispatch(addEvents(events));
     setLoading(false);
-    // NOTE(MH): We want to signal the UI that the exercise is finished while
-    // were still updating the affected templates "in the backgound".
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    reloadEvents(state, events);
     return result;
   }
   return [exercise, loading];

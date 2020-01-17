@@ -23,7 +23,7 @@ export const Tuple2 = <t1, t2>(t1: daml.Serializable<t1>, t2: daml.Serializable<
     _1: t1.decoder(),
     _2: t2.decoder(),
   }),
-});
+})
 
 export type Tuple3<t1, t2, t3> = {
   _1: t1;
@@ -36,7 +36,7 @@ export const Tuple3 = <t1, t2, t3>(t1: daml.Serializable<t1>, t2: daml.Serializa
     _2: t2.decoder(),
     _3: t3.decoder(),
   }),
-});
+})
 
 export type Tuple4<t1, t2, t3, t4> = {
   _1: t1;
@@ -51,7 +51,7 @@ export const Tuple4 = <t1, t2, t3, t4>(t1: daml.Serializable<t1>, t2: daml.Seria
     _3: t3.decoder(),
     _4: t4.decoder(),
   }),
-});
+})
 
 export type Tuple5<t1, t2, t3, t4, t5> = {
   _1: t1;
@@ -68,7 +68,7 @@ export const Tuple5 = <t1, t2, t3, t4, t5>(t1: daml.Serializable<t1>, t2: daml.S
     _4: t4.decoder(),
     _5: t5.decoder(),
   }),
-});
+})
 
 export type Tuple6<t1, t2, t3, t4, t5, t6> = {
   _1: t1;
@@ -87,7 +87,7 @@ export const Tuple6 = <t1, t2, t3, t4, t5, t6>(t1: daml.Serializable<t1>, t2: da
     _5: t5.decoder(),
     _6: t6.decoder(),
   }),
-});
+})
 
 export type Tuple7<t1, t2, t3, t4, t5, t6, t7> = {
   _1: t1;
@@ -108,7 +108,7 @@ export const Tuple7 = <t1, t2, t3, t4, t5, t6, t7>(t1: daml.Serializable<t1>, t2
     _6: t6.decoder(),
     _7: t7.decoder(),
   }),
-});
+})
 
 export type Tuple8<t1, t2, t3, t4, t5, t6, t7, t8> = {
   _1: t1;
@@ -131,7 +131,7 @@ export const Tuple8 = <t1, t2, t3, t4, t5, t6, t7, t8>(t1: daml.Serializable<t1>
     _7: t7.decoder(),
     _8: t8.decoder(),
   }),
-});
+})
 
 export type Tuple9<t1, t2, t3, t4, t5, t6, t7, t8, t9> = {
   _1: t1;
@@ -156,7 +156,7 @@ export const Tuple9 = <t1, t2, t3, t4, t5, t6, t7, t8, t9>(t1: daml.Serializable
     _8: t8.decoder(),
     _9: t9.decoder(),
   }),
-});
+})
 
 export type Tuple10<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10> = {
   _1: t1;
@@ -183,7 +183,7 @@ export const Tuple10 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10>(t1: daml.Serial
     _9: t9.decoder(),
     _10: t10.decoder(),
   }),
-});
+})
 
 export type Tuple11<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11> = {
   _1: t1;
@@ -212,7 +212,7 @@ export const Tuple11 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11>(t1: daml.S
     _10: t10.decoder(),
     _11: t11.decoder(),
   }),
-});
+})
 
 export type Tuple12<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12> = {
   _1: t1;
@@ -243,7 +243,7 @@ export const Tuple12 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12>(t1: d
     _11: t11.decoder(),
     _12: t12.decoder(),
   }),
-});
+})
 
 export type Tuple13<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13> = {
   _1: t1;
@@ -276,7 +276,7 @@ export const Tuple13 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13>(
     _12: t12.decoder(),
     _13: t13.decoder(),
   }),
-});
+})
 
 export type Tuple14<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14> = {
   _1: t1;
@@ -311,7 +311,7 @@ export const Tuple14 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, 
     _13: t13.decoder(),
     _14: t14.decoder(),
   }),
-});
+})
 
 export type Tuple15<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15> = {
   _1: t1;
@@ -348,7 +348,7 @@ export const Tuple15 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, 
     _14: t14.decoder(),
     _15: t15.decoder(),
   }),
-});
+})
 
 export type Tuple16<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16> = {
   _1: t1;
@@ -387,7 +387,7 @@ export const Tuple16 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, 
     _15: t15.decoder(),
     _16: t16.decoder(),
   }),
-});
+})
 
 export type Tuple17<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17> = {
   _1: t1;
@@ -428,7 +428,7 @@ export const Tuple17 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, 
     _16: t16.decoder(),
     _17: t17.decoder(),
   }),
-});
+})
 
 export type Tuple18<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18> = {
   _1: t1;
@@ -471,7 +471,7 @@ export const Tuple18 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, 
     _17: t17.decoder(),
     _18: t18.decoder(),
   }),
-});
+})
 
 export type Tuple19<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19> = {
   _1: t1;
@@ -516,7 +516,7 @@ export const Tuple19 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, 
     _18: t18.decoder(),
     _19: t19.decoder(),
   }),
-});
+})
 
 export type Tuple20<t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20> = {
   _1: t1;
@@ -563,4 +563,4 @@ export const Tuple20 = <t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, 
     _19: t19.decoder(),
     _20: t20.decoder(),
   }),
-});
+})

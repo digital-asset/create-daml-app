@@ -6,19 +6,15 @@ import * as daml from '@digitalasset/daml-json-types';
 
 import * as pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template from './../d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/DA/Internal/Template';
 
-import packageId from './packageId';
-const moduleName = 'Post';
-const templateId = (entityName: string): daml.TemplateId => ({packageId, moduleName, entityName});
-
 export type Post = {
   author: daml.Party;
   content: string;
   sharingWith: daml.Party[];
 }
 export const Post: daml.Template<Post, undefined> & {
-  Archive: daml.Choice<Post, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive, {} >;
+  Archive: daml.Choice<Post, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive, {}, undefined>;
 } = {
-  templateId: templateId('Post'),
+  templateId: '683c86bd70a2b335e45f5fb6fdcada320e9673566c584fe9902be95bf8e0eccb:Post:Post',
   keyDecoder: () => jtv.constant(undefined),
   decoder: () => jtv.object({
     author: daml.Party.decoder(),
