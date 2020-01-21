@@ -5,16 +5,16 @@ import * as jtv from '@mojotech/json-type-validation';
 import * as daml from '@digitalasset/daml-json-types';
 
 import * as pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template from './../d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/DA/Internal/Template';
-import * as post from './Post';
+import * as Message from './Message';
 
-export type WritePost = {
+export type SendMessage = {
+  sender: daml.Party;
   content: string;
-  sharingWith: daml.Party[];
 }
-export const WritePost: daml.Serializable<WritePost> = ({
+export const SendMessage: daml.Serializable<SendMessage> = ({
   decoder: () => jtv.object({
+    sender: daml.Party.decoder(),
     content: daml.Text.decoder(),
-    sharingWith: daml.List(daml.Party).decoder(),
   }),
 })
 
@@ -44,9 +44,9 @@ export const User: daml.Template<User, daml.Party> & {
   AddFriend: daml.Choice<User, AddFriend, daml.ContractId<User>, daml.Party>;
   RemoveFriend: daml.Choice<User, RemoveFriend, daml.ContractId<User>, daml.Party>;
   Archive: daml.Choice<User, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive, {}, daml.Party>;
-  WritePost: daml.Choice<User, WritePost, daml.ContractId<post.Post>, daml.Party>;
+  SendMessage: daml.Choice<User, SendMessage, daml.ContractId<Message.Message>, daml.Party>;
 } = {
-  templateId: '683c86bd70a2b335e45f5fb6fdcada320e9673566c584fe9902be95bf8e0eccb:User:User',
+  templateId: 'a8e738599894aaf6c4a173614c38c900ff449e637a679c7b2ef4e86be26ebee4:User:User',
   keyDecoder: () => daml.Party.decoder(),
   decoder: () => jtv.object({
     party: daml.Party.decoder(),
@@ -70,11 +70,11 @@ export const User: daml.Template<User, daml.Party> & {
     argumentDecoder: pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive.decoder,
     resultDecoder: () => daml.Unit.decoder(),
   },
-  WritePost: {
+  SendMessage: {
     template: () => User,
-    choiceName: 'WritePost',
-    argumentDecoder: WritePost.decoder,
-    resultDecoder: () => daml.ContractId(post.Post).decoder(),
+    choiceName: 'SendMessage',
+    argumentDecoder: SendMessage.decoder,
+    resultDecoder: () => daml.ContractId(Message.Message).decoder(),
   },
 };
 daml.registerTemplate(User);

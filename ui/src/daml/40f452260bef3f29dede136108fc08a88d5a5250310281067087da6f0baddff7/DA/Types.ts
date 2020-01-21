@@ -11,7 +11,7 @@ export const Either = <a, b>(a: daml.Serializable<a>, b: daml.Serializable<b>): 
   decoder: () => jtv.oneOf<Either<a, b>>(
     jtv.object({tag: jtv.constant('Left'), value: jtv.lazy(() => a.decoder())}),
     jtv.object({tag: jtv.constant('Right'), value: jtv.lazy(() => b.decoder())}),
-  )
+  ),
 });
 
 export type Tuple2<t1, t2> = {

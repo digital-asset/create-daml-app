@@ -15,5 +15,5 @@ export const Formula = <a>(a: daml.Serializable<a>): daml.Serializable<Formula<a
     jtv.object({tag: jtv.constant('Negation'), value: jtv.lazy(() => Formula(a).decoder())}),
     jtv.object({tag: jtv.constant('Conjunction'), value: jtv.lazy(() => daml.List(Formula(a)).decoder())}),
     jtv.object({tag: jtv.constant('Disjunction'), value: jtv.lazy(() => daml.List(Formula(a)).decoder())}),
-  )
+  ),
 });
