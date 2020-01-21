@@ -3,7 +3,7 @@ import { Form, Input, Button } from 'semantic-ui-react';
 import { Text } from '@digitalasset/daml-json-types';
 
 type Props = {
-  sendMessage: (content: Text, sharingWith: string) => Promise<boolean>;
+  sendMessage: (content: Text, receiver: string) => Promise<boolean>;
 }
 
 /**
@@ -11,7 +11,7 @@ type Props = {
  */
 const MessageEdit: React.FC<Props> = ({sendMessage}) => {
   const [content, setContent] = React.useState('');
-  const [sharingWith, setSharingWith] = React.useState('');
+  const [receiver, setReceiver] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const submitMessage = async (event?: React.FormEvent) => {
@@ -19,11 +19,11 @@ const MessageEdit: React.FC<Props> = ({sendMessage}) => {
       event.preventDefault();
     }
     setIsSubmitting(true);
-    const success = await sendMessage(content, sharingWith);
+    const success = await sendMessage(content, receiver);
     setIsSubmitting(false);
     if (success) {
       setContent('');
-      setSharingWith('');
+      setReceiver('');
     }
   }
 
@@ -34,9 +34,9 @@ const MessageEdit: React.FC<Props> = ({sendMessage}) => {
         transparent
         readOnly={isSubmitting}
         loading={isSubmitting}
-        placeholder="Send a message"
-        value={content}
-        onChange={(event) => setContent(event.currentTarget.value)}
+        placeholder='Choose a friend'
+        value={receiver}
+        onChange={(event) => setReceiver(event.currentTarget.value)}
       />
       <br />
       <Input
@@ -44,9 +44,9 @@ const MessageEdit: React.FC<Props> = ({sendMessage}) => {
         transparent
         readOnly={isSubmitting}
         loading={isSubmitting}
-        placeholder='Select a friend'
-        value={sharingWith}
-        onChange={(event) => setSharingWith(event.currentTarget.value)}
+        placeholder="Write a message"
+        value={content}
+        onChange={(event) => setContent(event.currentTarget.value)}
       />
       <br />
       <Button type="submit">Send</Button>
