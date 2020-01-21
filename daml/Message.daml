@@ -1,0 +1,10 @@
+daml 1.2
+module Message where
+
+template Message with
+    sender: Party
+    receiver: Party
+    content: Text
+  where
+    signatory sender, receiver
+
