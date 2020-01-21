@@ -1,24 +1,22 @@
 import React from 'react'
 import { List, ListItem } from 'semantic-ui-react';
-import { Post } from '../daml/create-daml-app/Post';
+import { Message } from '../daml/create-daml-app/Message';
 
 type Props = {
-  posts: Post[];
+  messages: Message[];
 }
 
 /**
  * React component to edit a post to share with a bunch of friends.
  */
-const Feed: React.FC<Props> = ({posts}) => {
-  const renderPost = (post: Post): string => {
-    const author = post.author;
-    const content = post.content;
-    return (author + " says: " + content);
+const Feed: React.FC<Props> = ({messages}) => {
+  const showMessage = (message: Message): string => {
+    return (message.sender + " says: " + message.content);
   }
 
   return (
     <List relaxed>
-      {posts.map((post) => <ListItem>{renderPost(post)}</ListItem>)}
+      {messages.map((message) => <ListItem>{showMessage(message)}</ListItem>)}
     </List>
   );
 }

@@ -3,23 +3,23 @@ import { Form, Input, Button } from 'semantic-ui-react';
 import { Text } from '@digitalasset/daml-json-types';
 
 type Props = {
-  writePost: (content: Text, sharingWith: string) => Promise<boolean>;
+  sendMessage: (content: Text, sharingWith: string) => Promise<boolean>;
 }
 
 /**
- * React component to edit a post to share with a bunch of friends.
+ * React component to edit a message to send to a friend.
  */
-const PostEdit: React.FC<Props> = ({writePost}) => {
+const MessageEdit: React.FC<Props> = ({sendMessage}) => {
   const [content, setContent] = React.useState('');
   const [sharingWith, setSharingWith] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const submitPost = async (event?: React.FormEvent) => {
+  const submitMessage = async (event?: React.FormEvent) => {
     if (event) {
       event.preventDefault();
     }
     setIsSubmitting(true);
-    const success = await writePost(content, sharingWith);
+    const success = await sendMessage(content, sharingWith);
     setIsSubmitting(false);
     if (success) {
       setContent('');
@@ -28,13 +28,13 @@ const PostEdit: React.FC<Props> = ({writePost}) => {
   }
 
   return (
-    <Form onSubmit={submitPost}>
+    <Form onSubmit={submitMessage}>
       <Input
         fluid
         transparent
         readOnly={isSubmitting}
         loading={isSubmitting}
-        placeholder="What's on your mind?"
+        placeholder="Send a message"
         value={content}
         onChange={(event) => setContent(event.currentTarget.value)}
       />
@@ -44,14 +44,14 @@ const PostEdit: React.FC<Props> = ({writePost}) => {
         transparent
         readOnly={isSubmitting}
         loading={isSubmitting}
-        placeholder='Friends to share this with'
+        placeholder='Select a friend'
         value={sharingWith}
         onChange={(event) => setSharingWith(event.currentTarget.value)}
       />
       <br />
-      <Button type="submit">Post</Button>
+      <Button type="submit">Send</Button>
     </Form>
   );
 };
 
-export default PostEdit;
+export default MessageEdit;
