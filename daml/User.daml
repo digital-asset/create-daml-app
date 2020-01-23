@@ -3,7 +3,7 @@ module User where
 
 import DA.List
 
-import Post
+import Message
 
 template User with
     party: Party
@@ -31,9 +31,9 @@ template User with
         archive self
         create this with friends = delete friend friends
 
-    nonconsuming choice WritePost: ContractId Post with
+    nonconsuming choice SendMessage: ContractId Message with
         content: Text
-        sharingWith: [Party]
+        receivers: [Party]
       controller party
       do
-        create Post with author = party, ..
+        create Message with sender = party, ..

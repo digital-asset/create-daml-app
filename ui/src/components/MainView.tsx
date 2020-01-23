@@ -3,18 +3,18 @@ import { Container, Grid, Header, Icon, Segment, Divider } from 'semantic-ui-rea
 import PartyListEdit from './PartyListEdit';
 import UserList from './UserList';
 import { User } from '../daml/create-daml-app/User';
-import { Post } from '../daml/create-daml-app/Post';
+import { Message } from '../daml/create-daml-app/Message';
 import { Party } from '@digitalasset/daml-json-types';
-import PostEdit from './PostEdit';
+import MessageEdit from './MessageEdit';
 import Feed from './Feed';
 
 export type Props = {
   myUser: User | undefined;
   allUsers: User[];
-  posts: Post[];
+  messages: Message[];
   onAddFriend: (friend: Party) => Promise<boolean>;
   onRemoveFriend: (friend: Party) => Promise<void>;
-  onPost: (content: string, parties: string) => Promise<boolean>;
+  onMessage: (content: string, receivers: string) => Promise<boolean>;
   onReload: () => void;
 }
 
@@ -78,15 +78,15 @@ const MainView: React.FC<Props> = (props) => {
               <Header as='h2'>
                 <Icon name='pencil square' />
                 <Header.Content>
-                  Posts
-                  <Header.Subheader>Share a post with some friends</Header.Subheader>
+                  Messages
+                  <Header.Subheader>Send a message to some friends!</Header.Subheader>
                 </Header.Content>
               </Header>
-              <PostEdit
-                writePost={props.onPost}
+              <MessageEdit
+                sendMessage={props.onMessage}
               />
             <Divider />
-            <Feed posts={props.posts} />
+            <Feed messages={props.messages} />
             </Segment>
           </Grid.Column>
         </Grid.Row>

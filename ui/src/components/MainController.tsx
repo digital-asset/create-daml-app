@@ -2,7 +2,7 @@ import React from 'react';
 import MainView from './MainView';
 import { Party } from '@digitalasset/daml-json-types';
 import { User } from '../daml/create-daml-app/User';
-import { Post } from '../daml/create-daml-app/Post';
+import { Message } from '../daml/create-daml-app/Message';
 import { useParty, useReload, usePseudoExerciseByKey, useFetchByKey, useQuery } from '../daml-react-hooks';
 
 /**
@@ -12,12 +12,12 @@ const MainController: React.FC = () => {
   const party = useParty();
   const myUser = useFetchByKey(User, () => party, [party]);
   const allUsers = useQuery(User, () => ({}), []);
-  const posts = useQuery(Post, () => ({}), []);
+  const messages = useQuery(Message, () => ({}), []);
   const reload = useReload();
 
   const [exerciseAddFriend] = usePseudoExerciseByKey(User.AddFriend);
   const [exerciseRemoveFriend] = usePseudoExerciseByKey(User.RemoveFriend);
-  const [exerciseWritePost] = usePseudoExerciseByKey(User.WritePost);
+  const [exerciseSendMessage] = usePseudoExerciseByKey(User.SendMessage);
 
   const addFriend = async (friend: Party): Promise<boolean> => {
     try {
@@ -37,13 +37,13 @@ const MainController: React.FC = () => {
     }
   }
 
-  const writePost = async (content: string, parties: string): Promise<boolean> => {
+  const sendMessage = async (content: string, parties: string): Promise<boolean> => {
     try {
-      const sharingWith = parties.replace(/\s/g, "").split(",");
-      await exerciseWritePost({party}, {content, sharingWith});
+      const receivers = parties.replace(/\s/g, "").split(",");
+      await exerciseSendMessage({party}, {content, receivers});
       return true;
     } catch (error) {
-      alert("Unknown error while writing post:\n" + JSON.stringify(error));
+      alert("Unknown error while sending message:\n" + JSON.stringify(error));
       return false;
     }
   }
@@ -56,10 +56,10 @@ const MainController: React.FC = () => {
   const props = {
     myUser: myUser.contract?.payload,
     allUsers: allUsers.contracts.map((user) => user.payload),
-    posts: posts.contracts.map((post) => post.payload),
+    messages: messages.contracts.map((message) => message.payload),
     onAddFriend: addFriend,
     onRemoveFriend: removeFriend,
-    onPost: writePost,
+    onMessage: sendMessage,
     onReload: reload,
   };
 
