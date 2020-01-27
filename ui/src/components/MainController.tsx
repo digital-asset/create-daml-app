@@ -43,7 +43,7 @@ const MainController: React.FC = () => {
       await exerciseSendMessage({party}, {content, receivers});
       return true;
     } catch (error) {
-      alert("Unknown error while sending message:\n" + JSON.stringify(error));
+      alert("Error while sending message:\n" + JSON.stringify(error));
       return false;
     }
   }
