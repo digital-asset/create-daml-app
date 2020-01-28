@@ -109,10 +109,8 @@ interesting ones to familiarize yourself with:
   social network
 - [`src/daml/User.ts`](src/daml/User.ts): a reflection of the types
   contained in the DAML model in TypeScript
-- [`src/ledger/Ledger.ts`](src/ledger/Ledger.ts): a TypeScript class to
-  communicate with the Ledger API
-- [`src/components/MainController.tsx`](src/components/MainController.tsx):
-  the React component talking to the Leger API
+- [`src/components/MainView.tsx`](src/components/MainView.tsx):
+  the React component talking to the Ledger API and rendering the main features
 - [`daml/Reciprocate.daml`](daml/Reciprocate.daml): the automation using
   DAML triggers
 
