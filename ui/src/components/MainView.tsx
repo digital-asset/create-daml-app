@@ -6,7 +6,7 @@ import { useParty, useReload, usePseudoExerciseByKey, useFetchByKey, useQuery } 
 import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
 
-const MainController: React.FC = () => {
+const MainView: React.FC = () => {
   const party = useParty();
   const myUser = useFetchByKey(User, () => party, [party]).contract?.payload;
   const allUsers = useQuery(User, () => ({}), []).contracts.map((user) => user.payload);
@@ -90,4 +90,4 @@ const MainController: React.FC = () => {
   );
 }
 
-export default MainController;
+export default MainView;

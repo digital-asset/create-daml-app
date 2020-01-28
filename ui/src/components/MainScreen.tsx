@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image, Menu } from 'semantic-ui-react'
-import MainController from './MainController';
+import MainView from './MainView';
 import { useParty } from '../daml-react-hooks';
 
 type Props = {
@@ -37,7 +37,7 @@ const MainScreen: React.FC<Props> = ({onLogout}) => {
         </Menu.Menu>
       </Menu>
 
-      <MainController/>
+      <MainView/>
     </>
   );
 };
