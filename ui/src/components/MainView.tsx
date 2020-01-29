@@ -8,8 +8,10 @@ import PartyListEdit from './PartyListEdit';
 
 const MainView: React.FC = () => {
   const party = useParty();
-  const myUser = useFetchByKey(User, () => party, [party]).contract?.payload;
-  const allUsers = useQuery(User, () => ({}), []).contracts.map((user) => user.payload);
+  const userHook = useFetchByKey(User, () => party, [party]);
+  const myUser = userHook.contract?.payload;
+  const allUsersHook = useQuery(User, () => ({}), []);
+  const allUsers = allUsersHook.contracts.map((user) => user.payload);
   const reload = useReload();
 
   const [exerciseAddFriend] = usePseudoExerciseByKey(User.AddFriend);
