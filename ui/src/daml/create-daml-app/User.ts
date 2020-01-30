@@ -25,7 +25,7 @@ export const AddFriend: daml.Serializable<AddFriend> = ({
 })
 
 export type User = {
-  user: daml.Party;
+  username: daml.Party;
   friends: daml.Party[];
 }
 export const User: daml.Template<User, daml.Party> & {
@@ -33,10 +33,10 @@ export const User: daml.Template<User, daml.Party> & {
   RemoveFriend: daml.Choice<User, RemoveFriend, daml.ContractId<User>, daml.Party>;
   Archive: daml.Choice<User, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive, {}, daml.Party>;
 } = {
-  templateId: '9648054f440494837d85e6f8cba921d8bf1471504bf3ec3fa616bd6641a449c3:User:User',
+  templateId: 'dd966fe149c84de45e9a950c162f0b0e2039ca8c8284a0c838f340c60d3ce4a9:User:User',
   keyDecoder: () => daml.Party.decoder(),
   decoder: () => jtv.object({
-    user: daml.Party.decoder(),
+    username: daml.Party.decoder(),
     friends: daml.List(daml.Party).decoder(),
   }),
   AddFriend: {
