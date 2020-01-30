@@ -18,13 +18,13 @@ trigger = runTrigger $ Trigger
     rule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
     rule party acs _time commandsInFlight () = do
       let users = getContracts @User acs
-      case List.find (\(_, user) -> user.party == party) users of
+      case List.find (\(_, u) -> u.user == party) users of
         None -> pure ()
         Some (myUserId, myUser) -> do
-          let shouldBefriend user =
-                party `elem` user.friends && user.party `notElem` myUser.friends
+          let shouldBefriend u =
+                party `elem` u.friends && u.user `notElem` myUser.friends
           case List.filter (shouldBefriend . snd) users of
             [] -> pure ()
-            (_, userToBefriend) :: _ -> do
-              emitCommands [exerciseCmd @User myUserId (AddFriend userToBefriend.party)] []
+            (_, toBefriend) :: _ -> do
+              emitCommands [exerciseCmd @User myUserId (AddFriend toBefriend.user)] []
               pure ()
