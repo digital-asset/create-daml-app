@@ -6,7 +6,7 @@ import { User } from '../daml/create-daml-app/User';
 
 type Props = {
   users: User[];
-  onAddFriend: (party: Party) => void;
+  onAddFriend: (friend: Party) => void;
 }
 
 /**
@@ -16,19 +16,19 @@ type Props = {
 const UserList: React.FC<Props> = ({users, onAddFriend}) => {
   return (
     <List divided relaxed>
-      {users.map((user) =>
+      {users.map((u) =>
         <ListActionItem
-          key={user.party}
+          key={u.user}
           icon='user'
           action={{
             icon: 'add user',
-            onClick: () => onAddFriend(user.party),
+            onClick: () => onAddFriend(u.user),
           }}
           outer
         >
-          <List.Header>{user.party}</List.Header>
+          <List.Header>{u.user}</List.Header>
           <List.List>
-            {user.friends.map((friend) =>
+            {u.friends.map((friend) =>
               <ListActionItem
                 key={friend}
                 icon='user outline'

@@ -42,7 +42,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
       event.preventDefault();
       let credentials: Credentials = {party: username, token: password};
       const ledger = new Ledger(credentials.token);
-      const user: User = {party: username, friends: []};
+      const user: User = {user: username, friends: []};
       await ledger.create(User, user);
       await handleLogin();
     } catch(error) {
