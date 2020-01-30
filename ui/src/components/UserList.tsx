@@ -16,19 +16,19 @@ type Props = {
 const UserList: React.FC<Props> = ({users, onAddFriend}) => {
   return (
     <List divided relaxed>
-      {users.map((u) =>
+      {users.map((user) =>
         <ListActionItem
-          key={u.user}
+          key={user.username}
           icon='user'
           action={{
             icon: 'add user',
-            onClick: () => onAddFriend(u.user),
+            onClick: () => onAddFriend(user.username),
           }}
           outer
         >
-          <List.Header>{u.user}</List.Header>
+          <List.Header>{user.username}</List.Header>
           <List.List>
-            {u.friends.map((friend) =>
+            {user.friends.map((friend) =>
               <ListActionItem
                 key={friend}
                 icon='user outline'

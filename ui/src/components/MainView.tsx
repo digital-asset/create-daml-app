@@ -7,8 +7,8 @@ import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
 
 const MainView: React.FC = () => {
-  const user = useParty();
-  const myUserResult = useFetchByKey(User, () => user, [user]);
+  const username = useParty();
+  const myUserResult = useFetchByKey(User, () => username, [username]);
   const myUser = myUserResult.contract?.payload;
   const allUsersResult = useQuery(User, () => ({}), []);
   const allUsers = allUsersResult.contracts.map((user) => user.payload);
@@ -19,7 +19,7 @@ const MainView: React.FC = () => {
 
   const addFriend = async (friend: Party): Promise<boolean> => {
     try {
-      await exerciseAddFriend({user}, {friend});
+      await exerciseAddFriend({username}, {friend});
       return true;
     } catch (error) {
       alert("Unknown error:\n" + JSON.stringify(error));
@@ -29,7 +29,7 @@ const MainView: React.FC = () => {
 
   const removeFriend = async (friend: Party): Promise<void> => {
     try {
-      await exerciseRemoveFriend({user}, {friend});
+      await exerciseRemoveFriend({username}, {friend});
     } catch (error) {
       alert("Unknown error:\n" + JSON.stringify(error));
     }
@@ -46,14 +46,14 @@ const MainView: React.FC = () => {
         <Grid.Row stretched>
           <Grid.Column>
             <Header as='h1' size='huge' color='blue' textAlign='center' style={{padding: '1ex 0em 0ex 0em'}}>
-                {myUser ? `Welcome, ${myUser.user}!` : 'Loading...'}
+                {myUser ? `Welcome, ${myUser.username}!` : 'Loading...'}
             </Header>
 
             <Segment>
               <Header as='h2'>
                 <Icon name='user' />
                 <Header.Content>
-                  {myUser?.user ?? 'Loading...'}
+                  {myUser?.username ?? 'Loading...'}
                   <Header.Subheader>Me and my friends</Header.Subheader>
                 </Header.Content>
               </Header>
@@ -81,7 +81,7 @@ const MainView: React.FC = () => {
               </Header>
               <Divider />
               <UserList
-                users={allUsers.sort((u1, u2) => u1.user.localeCompare(u2.user))}
+                users={allUsers.sort((user1, user2) => user1.username.localeCompare(user2.username))}
                 onAddFriend={addFriend}
               />
             </Segment>
