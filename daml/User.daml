@@ -4,26 +4,26 @@ module User where
 import DA.List
 
 template User with
-    user: Party
+    username: Party
     friends: [Party]
   where
-    signatory user
+    signatory username
     observer friends
-    ensure user `notElem` friends && dedupSort friends == friends
+    ensure username `notElem` friends && dedupSort friends == friends
 
-    key user: Party
+    key username: Party
     maintainer key
 
     choice AddFriend: ContractId User with
         friend: Party
-      controller user
+      controller username
       do
         assert $ friend `notElem` friends
         create this with friends = sort (friend :: friends)
 
     nonconsuming choice RemoveFriend: ContractId User with
         friend: Party
-      controller user
+      controller username
       do
         assert $ friend `elem` friends
         archive self
