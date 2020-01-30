@@ -25,6 +25,6 @@ trigger = runTrigger $ Trigger
                 party `elem` user.friends && user.username `notElem` myUser.friends
           case List.filter (shouldBefriend . snd) users of
             [] -> pure ()
-            (_, toBefriend) :: _ -> do
-              emitCommands [exerciseCmd @User myUserId (AddFriend toBefriend.username)] []
+            (_, userToBefriend) :: _ -> do
+              emitCommands [exerciseCmd @User myUserId (AddFriend userToBefriend.username)] []
               pure ()

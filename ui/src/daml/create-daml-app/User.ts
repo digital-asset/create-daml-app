@@ -33,7 +33,7 @@ export const User: daml.Template<User, daml.Party> & {
   RemoveFriend: daml.Choice<User, RemoveFriend, daml.ContractId<User>, daml.Party>;
   Archive: daml.Choice<User, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662_DA_Internal_Template.Archive, {}, daml.Party>;
 } = {
-  templateId: 'dd966fe149c84de45e9a950c162f0b0e2039ca8c8284a0c838f340c60d3ce4a9:User:User',
+  templateId: '71bb26b33234cc4918bb19300561bef509393f8be2b9ae04683a74be37ec7f75:User:User',
   keyDecoder: () => daml.Party.decoder(),
   decoder: () => jtv.object({
     username: daml.Party.decoder(),
