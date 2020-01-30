@@ -10,7 +10,7 @@ const MainView: React.FC = () => {
   const party = useParty();
   const myUserResult = useFetchByKey(User, () => party, [party]);
   const myUser = myUserResult.contract?.payload;
-  const allUsersResult = useQuery(User, () => ({}), []);
+  const allUsersResult = useQuery(User);
   const allUsers = allUsersResult.contracts.map((user) => user.payload);
   const reload = useReload();
 
