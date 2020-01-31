@@ -59,7 +59,7 @@ export const User: daml.Template<User, User.Key, '5944e48e36e9b9382b0876c3fa700d
   },
 };
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace User {
-  export type Key = daml.Party
-}
+export declare namespace User {
+  type Key = daml.Party
+};
 daml.registerTemplate(User);
