@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import * as jtv from '@mojotech/json-type-validation';
-import * as daml from '@digitalasset/daml-json-types';
+import * as daml from '@daml/types';
 
 export type MetaSel0 = {
-  mbRecordName: ({} | null);
+  mbRecordName: daml.Optional<{}>;
   sourceUnpackedness: SourceUnpackedness;
   sourceStrictness: SourceStrictness;
 }
@@ -116,27 +116,27 @@ export const Fixity:
 });
 daml.STATIC_IMPLEMENTS_SERIALIZABLE_CHECK<Fixity>(Fixity)
 
-export type K1<i_a2CW, c_a2CX, p_a2CY> = {
-  unK1: c_a2CX;
+export type K1<i_a2De, c_a2Df, p_a2Dg> = {
+  unK1: c_a2Df;
 }
-export const K1 = <i_a2CW, c_a2CX, p_a2CY>(i_a2CW: daml.Serializable<i_a2CW>, c_a2CX: daml.Serializable<c_a2CX>, p_a2CY: daml.Serializable<p_a2CY>): daml.Serializable<K1<i_a2CW, c_a2CX, p_a2CY>> => ({
+export const K1 = <i_a2De, c_a2Df, p_a2Dg>(i_a2De: daml.Serializable<i_a2De>, c_a2Df: daml.Serializable<c_a2Df>, p_a2Dg: daml.Serializable<p_a2Dg>): daml.Serializable<K1<i_a2De, c_a2Df, p_a2Dg>> => ({
   decoder: () => jtv.object({
-    unK1: c_a2CX.decoder(),
+    unK1: c_a2Df.decoder(),
   }),
 })
 
-export type Par1<p_a2D1> = {
-  unPar1: p_a2D1;
+export type Par1<p_a2Dj> = {
+  unPar1: p_a2Dj;
 }
-export const Par1 = <p_a2D1>(p_a2D1: daml.Serializable<p_a2D1>): daml.Serializable<Par1<p_a2D1>> => ({
+export const Par1 = <p_a2Dj>(p_a2Dj: daml.Serializable<p_a2Dj>): daml.Serializable<Par1<p_a2Dj>> => ({
   decoder: () => jtv.object({
-    unPar1: p_a2D1.decoder(),
+    unPar1: p_a2Dj.decoder(),
   }),
 })
 
-export type U1<p_a2D2> = {
+export type U1<p_a2Dk> = {
 }
-export const U1 = <p_a2D2>(p_a2D2: daml.Serializable<p_a2D2>): daml.Serializable<U1<p_a2D2>> => ({
+export const U1 = <p_a2Dk>(p_a2Dk: daml.Serializable<p_a2Dk>): daml.Serializable<U1<p_a2Dk>> => ({
   decoder: () => jtv.object({
   }),
 })
