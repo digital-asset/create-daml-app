@@ -1,16 +1,16 @@
 import React from 'react';
 import { Container, Grid, Header, Icon, Segment, Divider } from 'semantic-ui-react';
-import { Party } from '@digitalasset/daml-json-types';
+import { Party } from '@daml/types';
 import { User } from '../daml/create-daml-app/User';
-import { useParty, useReload, usePseudoExerciseByKey, useFetchByKey, useQuery } from '../daml-react-hooks';
+import { useParty, useReload, usePseudoExerciseByKey, useFetchByKey, useQuery } from '@daml/react';
 import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
 
 const MainView: React.FC = () => {
   const username = useParty();
-  const myUserResult = useFetchByKey(User, () => username, [username]);
+  const myUserResult = useFetchByKey<User, Party>(User, () => username, [username]);
   const myUser = myUserResult.contract?.payload;
-  const allUsersResult = useQuery(User);
+  const allUsersResult = useQuery<User, Party>(User);
   const allUsers = allUsersResult.contracts.map((user) => user.payload);
   const reload = useReload();
 

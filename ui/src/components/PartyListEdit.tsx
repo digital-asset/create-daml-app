@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Input, List } from 'semantic-ui-react';
 import ListActionItem from './ListActionItem';
-import { Party } from '@digitalasset/daml-json-types';
+import { Party } from '@daml/types';
 
 type Props = {
   parties: Party[];
