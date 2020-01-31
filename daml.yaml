@@ -1,4 +1,4 @@
-sdk-version: 0.13.43
+sdk-version: 0.13.50
 name: create-daml-app
 version: 0.1.0
 source: daml
@@ -7,7 +7,7 @@ parties:
 - Bob
 - Charlie
 build-options:
-- --target=1.dev
+- --target=1.7
 dependencies:
 - daml-prim
 - daml-stdlib
