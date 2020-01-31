@@ -1,8 +1,8 @@
 import React from 'react';
 import LoginScreen from './LoginScreen';
 import MainScreen from './MainScreen';
-import DamlLedger from '../daml-react-hooks/DamlLedger';
-import Credentials from '../ledger/Credentials';
+import DamlLedger from '@daml/react/DamlLedger';
+import Credentials from '@daml/react/credentials';
 
 /**
  * React component for the entry point into the application.

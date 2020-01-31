@@ -1,4 +1,5 @@
 import { encode } from 'jwt-simple';
+import Credentials from '@daml/react/credentials';
 
 export const LEDGER_ID: string = 'create-daml-app-sandbox';
 
@@ -15,14 +16,13 @@ export function computeToken(party: string): string {
   return encode(payload, SECRET_KEY, 'HS256');
 }
 
-export type Credentials = {
-  party: string;
-  token: string;
-}
-
 export const computeCredentials = (party: string): Credentials => {
   const token = computeToken(party);
-  return {party, token};
+  return {party, token, ledgerId: LEDGER_ID};
+}
+
+export function makeCredentials(party: string, token: string): Credentials {
+  return {party, token, ledgerId: LEDGER_ID};
 }
 
 export default Credentials;
