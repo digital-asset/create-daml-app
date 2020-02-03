@@ -3,6 +3,7 @@
   "workspaces": [
     "daml-types",
     "daml-ledger",
+    "daml-ts",
     "ui"
   ]
 }
