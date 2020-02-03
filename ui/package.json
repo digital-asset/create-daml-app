@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@daml/types": "0.13.50",
     "@daml/ledger": "0.13.50",
     "@daml/react": "0.13.50",
+    "@daml/types": "0.13.50",
     "@mojotech/json-type-validation": "^3.1.0",
     "@types/jest": "24.0.18",
     "@types/node": "12.7.12",
@@ -20,7 +20,8 @@
     "react-scripts": "^3.3.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.1",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5"
   },
   "scripts": {
     "start": "react-scripts start",
