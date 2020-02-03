@@ -2,7 +2,7 @@ import React from 'react'
 import { List } from 'semantic-ui-react'
 import ListActionItem from './ListActionItem';
 import { Party } from '@daml/types';
-import { User } from '../daml/create-daml-app/User';
+import { User } from '@daml/ts/src/create-daml-app/User';
 
 type Props = {
   users: User[];
