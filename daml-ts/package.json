@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "@daml/ts",
+  "name": "@daml2ts/create-daml-app",
   "version": "0.13.50",
-  "description": "Typescript generated from the create-daml-app DAML model.",
+  "description": "TypeScript generated from the create-daml-app DAML model.",
   "license": "Apache-2.0",
   "dependencies": {
     "@daml/types": "0.13.50",
