@@ -1,4 +1,7 @@
-import { Template, Choice, ContractId } from '@daml/types';
+// Copyright (c) 2020 The DAML Authors. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+import { Template, Choice, ContractId } from "@daml/types";
 import { Query, CreateEvent } from '@daml/ledger';
 import { useEffect, useMemo, useState, useContext } from "react";
 import * as LedgerStore from './ledgerStore';
