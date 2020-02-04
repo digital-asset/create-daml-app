@@ -17,11 +17,7 @@ const DamlLedger: React.FC<Props> = (props) => {
     party: props.credentials.party,
     ledger: new Ledger(props.credentials.token),
   }), [props.credentials, store, dispatch])
-  return (
-    <DamlLedgerContext.Provider value={state}>
-      {props.children}
-    </DamlLedgerContext.Provider>
-  );
+  return React.createElement(DamlLedgerContext.Provider, {value: state}, props.children);
 }
 
 export default DamlLedger;
