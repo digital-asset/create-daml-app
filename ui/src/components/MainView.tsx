@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Grid, Header, Icon, Segment, Divider } from 'semantic-ui-react';
 import { Party } from '@daml/types';
 import { User } from '@daml2ts/create-daml-app/lib/create-daml-app/User';
-import { useParty, useReload, useExerciseByKey, useFetchByKey, useQuery } from '../daml-react';
+import { useParty, useReload, useExerciseByKey, useFetchByKey, useQuery } from '@daml/react';
 import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
 
