@@ -36,33 +36,39 @@ package manager for JavaScript. For the development of this project we have
 used [yarn](https://yarnpkg.com/en/docs/install), but others might work
 equally well.
 
-First, you need to obtain a copy of this project, either by clicking the
+You can make a copy of this project either by clicking the
 "Use this template" button above or by cloning this repository directly via
 ```
 git clone https://github.com/digital-asset/create-daml-app.git
 ```
 
-Once you have copy of this project, you need to install its dependencies
-by calling
+Once you have copy of the project, there are two steps to build it.
+First, we need to run a script to generate TypeScript code bindings for the DAML
+model.
+At the root of the repository, run
+```
+./daml-codegen.sh
+```
+Then you can install all dependencies and build the app by running
 ```
 yarn install
 yarn workspaces run build
 ```
-at the root of the repository.
 
-To start the application, first start a DAML ledger using
+To start the application, there are again two steps.
+First start a DAML ledger using
 ```
 ./daml-start.sh
 ```
-This will continue running to serve ledger requests.
+This must continue running to serve ledger requests.
 
-Next, in another terminal window, start the UI server via
+Then in another terminal window, start the UI server via
 ```
 cd ui/
 yarn start
 ```
-This should open a browser window with a login screen. If it doesn't, you
-can manually point your browser to http://localhost:3000.
+This should open a browser window with a login screen.
+If it doesn't, you can manually point your browser to http://localhost:3000.
 
 
 ## A quick tour
