@@ -43,13 +43,16 @@ git clone https://github.com/digital-asset/create-daml-app.git
 ```
 
 Once you have copy of the project, there are two steps to build it.
-First, we need to run a script to generate TypeScript code bindings for the DAML
-model.
+First, we need to generate TypeScript code bindings for the compiled DAML model.
 At the root of the repository, run
 ```
-./daml-codegen.sh
+daml build
+daml codegen ts .daml/dist/create-daml-app-0.1.0.dar -o daml-ts/src --main-package-name create-daml-app
 ```
-Then you can install all dependencies and build the app by running
+The latter command writes TypeScript files into the `daml-ts` workspace on which
+`create-daml-app` depends.
+
+Next, install all dependencies and build the app by running
 ```
 yarn install
 yarn workspaces run build
