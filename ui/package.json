@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@daml/types": "0.13.50",
-    "@daml/ledger": "0.13.50",
-    "@daml2ts/create-daml-app": "0.13.50",
+    "@daml/types": "0.13.51",
+    "@daml/ledger": "0.13.51",
+    "@daml/react": "0.13.51",
+    "@daml2ts/create-daml-app": "0.13.51",
     "@mojotech/json-type-validation": "^3.1.0",
     "@types/jest": "24.0.18",
     "@types/node": "12.7.12",
