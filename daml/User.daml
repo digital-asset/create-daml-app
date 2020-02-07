@@ -9,7 +9,6 @@ template User with
   where
     signatory username
     observer friends
-    ensure username `notElem` friends
 
     key username: Party
     maintainer key
@@ -18,7 +17,7 @@ template User with
         friend: Party
       controller username
       do
-        assert $ friend `notElem` friends
+        assert $ friend `notElem` (username :: friends)
         create this with friends = sort (friend :: friends)
 
     nonconsuming choice RemoveFriend: ContractId User with
