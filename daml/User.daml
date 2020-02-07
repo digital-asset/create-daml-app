@@ -9,7 +9,7 @@ template User with
   where
     signatory username
     observer friends
-    ensure username `notElem` friends && dedupSort friends == friends
+    ensure username `notElem` friends
 
     key username: Party
     maintainer key
