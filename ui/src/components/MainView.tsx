@@ -5,6 +5,8 @@ import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 import { useParty, useExerciseByKey, useStreamFetchByKey, useStreamQuery } from '@daml/react';
 import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
+import MessageEdit from './MessageEdit';
+import MessageList from './MessageList';
 
 const MainView: React.FC = () => {
   const username = useParty();
@@ -72,6 +74,20 @@ const MainView: React.FC = () => {
                 users={friends}
                 onAddFriend={addFriend}
               />
+            </Segment>
+            <Segment>
+              <Header as='h2'>
+                <Icon name='pencil square' />
+                <Header.Content>
+                  Messages
+                  <Header.Subheader>Send a message to a friend</Header.Subheader>
+                </Header.Content>
+              </Header>
+              <MessageEdit
+                friends={friends.map(user => user.username)}
+              />
+            <Divider />
+            <MessageList />
             </Segment>
           </Grid.Column>
         </Grid.Row>
