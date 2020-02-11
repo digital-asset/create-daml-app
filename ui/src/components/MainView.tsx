@@ -1,10 +1,12 @@
 import React from 'react';
 import { Container, Grid, Header, Icon, Segment, Divider } from 'semantic-ui-react';
 import { Party } from '@daml/types';
-import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
+import { User, Message } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 import { useParty, useReload, useExerciseByKey, useFetchByKey, useQuery } from '@daml/react';
 import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
+import MessageEdit from './MessageEdit';
+import Feed from './Feed';
 
 const MainView: React.FC = () => {
   const username = useParty();
@@ -14,7 +16,11 @@ const MainView: React.FC = () => {
   const allUsers = allUsersResult.contracts.map((user) => user.payload);
   const reload = useReload();
 
+  const messagesResult = useQuery(Message, () => ({receiver: username}), []);
+  const messages = messagesResult.contracts.map((message) => message.payload);
+
   const [exerciseAddFriend] = useExerciseByKey(User.AddFriend);
+  const [exerciseSendMessage] = useExerciseByKey(User.SendMessage);
 
   const addFriend = async (friend: Party): Promise<boolean> => {
     try {
@@ -28,6 +34,16 @@ const MainView: React.FC = () => {
 
   const messageFriend = (friend: Party) =>
     alert('Messaging parties is not yet implemented.');
+
+  const sendMessage = async (content: string, receiver: string): Promise<boolean> => {
+    try {
+      await exerciseSendMessage(receiver, {sender: username, content});
+      return true;
+    } catch (error) {
+      alert("Error while sending message:\n" + JSON.stringify(error));
+      return false;
+    }
+  }
 
   React.useEffect(() => {
     const interval = setInterval(reload, 5000);
@@ -78,6 +94,20 @@ const MainView: React.FC = () => {
                 users={allUsers}
                 onAddFriend={addFriend}
               />
+            </Segment>
+            <Segment>
+              <Header as='h2'>
+                <Icon name='pencil square' />
+                <Header.Content>
+                  Messages
+                  <Header.Subheader>Send a message to a friend</Header.Subheader>
+                </Header.Content>
+              </Header>
+              <MessageEdit
+                sendMessage={sendMessage}
+              />
+            <Divider />
+            <Feed messages={messages} />
             </Segment>
           </Grid.Column>
         </Grid.Row>
