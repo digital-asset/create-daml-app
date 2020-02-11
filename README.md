@@ -114,12 +114,11 @@ There are many directions in which this application can be extended.
 Regardless of which direction you pick, the following files will be the most
 interesting ones to familiarize yourself with:
 
-- [`daml/User.daml`](daml/User.daml): the DAML model of the simplistic
-  social network
-- [`src/daml/User.ts`](src/daml/User.ts): a reflection of the types
-  contained in the DAML model in TypeScript
+- [`daml/User.daml`](daml/User.daml): the DAML model of the social network
+- [`daml-ts/src/create-daml-app/User.ts`](src/daml/User.ts) (once you've generated it):
+  a reflection of the types contained in the DAML model in TypeScript
 - [`src/components/MainView.tsx`](src/components/MainView.tsx):
-  the React component talking to the Ledger API and rendering the main features
+  the React component using the Ledger API and rendering the main features
 - [`daml/Reciprocate.daml`](daml/Reciprocate.daml): the automation using
   DAML triggers
 
