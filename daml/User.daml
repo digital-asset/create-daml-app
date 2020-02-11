@@ -19,3 +19,18 @@ template User with
         assertMsg "You cannot add a friend twice" (friend `notElem` friends)
         archive self
         create this with friends = friend :: friends
+
+    nonconsuming choice SendMessage: ContractId Message with
+        sender: Party
+        content: Text
+      controller sender
+      do
+        assertMsg "You must be a friend to send a message" (sender `elem` friends)
+        create Message with sender, receiver = username, content
+
+template Message with
+    sender: Party
+    receiver: Party
+    content: Text
+  where
+    signatory sender, receiver
