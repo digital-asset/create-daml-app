@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Form, Grid, Header, Image, Segment } from 'semantic-ui-react'
 import Credentials, { computeToken, makeCredentials } from '../Credentials';
 import Ledger from '@daml/ledger';
-import { User } from '@daml2ts/create-daml-app/lib/create-daml-app/User';
+import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
