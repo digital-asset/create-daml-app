@@ -1,11 +1,11 @@
 {
   "private": true,
   "name": "@daml2ts/create-daml-app",
-  "version": "0.13.51",
+  "version": "0.13.52",
   "description": "TypeScript generated from the create-daml-app DAML model.",
   "license": "Apache-2.0",
   "dependencies": {
-    "@daml/types": "0.13.51",
+    "@daml/types": "0.13.52",
     "@mojotech/json-type-validation": "^3.1.0"
   },
   "scripts": {
