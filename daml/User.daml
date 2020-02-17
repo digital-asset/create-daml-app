@@ -1,8 +1,6 @@
 daml 1.2
 module User where
 
-import DA.List
-
 template User with
     username: Party
     friends: [Party]
@@ -19,4 +17,4 @@ template User with
       do
         assertMsg "You cannot add yourself as a friend" (friend /= username)
         assertMsg "You cannot add a friend twice" (friend `notElem` friends)
-        create this with friends = sort (friend :: friends)
+        create this with friends = friend :: friends

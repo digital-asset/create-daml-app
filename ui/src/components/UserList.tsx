@@ -16,7 +16,7 @@ type Props = {
 const UserList: React.FC<Props> = ({users, onAddFriend}) => {
   return (
     <List divided relaxed>
-      {users.map((user) =>
+      {[...users].sort((x, y) => x.username.localeCompare(y.username)).map((user) =>
         <ListActionItem
           key={user.username}
           icon='user'
@@ -28,7 +28,7 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
         >
           <List.Header>{user.username}</List.Header>
           <List.List>
-            {user.friends.map((friend) =>
+            {[...user.friends].sort((x, y) => x.localeCompare(y)).map((friend) =>
               <ListActionItem
                 key={friend}
                 icon='user outline'

@@ -30,7 +30,7 @@ const PartyListEdit: React.FC<Props> = ({parties, onAddParty, onMessageParty}) =
 
   return (
     <List relaxed>
-      {parties.map((party) =>
+      {[...parties].sort((x, y) => x.localeCompare(y)).map((party) =>
         <ListActionItem
           key={party}
           icon='user outline'
