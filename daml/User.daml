@@ -20,11 +20,3 @@ template User with
         assertMsg "You cannot add yourself as a friend" (friend /= username)
         assertMsg "You cannot add a friend twice" (friend `notElem` friends)
         create this with friends = sort (friend :: friends)
-
-    nonconsuming choice RemoveFriend: ContractId User with
-        friend: Party
-      controller username
-      do
-        assert $ friend `elem` friends
-        archive self
-        create this with friends = delete friend friends

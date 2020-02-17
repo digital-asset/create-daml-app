@@ -6,13 +6,13 @@ import { Party } from '@daml/types';
 type Props = {
   parties: Party[];
   onAddParty: (party: Party) => Promise<boolean>;
-  onRemoveParty: (party: Party) => void;
+  onMessageParty: (party: Party) => void;
 }
 
 /**
  * React component to edit a list of `Party`s.
  */
-const PartyListEdit: React.FC<Props> = ({parties, onAddParty, onRemoveParty}) => {
+const PartyListEdit: React.FC<Props> = ({parties, onAddParty, onMessageParty}) => {
   const [newParty, setNewParty] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -35,8 +35,8 @@ const PartyListEdit: React.FC<Props> = ({parties, onAddParty, onRemoveParty}) =>
           key={party}
           icon='user outline'
           action={{
-            icon: 'remove user',
-            onClick: () => onRemoveParty(party)
+            icon: 'comment alternate',
+            onClick: () => onMessageParty(party)
           }}
         >
           <List.Header>{party}</List.Header>

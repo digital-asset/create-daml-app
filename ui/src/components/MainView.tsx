@@ -15,7 +15,6 @@ const MainView: React.FC = () => {
   const reload = useReload();
 
   const [exerciseAddFriend] = useExerciseByKey(User.AddFriend);
-  const [exerciseRemoveFriend] = useExerciseByKey(User.RemoveFriend);
 
   const addFriend = async (friend: Party): Promise<boolean> => {
     try {
@@ -27,13 +26,8 @@ const MainView: React.FC = () => {
     }
   }
 
-  const removeFriend = async (friend: Party): Promise<void> => {
-    try {
-      await exerciseRemoveFriend(username, {friend});
-    } catch (error) {
-      alert("Unknown error:\n" + JSON.stringify(error));
-    }
-  }
+  const messageFriend = (friend: Party) =>
+    alert('Messaging parties is not yet implemented.');
 
   React.useEffect(() => {
     const interval = setInterval(reload, 5000);
@@ -61,7 +55,7 @@ const MainView: React.FC = () => {
               <PartyListEdit
                 parties={myUser?.friends ?? []}
                 onAddParty={addFriend}
-                onRemoveParty={removeFriend}
+                onMessageParty={messageFriend}
               />
             </Segment>
             <Segment>
