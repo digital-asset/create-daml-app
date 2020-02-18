@@ -6,7 +6,7 @@
     "@daml/types": "0.13.52",
     "@daml/ledger": "0.13.52",
     "@daml/react": "0.13.52",
-    "@daml2ts/create-daml-app": "0.13.52",
+    "@daml.js/create-daml-app": "file:../daml.js/create-daml-app",
     "@mojotech/json-type-validation": "^3.1.0",
     "@types/jest": "24.0.18",
     "@types/node": "12.7.12",
