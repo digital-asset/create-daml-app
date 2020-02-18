@@ -1,0 +1,175 @@
+{
+  "program": {
+    "fileInfos": {
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "fc43680ad3a1a4ec8c7b8d908af1ec9ddff87845346de5f02c735c9171fa98ea",
+        "signature": "fc43680ad3a1a4ec8c7b8d908af1ec9ddff87845346de5f02c735c9171fa98ea"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96",
+        "signature": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "d93de5e8a7275cb9d47481410e13b3b1debb997e216490954b5d106e37e086de",
+        "signature": "d93de5e8a7275cb9d47481410e13b3b1debb997e216490954b5d106e37e086de"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "734ddc145e147fbcd55f07d034f50ccff1086f5a880107665ec326fb368876f6",
+        "signature": "734ddc145e147fbcd55f07d034f50ccff1086f5a880107665ec326fb368876f6"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "4a0862a21f4700de873db3b916f70e41570e2f558da77d2087c9490f5a0615d8",
+        "signature": "4a0862a21f4700de873db3b916f70e41570e2f558da77d2087c9490f5a0615d8"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "765e0e9c9d74cf4d031ca8b0bdb269a853e7d81eda6354c8510218d03db12122",
+        "signature": "765e0e9c9d74cf4d031ca8b0bdb269a853e7d81eda6354c8510218d03db12122"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "285958e7699f1babd76d595830207f18d719662a0c30fac7baca7df7162a9210",
+        "signature": "285958e7699f1babd76d595830207f18d719662a0c30fac7baca7df7162a9210"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "d4deaafbb18680e3143e8b471acd650ed6f72a408a33137f0a0dd104fbe7f8ca",
+        "signature": "d4deaafbb18680e3143e8b471acd650ed6f72a408a33137f0a0dd104fbe7f8ca"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe",
+        "signature": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976",
+        "signature": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230",
+        "signature": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230"
+      },
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303",
+        "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
+      },
+      "../../node_modules/@mojotech/json-type-validation/result.d.ts": {
+        "version": "79100ef62a6aefca99e96651119e9bd7620b5eea2bc50b8cb3bd1291317f1e24",
+        "signature": "79100ef62a6aefca99e96651119e9bd7620b5eea2bc50b8cb3bd1291317f1e24"
+      },
+      "../../node_modules/@mojotech/json-type-validation/decoder.d.ts": {
+        "version": "c6dcbd5ea7dc92ca6c9670ac5bce4c4a0eb17581ef806d6392e012934df41c5b",
+        "signature": "c6dcbd5ea7dc92ca6c9670ac5bce4c4a0eb17581ef806d6392e012934df41c5b"
+      },
+      "../../node_modules/@mojotech/json-type-validation/combinators.d.ts": {
+        "version": "974f45848283c166a28ec625ae917491e62421ca46fd369f187b7cae232372bd",
+        "signature": "974f45848283c166a28ec625ae917491e62421ca46fd369f187b7cae232372bd"
+      },
+      "../../node_modules/@mojotech/json-type-validation/index.d.ts": {
+        "version": "5f5bbf3fa89cf2cf093a4c7c0788d9ef3b55c2bd51533c39f693ab81eb3f2b5e",
+        "signature": "5f5bbf3fa89cf2cf093a4c7c0788d9ef3b55c2bd51533c39f693ab81eb3f2b5e"
+      },
+      "../../node_modules/@daml/types/index.d.ts": {
+        "version": "8e7a98ef0cfcd3421b35ede17078f917b9f5a73fb1df0d5872ba2adcbc2bab70",
+        "signature": "8e7a98ef0cfcd3421b35ede17078f917b9f5a73fb1df0d5872ba2adcbc2bab70"
+      },
+      "../../daml-template/lib/DA/Internal/Template.d.ts": {
+        "version": "bfeb5015522e1ca90ae6bdc4ffbc5a71832f2eeab31abd1de229030b45dc4d54",
+        "signature": "bfeb5015522e1ca90ae6bdc4ffbc5a71832f2eeab31abd1de229030b45dc4d54"
+      },
+      "../src/User.ts": {
+        "version": "614d83e1115e232bfe86a1b1b06567e70dd6abe1228eafd85c62291ce59f96cd",
+        "signature": "fe42071dddd3e2f796aa51d656002040211ca37215282ba9337bc76ade50e591"
+      },
+      "../src/packageId.ts": {
+        "version": "ba28a939f67bf3bf2b777ee674d36a1ab750afece4fade469c6959cdcedb5a5a",
+        "signature": "7a077682ecc09cff5f599259406a69f3a2c445272e7e253cb7a499b59f6ca66d"
+      }
+    },
+    "options": {
+      "target": 1,
+      "lib": [
+        "lib.dom.d.ts",
+        "lib.es2015.d.ts"
+      ],
+      "incremental": true,
+      "strict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": false,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "outDir": "./",
+      "module": 1,
+      "declaration": true,
+      "sourceMap": true,
+      "types": [],
+      "configFilePath": "../tsconfig.json"
+    },
+    "referencedMap": {
+      "../../node_modules/@mojotech/json-type-validation/decoder.d.ts": [
+        "../../node_modules/@mojotech/json-type-validation/result.d.ts"
+      ],
+      "../../node_modules/@mojotech/json-type-validation/combinators.d.ts": [
+        "../../node_modules/@mojotech/json-type-validation/decoder.d.ts"
+      ],
+      "../../node_modules/@mojotech/json-type-validation/index.d.ts": [
+        "../../node_modules/@mojotech/json-type-validation/result.d.ts",
+        "../../node_modules/@mojotech/json-type-validation/decoder.d.ts",
+        "../../node_modules/@mojotech/json-type-validation/combinators.d.ts"
+      ],
+      "../../node_modules/@daml/types/index.d.ts": [
+        "../../node_modules/@mojotech/json-type-validation/index.d.ts"
+      ],
+      "../../daml-template/lib/DA/Internal/Template.d.ts": [
+        "../../node_modules/@daml/types/index.d.ts"
+      ],
+      "../src/User.ts": [
+        "../../node_modules/@mojotech/json-type-validation/index.d.ts",
+        "../../node_modules/@daml/types/index.d.ts",
+        "../../daml-template/lib/DA/Internal/Template.d.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "../../node_modules/@mojotech/json-type-validation/index.d.ts": [
+        "../../node_modules/@mojotech/json-type-validation/result.d.ts",
+        "../../node_modules/@mojotech/json-type-validation/decoder.d.ts",
+        "../../node_modules/@mojotech/json-type-validation/combinators.d.ts"
+      ],
+      "../src/User.ts": [
+        "../../node_modules/@daml/types/index.d.ts",
+        "../../daml-template/lib/DA/Internal/Template.d.ts"
+      ],
+      "../../node_modules/@daml/types/index.d.ts": [
+        "../../node_modules/@mojotech/json-type-validation/index.d.ts"
+      ],
+      "../../daml-template/lib/DA/Internal/Template.d.ts": [
+        "../../node_modules/@daml/types/index.d.ts"
+      ],
+      "../../node_modules/@mojotech/json-type-validation/decoder.d.ts": [
+        "../../node_modules/@mojotech/json-type-validation/result.d.ts"
+      ],
+      "../../node_modules/@mojotech/json-type-validation/combinators.d.ts": [
+        "../../node_modules/@mojotech/json-type-validation/decoder.d.ts"
+      ]
+    },
+    "semanticDiagnosticsPerFile": [
+      "../../node_modules/@mojotech/json-type-validation/result.d.ts",
+      "../../node_modules/@mojotech/json-type-validation/decoder.d.ts",
+      "../../node_modules/@mojotech/json-type-validation/combinators.d.ts",
+      "../../node_modules/@mojotech/json-type-validation/index.d.ts",
+      "../../node_modules/@daml/types/index.d.ts",
+      "../../daml-template/lib/DA/Internal/Template.d.ts",
+      "../src/User.ts",
+      "../src/packageId.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es5.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.dom.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "../../../../.npm/_npx/72308/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts"
+    ]
+  },
+  "version": "3.7.5"
+}
