@@ -18,7 +18,7 @@ const MessageEdit: React.FC<Props> = ({users}) => {
   const [exerciseSendMessage] = useExerciseByKey(User.SendMessage);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const sendMessage = async (content: string, receiver: string): Promise<boolean> => {
+  const sendMessage = async (receiver: string, content: string): Promise<boolean> => {
     try {
       await exerciseSendMessage(receiver, {sender, content});
       return true;
@@ -33,7 +33,7 @@ const MessageEdit: React.FC<Props> = ({users}) => {
       event.preventDefault();
     }
     setIsSubmitting(true);
-    const success = await sendMessage(content, receiver);
+    const success = await sendMessage(receiver, content);
     setIsSubmitting(false);
     if (success) {
       setReceiver('');
@@ -41,14 +41,12 @@ const MessageEdit: React.FC<Props> = ({users}) => {
     }
   }
 
-  // Sorted array of friends of the current user
-  const friends =
+  // Options for dropdown menu
+  const friendOptions =
     users
     .filter(user => user !== sender)
     .sort((x, y) => x.localeCompare(y))
-
-  // Options for dropdown menu
-  const friendOptions = friends.map((f) => ({ key: f, text: f, value: f }));
+    .map(f => ({ key: f, text: f, value: f }));
 
   return (
     <Form onSubmit={submitMessage}>
