@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Grid, Header, Icon, Segment, Divider } from 'semantic-ui-react';
 import { Party } from '@daml/types';
-import { User, Message } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
+import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 import { useParty, useReload, useExerciseByKey, useFetchByKey, useQuery } from '@daml/react';
 import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
@@ -15,9 +15,6 @@ const MainView: React.FC = () => {
   const allUsersResult = useQuery<User, Party>(User);
   const allUsers = allUsersResult.contracts.map((user) => user.payload);
   const reload = useReload();
-
-  const messagesResult = useQuery(Message, () => ({receiver: username}), []);
-  const messages = messagesResult.contracts.map((message) => message.payload);
 
   const [exerciseAddFriend] = useExerciseByKey(User.AddFriend);
 
@@ -96,7 +93,7 @@ const MainView: React.FC = () => {
                 users={allUsers.map((user) => user.username)}
               />
             <Divider />
-            <Feed messages={messages} />
+            <Feed />
             </Segment>
           </Grid.Column>
         </Grid.Row>
