@@ -6,7 +6,7 @@ import { useParty, useReload, useExerciseByKey, useFetchByKey, useQuery } from '
 import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
 import MessageEdit from './MessageEdit';
-import Feed from './Feed';
+import MessageList from './MessageList';
 
 const MainView: React.FC = () => {
   const username = useParty();
@@ -93,7 +93,7 @@ const MainView: React.FC = () => {
                 users={allUsers.map((user) => user.username)}
               />
             <Divider />
-            <Feed />
+            <MessageList />
             </Segment>
           </Grid.Column>
         </Grid.Row>

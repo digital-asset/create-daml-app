@@ -4,9 +4,9 @@ import { Message } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User
 import { useParty, useQuery } from '@daml/react';
 
 /**
- * React component to show a feed of messages for the current user.
+ * React component displaying the list of messages for the current user.
  */
-const Feed: React.FC = () => {
+const MessageList: React.FC = () => {
   const username = useParty();
   const messagesResult = useQuery(Message, () => ({receiver: username}), []);
   const messages = messagesResult.contracts.map(message => message.payload);
@@ -22,4 +22,4 @@ const Feed: React.FC = () => {
   );
 }
 
-export default Feed;
+export default MessageList;
