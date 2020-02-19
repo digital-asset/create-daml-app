@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Container, Grid, Header, Icon, Segment, Divider } from 'semantic-ui-react';
 import { Party } from '@daml/types';
 import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
@@ -8,11 +8,17 @@ import PartyListEdit from './PartyListEdit';
 
 const MainView: React.FC = () => {
   const username = useParty();
-  const myUserResult = useFetchByKey<User, Party>(User, () => username, [username]);
+  const myUserResult = useFetchByKey(User, () => username, [username]);
   const myUser = myUserResult.contract?.payload;
-  const allUsersResult = useQuery<User, Party>(User);
-  const allUsers = allUsersResult.contracts.map((user) => user.payload);
-  const reload = useReload();
+  const allUsers = useQuery(User).contracts;
+
+  // Sorted list of friends of the current user
+  const friends = useMemo(() =>
+    allUsers
+    .map(user => user.payload)
+    .filter(user => user.username !== username)
+    .sort((x, y) => x.username.localeCompare(y.username)),
+    [allUsers, username]);
 
   const [exerciseAddFriend] = useExerciseByKey(User.AddFriend);
 
@@ -29,6 +35,7 @@ const MainView: React.FC = () => {
   const messageFriend = (friend: Party) =>
     alert('Messaging parties is not yet implemented.');
 
+  const reload = useReload();
   React.useEffect(() => {
     const interval = setInterval(reload, 5000);
     return () => clearInterval(interval);
@@ -75,7 +82,7 @@ const MainView: React.FC = () => {
               </Header>
               <Divider />
               <UserList
-                users={allUsers}
+                users={friends}
                 onAddFriend={addFriend}
               />
             </Segment>
