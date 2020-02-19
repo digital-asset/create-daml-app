@@ -20,7 +20,6 @@ const MainView: React.FC = () => {
   const messages = messagesResult.contracts.map((message) => message.payload);
 
   const [exerciseAddFriend] = useExerciseByKey(User.AddFriend);
-  const [exerciseSendMessage] = useExerciseByKey(User.SendMessage);
 
   const addFriend = async (friend: Party): Promise<boolean> => {
     try {
@@ -34,16 +33,6 @@ const MainView: React.FC = () => {
 
   const messageFriend = (friend: Party) =>
     alert('Messaging parties is not yet implemented.');
-
-  const sendMessage = async (content: string, receiver: string): Promise<boolean> => {
-    try {
-      await exerciseSendMessage(receiver, {sender: username, content});
-      return true;
-    } catch (error) {
-      alert("Error while sending message:\n" + JSON.stringify(error));
-      return false;
-    }
-  }
 
   React.useEffect(() => {
     const interval = setInterval(reload, 5000);
@@ -104,8 +93,7 @@ const MainView: React.FC = () => {
                 </Header.Content>
               </Header>
               <MessageEdit
-                friends={allUsers}
-                sendMessage={sendMessage}
+                users={allUsers.map((user) => user.username)}
               />
             <Divider />
             <Feed messages={messages} />
