@@ -5,13 +5,13 @@ import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 import { useParty, useExerciseByKey } from '@daml/react';
 
 type Props = {
-  users: Party[];
+  friends: Party[];
 }
 
 /**
  * React component to edit a message to send to a friend.
  */
-const MessageEdit: React.FC<Props> = ({users}) => {
+const MessageEdit: React.FC<Props> = ({friends}) => {
   const sender = useParty();
   const [receiver, setReceiver] = React.useState('');
   const [content, setContent] = React.useState('');
@@ -42,11 +42,7 @@ const MessageEdit: React.FC<Props> = ({users}) => {
   }
 
   // Options for dropdown menu
-  const friendOptions =
-    users
-    .filter(user => user !== sender)
-    .sort((x, y) => x.localeCompare(y))
-    .map(f => ({ key: f, text: f, value: f }));
+  const friendOptions = friends.map(f => ({ key: f, text: f, value: f }));
 
   return (
     <Form onSubmit={submitMessage}>
