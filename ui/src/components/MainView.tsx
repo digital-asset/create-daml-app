@@ -104,6 +104,7 @@ const MainView: React.FC = () => {
                 </Header.Content>
               </Header>
               <MessageEdit
+                friends={allUsers}
                 sendMessage={sendMessage}
               />
             <Divider />
