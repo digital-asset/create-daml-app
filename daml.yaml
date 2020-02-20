@@ -6,8 +6,6 @@ parties:
 - Alice
 - Bob
 - Charlie
-build-options:
-- --target=1.7
 dependencies:
 - daml-prim
 - daml-stdlib
