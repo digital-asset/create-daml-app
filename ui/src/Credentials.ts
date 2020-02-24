@@ -12,7 +12,7 @@ export type Credentials = {
   ledgerId: string;
 }
 
-export function computeToken(party: string): string {
+function computeToken(party: string): string {
   const payload = {
     "https://daml.com/ledger-api": {
       "ledgerId": LEDGER_ID,
@@ -25,10 +25,6 @@ export function computeToken(party: string): string {
 
 export const computeCredentials = (party: string): Credentials => {
   const token = computeToken(party);
-  return {party, token, ledgerId: LEDGER_ID};
-}
-
-export function makeCredentials(party: string, token: string): Credentials {
   return {party, token, ledgerId: LEDGER_ID};
 }
 

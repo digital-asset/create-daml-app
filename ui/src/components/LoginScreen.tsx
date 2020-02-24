@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Form, Grid, Header, Image, Segment } from 'semantic-ui-react'
-import Credentials, { computeToken, makeCredentials } from '../Credentials';
+import Credentials, { computeCredentials } from '../Credentials';
 import Ledger from '@daml/ledger';
 import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 
@@ -13,18 +13,13 @@ type Props = {
  */
 const LoginScreen: React.FC<Props> = ({onLogin}) => {
   const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
 
   const handleLogin = async (event?: React.FormEvent) => {
     try {
       if (event) {
         event.preventDefault();
       }
-      if (password !== computeToken(username)) {
-        alert('Wrong password.');
-        return;
-      }
-      const credentials = makeCredentials(username, password);
+      const credentials = computeCredentials(username);
       const ledger = new Ledger({token: credentials.token});
       const user = await ledger.lookupByKey(User, username);
       if (user === null) {
@@ -40,7 +35,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
   const handleSignup = async (event: React.FormEvent) => {
     try {
       event.preventDefault();
-      const credentials = makeCredentials(username, password);
+      const credentials = computeCredentials(username);
       const ledger = new Ledger({token: credentials.token});
       const user: User = {username, friends: []};
       await ledger.create(User, user);
@@ -53,12 +48,6 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
         // }
       alert("Unknown error:\n" + JSON.stringify(error));
     }
-  }
-
-  const handleCalculatePassword = (event: React.FormEvent) => {
-    event.preventDefault();
-    const password = computeToken(username);
-    setPassword(password);
   }
 
   return (
@@ -89,19 +78,6 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
               placeholder='Username'
               value={username}
               onChange={e => setUsername(e.currentTarget.value)}
-            />
-            <Form.Input
-              fluid
-              icon='lock'
-              iconPosition='left'
-              placeholder='Password'
-              type='password'
-              action={{
-                icon: 'calculator',
-                onClick: handleCalculatePassword,
-              }}
-              value={password}
-              onChange={e => setPassword(e.currentTarget.value)}
             />
             <Button.Group fluid size='large'>
               <Button
