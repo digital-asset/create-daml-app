@@ -25,7 +25,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
         return;
       }
       const credentials = makeCredentials(username, password);
-      const ledger = new Ledger(credentials.token);
+      const ledger = new Ledger({token: credentials.token});
       const user = await ledger.lookupByKey(User, username);
       if (user === null) {
         alert("You have not yet signed up.");
@@ -41,7 +41,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
     try {
       event.preventDefault();
       const credentials = makeCredentials(username, password);
-      const ledger = new Ledger(credentials.token);
+      const ledger = new Ledger({token: credentials.token});
       const user: User = {username, friends: []};
       await ledger.create(User, user);
       await handleLogin();

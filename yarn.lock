@@ -1761,34 +1761,34 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@daml/ledger@0.13.52":
-  version "0.13.52"
-  resolved "https://registry.yarnpkg.com/@daml/ledger/-/ledger-0.13.52.tgz#06959b6df99c9206a2e430afc2a144da98a9e458"
-  integrity sha512-+ZlbrFobzwyJcpfSs5NsgpcHGTte/oeNzkaxJ8Q8VqvaBGVsKSBxP/+te3bb97/nrefHnaSURgVqWQ9YOyOmhA==
+"@daml/ledger@0.13.53":
+  version "0.13.53"
+  resolved "https://registry.yarnpkg.com/@daml/ledger/-/ledger-0.13.53.tgz#0402f0994961e92aa61faed9c3610f30fc867d87"
+  integrity sha512-nqHLiahkjoazwACwN1cSm0SqHsYs9T7aVfAkysXBHAP03cy3e9DUGRdi2qdl9oK3FKeTvEx0ZdaEx6fsuurs1A==
   dependencies:
-    "@daml/types" "0.13.52"
+    "@daml/types" "0.13.53"
     "@mojotech/json-type-validation" "^3.1.0"
     cross-fetch "^3.0.4"
     events "^3.1.0"
     isomorphic-ws "^4.0.1"
     ws "^7.2.1"
 
-"@daml/react@0.13.52":
-  version "0.13.52"
-  resolved "https://registry.yarnpkg.com/@daml/react/-/react-0.13.52.tgz#420c0ae5776c4f7b4ecb2c3a16d1a93a6c397d60"
-  integrity sha512-lPQ8yoMaiB3aXpbFQ92G0Fb7jHnYOxlbTV4Y+GRhpZEyuUJJTRj++s5UZvKpqLQMGSkA2hLVGOD5YEA4vbADPw==
+"@daml/react@0.13.53":
+  version "0.13.53"
+  resolved "https://registry.yarnpkg.com/@daml/react/-/react-0.13.53.tgz#6caacd4b8bcf33d8608a5a11a651fc4fc0fa2254"
+  integrity sha512-IfTmsw87Fr0Po8EVxYS6mm0mXVPR7v8AS+C08SBWEW+O+RA2Pp7g/hWvY8XogWAVCwSOUfPLC7a2VNPndkLbog==
   dependencies:
-    "@daml/ledger" "0.13.52"
-    "@daml/types" "0.13.52"
+    "@daml/ledger" "0.13.53"
+    "@daml/types" "0.13.53"
     "@types/react" "^16.9.16"
     immutable "^4.0.0-rc.12"
     jwt-simple "^0.5.6"
     react "^16.12.0"
 
-"@daml/types@0.13.52":
-  version "0.13.52"
-  resolved "https://registry.yarnpkg.com/@daml/types/-/types-0.13.52.tgz#6d184c0af42c5f93720ee95f1273f8b280f05fda"
-  integrity sha512-9kDlfMw7fyfDcT38bsha1DyxxjLq1ETAKfpcCFtl/RnYIOo6WXiJAUGOU/+AsqMdNpE8eJcFldCkknd+SwWBrA==
+"@daml/types@0.13.53":
+  version "0.13.53"
+  resolved "https://registry.yarnpkg.com/@daml/types/-/types-0.13.53.tgz#61f680a181e120320e629aff81ed1c9830fe1db8"
+  integrity sha512-xYRdGngEOnG0kz1KT4vZ0lLewAufR/dvVG8jvAnlRUM7j/wzSGLeizNEz+jy0UbTQ55iF6dkrqrBOhFpShjiug==
   dependencies:
     "@mojotech/json-type-validation" "^3.1.0"
 
