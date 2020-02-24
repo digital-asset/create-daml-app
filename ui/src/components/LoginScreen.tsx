@@ -41,12 +41,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
       await ledger.create(User, user);
       await handleLogin();
     } catch(error) {
-        // const {errors} = error;
-        // if (errors.length === 1 && errors[0].includes("DuplicateKey")) {
-        //   alert("You are already signed up.");
-        //   return;
-        // }
-      alert("Unknown error:\n" + JSON.stringify(error));
+      alert("Error signing up:\n" + JSON.stringify(error));
     }
   }
 
