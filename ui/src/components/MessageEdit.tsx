@@ -15,8 +15,8 @@ const MessageEdit: React.FC<Props> = ({friends}) => {
   const sender = useParty();
   const [receiver, setReceiver] = React.useState('');
   const [content, setContent] = React.useState('');
-  const [exerciseSendMessage] = useExerciseByKey(User.SendMessage);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [exerciseSendMessage] = useExerciseByKey(User.SendMessage);
 
   const sendMessage = async (receiver: string, content: string): Promise<boolean> => {
     try {
