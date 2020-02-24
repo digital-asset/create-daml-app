@@ -14,39 +14,19 @@ type Props = {
 const LoginScreen: React.FC<Props> = ({onLogin}) => {
   const [username, setUsername] = React.useState('');
 
-  const handleLogin = async (event?: React.FormEvent) => {
-    try {
-      if (event) {
-        event.preventDefault();
-      }
-      const credentials = computeCredentials(username);
-      const ledger = new Ledger({token: credentials.token});
-      const user = await ledger.lookupByKey(User, username);
-      if (user === null) {
-        alert("You have not yet signed up.");
-        return;
-      }
-      onLogin(credentials);
-    } catch(error) {
-      alert("Unknown error:\n" + error);
-    }
-  }
-
-  const handleSignup = async (event: React.FormEvent) => {
+  const handleLogin = async (event: React.FormEvent) => {
     try {
       event.preventDefault();
       const credentials = computeCredentials(username);
       const ledger = new Ledger({token: credentials.token});
-      const user: User = {username, friends: []};
-      await ledger.create(User, user);
-      await handleLogin();
+      let userContract = await ledger.lookupByKey(User, username);
+      if (userContract === null) {
+        const user = {username, friends: []};
+        userContract = await ledger.create(User, user);
+      }
+      onLogin(credentials);
     } catch(error) {
-        // const {errors} = error;
-        // if (errors.length === 1 && errors[0].includes("DuplicateKey")) {
-        //   alert("You are already signed up.");
-        //   return;
-        // }
-      alert("Unknown error:\n" + JSON.stringify(error));
+      alert(`Unknown error:\n${JSON.stringify(error)}`);
     }
   }
 
@@ -85,12 +65,6 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
                 onClick={handleLogin}
               >
                 Log in
-              </Button>
-              <Button
-                secondary
-                onClick={handleSignup}
-              >
-                Sign up
               </Button>
             </Button.Group>
           </Segment>
