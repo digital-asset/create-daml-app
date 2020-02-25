@@ -43,7 +43,7 @@ const PartyListEdit: React.FC<Props> = ({parties, onAddParty}) => {
           readOnly={isSubmitting}
           loading={isSubmitting}
           size='small'
-          placeholder='Name'
+          placeholder="Friend's name"
           value={newParty}
           onChange={(event) => setNewParty(event.currentTarget.value)}
         />
