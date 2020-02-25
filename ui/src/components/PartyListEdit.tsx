@@ -1,6 +1,5 @@
 import React from 'react'
-import { Form, Input, List } from 'semantic-ui-react';
-import ListActionItem from './ListActionItem';
+import { Form, List, Button } from 'semantic-ui-react';
 import { Party } from '@daml/types';
 
 type Props = {
@@ -31,38 +30,26 @@ const PartyListEdit: React.FC<Props> = ({parties, onAddParty, onMessageParty}) =
   return (
     <List relaxed>
       {[...parties].sort((x, y) => x.localeCompare(y)).map((party) =>
-        <ListActionItem
-          key={party}
-          icon='user outline'
-          action={{
-            icon: 'comment alternate',
-            onClick: () => onMessageParty(party)
-          }}
-        >
-          <List.Header>{party}</List.Header>
-        </ListActionItem>
+        <List.Item>
+          <List.Icon name='user outline' />
+          <List.Content>
+            <List.Header>{party}</List.Header>
+          </List.Content>
+        </List.Item>
       )}
-      <ListActionItem
-        key='add friend'
-        icon='user outline'
-        action={{
-          icon: 'add user',
-          onClick: () => addParty(),
-        }}
-      >
-        <Form onSubmit={addParty}>
-          <Input
-            fluid
-            transparent
-            readOnly={isSubmitting}
-            loading={isSubmitting}
-            size='small'
-            placeholder='Add friend'
-            value={newParty}
-            onChange={(event) => setNewParty(event.currentTarget.value)}
-          />
-        </Form>
-      </ListActionItem>
+      <br />
+      <Form onSubmit={addParty}>
+        <Form.Input
+          fluid
+          readOnly={isSubmitting}
+          loading={isSubmitting}
+          size='small'
+          placeholder='Name'
+          value={newParty}
+          onChange={(event) => setNewParty(event.currentTarget.value)}
+        />
+        <Button type='submit'>Add Friend</Button>
+      </Form>
     </List>
   );
 };
