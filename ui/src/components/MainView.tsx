@@ -32,9 +32,6 @@ const MainView: React.FC = () => {
     }
   }
 
-  const messageFriend = (friend: Party) =>
-    alert('Messaging parties is not yet implemented.');
-
   return (
     <Container>
       <Grid centered columns={2}>
@@ -56,7 +53,6 @@ const MainView: React.FC = () => {
               <PartyListEdit
                 parties={myUser?.friends ?? []}
                 onAddParty={addFriend}
-                onMessageParty={messageFriend}
               />
             </Segment>
             <Segment>

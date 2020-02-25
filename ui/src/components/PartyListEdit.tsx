@@ -5,13 +5,12 @@ import { Party } from '@daml/types';
 type Props = {
   parties: Party[];
   onAddParty: (party: Party) => Promise<boolean>;
-  onMessageParty: (party: Party) => void;
 }
 
 /**
  * React component to edit a list of `Party`s.
  */
-const PartyListEdit: React.FC<Props> = ({parties, onAddParty, onMessageParty}) => {
+const PartyListEdit: React.FC<Props> = ({parties, onAddParty}) => {
   const [newParty, setNewParty] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
