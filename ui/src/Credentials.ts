@@ -1,6 +1,5 @@
 import { encode } from 'jwt-simple';
-
-export const LEDGER_ID: string = 'create-daml-app-sandbox';
+import { ledgerId } from './config';
 
 export const APPLICATION_ID: string = 'create-daml-app';
 
@@ -15,7 +14,7 @@ export type Credentials = {
 function computeToken(party: string): string {
   const payload = {
     "https://daml.com/ledger-api": {
-      "ledgerId": LEDGER_ID,
+      "ledgerId": ledgerId,
       "applicationId": APPLICATION_ID,
       "actAs": [party]
     }
@@ -25,7 +24,7 @@ function computeToken(party: string): string {
 
 export const computeCredentials = (party: string): Credentials => {
   const token = computeToken(party);
-  return {party, token, ledgerId: LEDGER_ID};
+  return {party, token, ledgerId};
 }
 
 export default Credentials;

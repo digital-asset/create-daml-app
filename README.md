@@ -89,6 +89,35 @@ considers us a friend nevertheless. We can make `Alice` a friend by
 clicking the plus symbol to the right of here name.
 
 
+## Deploying to DABL
+
+Deploying `create-daml-app` to the hosted DAML platform
+[project:DABL](https://projectdabl.com/) is quite simple. Log into your DABL
+account, create a new ledger and upload your DAML models and your UI.
+
+To upload the DAML models, compile them into a DAR by executing
+```
+daml build -o create-daml-app.dar
+```
+at the root of your repository. Afterwards, open to the DABL website, select
+the ledger you want to deploy to, go to the "DAML" selection and upload the
+DAR `create-daml-app.dar` you have just created.
+
+To upload the UI, create a ZIP file containing all your UI assets by executing
+```
+daml build
+daml codegen ts .daml/dist/create-daml-app-0.1.0.dar -o daml-ts/src
+yarn workspaces run build
+(cd ui && zip -r ../create-daml-app-ui.zip build)
+```
+at the root of the repository. Afterwards, select the "UI Assets" tab of your
+chosen ledger on the DABL website, upload the ZIP file
+`create-daml-app-ui.zip` you have just created and publish it.
+
+To see your deployed instance of `create-daml-app` in action, follow the
+"Visit site" link at the top right corner of your "UI Assets" page.
+
+
 ## Using the automation
 
 If you are a very popular and friendly person who is considered a friend

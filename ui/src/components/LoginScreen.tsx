@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Button, Form, Grid, Header, Image, Segment } from 'semantic-ui-react'
 import Credentials, { computeCredentials } from '../Credentials';
 import Ledger from '@daml/ledger';
 import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
+import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl, wsBaseUrl } from '../config';
+import { useEffect } from 'react';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
@@ -14,21 +16,44 @@ type Props = {
 const LoginScreen: React.FC<Props> = ({onLogin}) => {
   const [username, setUsername] = React.useState('');
 
-  const handleLogin = async (event: React.FormEvent) => {
+  const login = useCallback(async (credentials: Credentials) => {
     try {
-      event.preventDefault();
-      const credentials = computeCredentials(username);
-      const ledger = new Ledger({token: credentials.token});
-      let userContract = await ledger.lookupByKey(User, username);
+      const ledger = new Ledger({token: credentials.token, httpBaseUrl, wsBaseUrl});
+      let userContract = await ledger.lookupByKey(User, credentials.party);
       if (userContract === null) {
-        const user = {username, friends: []};
+        const user = {username: credentials.party, friends: []};
         userContract = await ledger.create(User, user);
       }
       onLogin(credentials);
     } catch(error) {
       alert(`Unknown error:\n${JSON.stringify(error)}`);
     }
+  }, [onLogin]);
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const credentials = computeCredentials(username);
+    await login(credentials);
   }
+
+  const handleDablLogin = () => {
+    window.location.assign(`https://login.projectdabl.com/auth/login?ledgerId=${ledgerId}`);
+  }
+
+  useEffect(() => {
+    const url = new URL(window.location.toString());
+    const token = url.searchParams.get('token');
+    if (token === null) {
+      return;
+    }
+    const party = url.searchParams.get('party');
+    if (party === null) {
+      throw Error("When 'token' is passed via URL, 'party' must be passed too.");
+    }
+    url.search = '';
+    window.history.replaceState(window.history.state, '', url.toString());
+    login({token, party, ledgerId});
+  }, [login]);
 
   return (
     <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
@@ -51,22 +76,24 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
         </Header>
         <Form size='large'>
           <Segment>
-            <Form.Input
-              fluid
-              icon='user'
-              iconPosition='left'
-              placeholder='Username'
-              value={username}
-              onChange={e => setUsername(e.currentTarget.value)}
-            />
-            <Button.Group fluid size='large'>
-              <Button
-                primary
-                onClick={handleLogin}
-              >
-                Log in
+            {deploymentMode === DeploymentMode.PROD_OTHER
+            ? <>
+                <Form.Input
+                  fluid
+                  icon='user'
+                  iconPosition='left'
+                  placeholder='Username'
+                  value={username}
+                  onChange={e => setUsername(e.currentTarget.value)}
+                />
+                <Button primary fluid onClick={handleLogin}>
+                  Log in
+                </Button>
+              </>
+            : <Button primary fluid onClick={handleDablLogin}>
+                Log in with DABL
               </Button>
-            </Button.Group>
+            }
           </Segment>
         </Form>
       </Grid.Column>
