@@ -76,7 +76,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
         </Header>
         <Form size='large'>
           <Segment>
-            {deploymentMode === DeploymentMode.PROD_OTHER
+            {deploymentMode !== DeploymentMode.PROD_DABL
             ? <>
                 <Form.Input
                   fluid
