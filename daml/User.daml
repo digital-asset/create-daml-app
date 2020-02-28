@@ -11,11 +11,13 @@ template User with
     key username: Party
     maintainer key
 
-    nonconsuming choice AddFriend: ContractId User with
+    nonconsuming choice AddFriend
+      : ContractId User
+      with
         friend: Party
       controller username
       do
         assertMsg "You cannot add yourself as a friend" (friend /= username)
-        assertMsg "You cannot add a friend twice" (friend `notElem` friends)
+        assertMsg "You cannot add a friend twice" (notElem friend friends)
         archive self
         create this with friends = friend :: friends
