@@ -20,7 +20,9 @@ template User with
         archive self
         create this with friends = friend :: friends
 
-    nonconsuming choice SendMessage: ContractId Message with
+    nonconsuming choice SendMessage
+      : ContractId Message
+      with
         sender: Party
         content: Text
       controller sender
