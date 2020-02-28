@@ -82,8 +82,8 @@ const MainView: React.FC = () => {
               <MessageEdit
                 friends={friends.map(user => user.username)}
               />
-            <Divider />
-            <MessageList />
+              <Divider />
+              <MessageList />
             </Segment>
           </Grid.Column>
         </Grid.Row>
