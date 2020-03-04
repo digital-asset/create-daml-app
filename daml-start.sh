@@ -1,12 +1,7 @@
 #!/bin/sh
-
-scripts/daml-start-backend.sh &
-SANDBOX=$!
-sleep 10
-
-scripts/restart.sh scripts/build.sh daml
-
-trap cleanup EXIT
-cleanup() {
-  kill $SANDBOX
-}
+daml start \
+  --open-browser=no \
+  --start-navigator=no \
+  --sandbox-option=--wall-clock-time \
+  --sandbox-option='--ledgerid=create-daml-app-sandbox' \
+  $*
