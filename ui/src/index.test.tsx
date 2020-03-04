@@ -51,13 +51,13 @@ afterAll(() => {
 
 const fail = () => expect(false).toBeTruthy();
 
-it('starts sandbox and json api server', () => {
+it('run daml start and shut it down', () => {
   const startArgs = [ "start", "--open-browser=no", "--start-navigator=no", "--sandbox-option=--wall-clock-time", "--sandbox-option='--ledgerid=create-daml-app-sandbox'" ];
   const startCmd = ["daml"].concat(startArgs).join(' ');
   const env = Object.assign(process.env, {PATH: process.env.HOME + '/.daml/bin:' + process.env.PATH});
   const startOpts = { cwd: '..', env }; // run in root dir with extended path
   startProc = exec(startCmd, startOpts, (error, stdout, stderr) => {
-    if (error) {
+    if (error && !error.killed) {
       console.error(error);
       fail();
     }
@@ -70,4 +70,55 @@ it('starts sandbox and json api server', () => {
       fail();
     }
   });
+  if (startProc) {
+    startProc.kill("SIGTERM");
+    console.log('Killed daml start');
+  }
+});
+
+it('starts sandbox and json api server', () => {
+  // Set up enviroment to run daml assistant commands
+  const env = Object.assign(process.env, {PATH: process.env.HOME + '/.daml/bin:' + process.env.PATH});
+  const cmdOpts = { cwd: '..', env }; // run in root dir with extended path
+
+  // Start sandbox
+  const sandboxArgs = [ 'sandbox', '--wall-clock-time', '--ledgerid=create-daml-app-sandbox' ];
+  const sandboxCmd = ['daml'].concat(sandboxArgs).join(' ');
+  let sandboxProc = exec(sandboxCmd, cmdOpts, (error, stdout, stderr) => {
+    if (error && !error.killed) {
+      console.error(error);
+      fail();
+    }
+    if (stderr) {
+      console.error(stderr);
+      fail();
+    }
+    if (stdout) {
+      console.error(stdout);
+      fail();
+    }
+  });
+  exec('sleep 10');
+
+  // Start JSON API server
+  const jsonApiCmd = 'daml json-api --ledger-host localhost --ledger-port 6865 --http-port 7575 --application-id create-daml-app-sandbox'
+  let jsonApiProc = exec(jsonApiCmd, cmdOpts, (error, stdout, stderr) => {
+    if (error && !error.killed) {
+      console.error(error);
+      fail();
+    }
+    if (stderr) {
+      console.error(stderr);
+      fail();
+    }
+    if (stdout) {
+      console.error(stdout);
+      fail();
+    }
+  });
+
+  // Shut down processes
+  if (sandboxProc) {
+    sandboxProc.kill("SIGTERM");
+  }
 });
