@@ -1,90 +1,84 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { ChildProcess, exec } from 'child_process';
+import waitOn from 'wait-on';
 
-import { ChildProcess, spawn, exec, ExecOptions } from 'child_process';
+import Ledger from '@daml/ledger';
+import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
+import { wsBaseUrl } from './config';
+import Credentials, { computeCredentials } from './Credentials';
+
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import puppeteer from "puppeteer";
 
 const LEDGER_ID = 'create-daml-app-sandbox';
+const APPLICATION_ID = 'create-daml-app';
 const SANDBOX_PORT = 6865;
 const JSON_API_PORT = 7575;
 
-let sandboxProcess: ChildProcess | undefined = undefined;
-let jsonApiProcess: ChildProcess | undefined = undefined;
-let startProc: ChildProcess | undefined = undefined;
-
-const getEnv = (variable: string): string => {
-  const result = process.env[variable];
-  if (!result) {
-    throw Error(`${variable} not set in environment`);
-  }
-  return result;
-}
+let sandboxProc: ChildProcess | undefined = undefined;
+let jsonApiProc: ChildProcess | undefined = undefined;
+let startProc:   ChildProcess | undefined = undefined;
 
 beforeAll(async () => {
-  // const rootDir = getEnv('PWD') + '/..';
-  // const darPath = rootDir + '/.daml/dist/create-daml-app-0.1.0.dar';
-  // const startArgs = [ "start", "--open-browser=no", "--start-navigator=no", "--sandbox-option=--wall-clock-time", "--sandbox-option='--ledgerid=create-daml-app-sandbox'" ];
-  // const env = Object.assign(process.env, {PATH: process.env.HOME + '/.daml/bin:' + process.env.PATH});
-  // console.log(env.PATH);
-  // const startOpts: SpawnOptions = { cwd: '..', env, stdio: 'pipe' }; // run in root dir
-  // startProc = spawn('dam', ['fail'], startOpts)
-  // startProc.on('error', (err) => console.error('daml start failed with error:' + JSON.stringify(err)));
-  // startProc.stderr.on('data', (data) => {
-  //   console.error(`stdout: ${data}`);
-  // });
-  // const ls = spawn('ls', [], );
-  // ls.stdout.on('data', (data) => {
-  //   console.log(`stdout: ${data}`);
-  // });
-  // console.log('Sandbox up');
-  // console.log('JSON API up');
 });
 
 afterAll(() => {
-  // if (ls) {
-  //   ls.kill();
-  // }
-  // if (startProc) {
-  //   startProc.kill("SIGTERM");
-  //   console.log('Killed daml start');
-  // }
-});
-
-const fail = () => expect(false).toBeTruthy();
-
-it('run daml start and shut it down', () => {
-  const startArgs = [ "start", "--open-browser=no", "--start-navigator=no", "--sandbox-option=--wall-clock-time", "--sandbox-option='--ledgerid=create-daml-app-sandbox'" ];
-  const startCmd = ["daml"].concat(startArgs).join(' ');
-  const env = Object.assign(process.env, {PATH: process.env.HOME + '/.daml/bin:' + process.env.PATH});
-  const startOpts = { cwd: '..', env }; // run in root dir with extended path
-  startProc = exec(startCmd, startOpts, (error, stdout, stderr) => {
-    if (error && !error.killed) {
-      console.error(error);
-      fail();
-    }
-    if (stderr) {
-      console.error(stderr);
-      fail();
-    }
-    if (stdout) {
-      console.error(stdout);
-      fail();
-    }
-  });
+  // Shut down all possibly running daml processes
   if (startProc) {
     startProc.kill("SIGTERM");
     console.log('Killed daml start');
   }
+  if (sandboxProc) {
+    sandboxProc.kill("SIGTERM");
+    console.log('Killed sandbox');
+  }
+  if (jsonApiProc) {
+    jsonApiProc.kill("SIGTERM");
+    console.log('Killed JSON API server');
+  }
 });
 
-it('starts sandbox and json api server', () => {
+const fail = () => expect(false).toBeTruthy();
+
+// it('run daml start and shut it down', async () => {
+//   const startArgs = [ "start", "--open-browser=no", "--start-navigator=no", "--sandbox-option=--wall-clock-time", "--sandbox-option='--ledgerid=create-daml-app-sandbox'" ];
+//   const startCmd = ["daml"].concat(startArgs).join(' ');
+//   const env = Object.assign(process.env, {PATH: process.env.HOME + '/.daml/bin:' + process.env.PATH});
+//   const startOpts = { cwd: '..', env }; // run in root dir with extended path
+//   startProc = exec(startCmd, startOpts, (error, stdout, stderr) => {
+//     if (error && !error.killed) {
+//       console.error(error);
+//       fail();
+//     }
+//     if (stderr) {
+//       console.error(stderr);
+//       fail();
+//     }
+//     if (stdout) {
+//       console.error(stdout);
+//       fail();
+//     }
+//   });
+//   await waitOn({resources: [`tcp:localhost:${SANDBOX_PORT}`]});
+//   await waitOn({resources: [`tcp:localhost:${JSON_API_PORT}`]});
+
+  // Connect browser
+  // let browser = await puppeteer.launch();
+  // const page = await browser.newPage();
+  // await page.goto(`http://localhost:3000`);
+// });
+
+// Default timeout is too short to allow both sandbox and json api server to start running
+jest.setTimeout(10_000);
+it('starts sandbox and json api server', async () => {
   // Set up enviroment to run daml assistant commands
   const env = Object.assign(process.env, {PATH: process.env.HOME + '/.daml/bin:' + process.env.PATH});
   const cmdOpts = { cwd: '..', env }; // run in root dir with extended path
 
   // Start sandbox
-  const sandboxArgs = [ 'sandbox', '--wall-clock-time', '--ledgerid=create-daml-app-sandbox' ];
+  const sandboxArgs = [ 'sandbox', '--wall-clock-time', `--port=${SANDBOX_PORT}`, `--ledgerid=${LEDGER_ID}` ];
   const sandboxCmd = ['daml'].concat(sandboxArgs).join(' ');
-  let sandboxProc = exec(sandboxCmd, cmdOpts, (error, stdout, stderr) => {
+  sandboxProc = exec(sandboxCmd, cmdOpts, (error, stdout, stderr) => {
     if (error && !error.killed) {
       console.error(error);
       fail();
@@ -95,14 +89,13 @@ it('starts sandbox and json api server', () => {
     }
     if (stdout) {
       console.error(stdout);
-      fail();
     }
   });
-  exec('sleep 10');
+  await waitOn({resources: [`tcp:localhost:${SANDBOX_PORT}`]});
 
   // Start JSON API server
-  const jsonApiCmd = 'daml json-api --ledger-host localhost --ledger-port 6865 --http-port 7575 --application-id create-daml-app-sandbox'
-  let jsonApiProc = exec(jsonApiCmd, cmdOpts, (error, stdout, stderr) => {
+  const jsonApiCmd = `daml json-api --ledger-host localhost --ledger-port ${SANDBOX_PORT} --http-port ${JSON_API_PORT} --application-id ${APPLICATION_ID}`
+  jsonApiProc = exec(jsonApiCmd, cmdOpts, (error, stdout, stderr) => {
     if (error && !error.killed) {
       console.error(error);
       fail();
@@ -113,12 +106,27 @@ it('starts sandbox and json api server', () => {
     }
     if (stdout) {
       console.error(stdout);
-      fail();
     }
   });
+  await waitOn({resources: [`tcp:localhost:${JSON_API_PORT}`]});
 
-  // Shut down processes
-  if (sandboxProc) {
-    sandboxProc.kill("SIGTERM");
-  }
+  console.log("Ports open!")
+  await queryUser();
 });
+
+const queryUser = async () => {
+  const credentials = computeCredentials('Alice');
+  const ledger = new Ledger({token: credentials.token, httpBaseUrl: undefined, wsBaseUrl});
+  const events = await ledger.query(User);
+  expect(events).toEqual([]);
+}
+
+const createAndLookUpUser = async () => {
+  const credentials = computeCredentials('Alice');
+  const ledger = new Ledger({token: credentials.token, httpBaseUrl: undefined, wsBaseUrl});
+  await ledger.query(User);
+  const user: User = {username: credentials.party, friends: []};
+  const userContract1 = await ledger.create(User, user);
+  const userContract2 = await ledger.lookupByKey(User, credentials.party);
+  expect(userContract1).toEqual(userContract2);
+}
