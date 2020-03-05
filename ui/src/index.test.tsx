@@ -44,9 +44,9 @@ beforeEach(async () => {
     }
   });
   await waitOn({resources: [`tcp:localhost:${JSON_API_PORT}`]});
-}, 10_000);
+}, 15_000);
 
-afterEach((done) => {
+afterEach(() => {
   // Shut down running daml processes
   // TODO: Test/fix this for windows
   if (sandboxProc) {
@@ -57,10 +57,9 @@ afterEach((done) => {
     jsonApiProc.kill("SIGTERM");
     console.log('Killed JSON API server');
   }
-  done();
 });
 
-test('create and look up user using ledger library', async (done) => {
+test('create and look up user using ledger library', async () => {
   const credentials = computeCredentials('Alice');
   const ledger = new Ledger({token: credentials.token, httpBaseUrl: undefined, wsBaseUrl});
   await ledger.query(User);
@@ -70,5 +69,4 @@ test('create and look up user using ledger library', async (done) => {
   expect(userContract1).toEqual(userContract2);
   const events = await ledger.query(User);
   expect(events[0].contractId).toEqual(userContract1.contractId);
-  done();
 });
