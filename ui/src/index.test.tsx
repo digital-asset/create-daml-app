@@ -60,7 +60,7 @@ afterEach((done) => {
   done();
 });
 
-test('create and look up user using ledger library', async () => {
+test('create and look up user using ledger library', async (done) => {
   const credentials = computeCredentials('Alice');
   const ledger = new Ledger({token: credentials.token, httpBaseUrl: undefined, wsBaseUrl});
   await ledger.query(User);
@@ -70,4 +70,5 @@ test('create and look up user using ledger library', async () => {
   expect(userContract1).toEqual(userContract2);
   const events = await ledger.query(User);
   expect(events[0].contractId).toEqual(userContract1.contractId);
+  done();
 });
