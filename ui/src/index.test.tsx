@@ -23,13 +23,11 @@ beforeEach(async () => {
 
   // Start sandbox
   const sandboxArgs = ['sandbox', '--wall-clock-time', `--port=${SANDBOX_PORT}`, `--ledgerid=${LEDGER_ID}`, DAR_PATH];
-  // const sandboxCmd = `daml sandbox --wall-clock-time --port=${SANDBOX_PORT} --ledgerid=${LEDGER_ID} ${DAR_PATH} --shutdown-stdin-close`;
   sandboxProc = spawn('daml', sandboxArgs, opts);
   await waitOn({resources: [`tcp:localhost:${SANDBOX_PORT}`]});
 
   // Start JSON API server
   const jsonApiArgs = ['json-api', '--ledger-host=localhost', `--ledger-port=${SANDBOX_PORT}`, `--http-port=${JSON_API_PORT}`, `--application-id=${APPLICATION_ID}`];
-  // const jsonApiCmd = `daml json-api --ledger-host localhost --ledger-port ${SANDBOX_PORT} --http-port ${JSON_API_PORT} --application-id ${APPLICATION_ID} --shutdown-stdin-close`
   jsonApiProc = spawn('daml', jsonApiArgs, opts);
   await waitOn({resources: [`tcp:localhost:${JSON_API_PORT}`]});
 }, 15_000);
