@@ -49,9 +49,7 @@
   "proxy": "http://localhost:7575",
   "devDependencies": {
     "@babel/core": "^7.6.4",
-    "@storybook/react": "^5.2.4",
     "@types/jwt-simple": "^0.5.33",
-    "@types/storybook__react": "^4.0.2",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.6",
     "json2typescript": "^1.2.3",
