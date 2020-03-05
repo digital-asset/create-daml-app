@@ -14,17 +14,13 @@ const JSON_API_PORT = 7575;
 
 let sandboxProc: ChildProcess | undefined = undefined;
 let jsonApiProc: ChildProcess | undefined = undefined;
-let startProc:   ChildProcess | undefined = undefined;
 
 beforeAll(async () => {
 });
 
 afterAll(() => {
-  // Shut down all possibly running daml processes
-  if (startProc) {
-    startProc.kill("SIGTERM");
-    console.log('Killed daml start');
-  }
+  // Shut down running daml processes
+  // TODO: Test/fix this for windows
   if (sandboxProc) {
     sandboxProc.kill("SIGTERM");
     console.log('Killed sandbox');
