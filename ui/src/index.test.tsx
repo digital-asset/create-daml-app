@@ -15,10 +15,38 @@ const JSON_API_PORT = 7575;
 let sandboxProc: ChildProcess | undefined = undefined;
 let jsonApiProc: ChildProcess | undefined = undefined;
 
-beforeAll(async () => {
-});
+// Start a fresh sandbox and json api server for each test to have a clean slate
+beforeEach(async () => {
+  // Start processes in create-daml-app root dir
+  // The path should already include '.daml/bin' in the environment where this is run
+  const cmdOpts = { cwd: '..' };
 
-afterAll(() => {
+  // Start sandbox
+  const sandboxCmd = `daml sandbox --wall-clock-time --port=${SANDBOX_PORT} --ledgerid=${LEDGER_ID} ${DAR_PATH}`;
+  sandboxProc = exec(sandboxCmd, cmdOpts, (error, stdout, stderr) => {
+    if (error && !error.killed) {
+      throw(error);
+    }
+    if (stderr) {
+      throw Error(stderr);
+    }
+  });
+  await waitOn({resources: [`tcp:localhost:${SANDBOX_PORT}`]});
+
+  // Start JSON API server
+  const jsonApiCmd = `daml json-api --ledger-host localhost --ledger-port ${SANDBOX_PORT} --http-port ${JSON_API_PORT} --application-id ${APPLICATION_ID}`
+  jsonApiProc = exec(jsonApiCmd, cmdOpts, (error, stdout, stderr) => {
+    if (error && !error.killed) {
+      throw error;
+    }
+    if (stderr) {
+      throw Error(stderr);
+    }
+  });
+  await waitOn({resources: [`tcp:localhost:${JSON_API_PORT}`]});
+}, 10_000);
+
+afterEach(() => {
   // Shut down running daml processes
   // TODO: Test/fix this for windows
   if (sandboxProc) {
@@ -31,48 +59,7 @@ afterAll(() => {
   }
 });
 
-const fail = () => expect(false).toBeTruthy();
-
-// Extend timeout to allow sandbox and json api server to start running
-jest.setTimeout(20_000);
-
-it('starts sandbox and json api server', async () => {
-  // Start processes in create-daml-app root dir
-  // The path should already include '.daml/bin' in the environment where this is run
-  const cmdOpts = { cwd: '..' };
-
-  // Start sandbox
-  const sandboxCmd = `daml sandbox --wall-clock-time --port=${SANDBOX_PORT} --ledgerid=${LEDGER_ID} ${DAR_PATH}`;
-  sandboxProc = exec(sandboxCmd, cmdOpts, (error, stdout, stderr) => {
-    if (error && !error.killed) {
-      console.error(error);
-      fail();
-    }
-    if (stderr) {
-      console.error(stderr);
-      fail();
-    }
-  });
-  await waitOn({resources: [`tcp:localhost:${SANDBOX_PORT}`]});
-
-  // Start JSON API server
-  const jsonApiCmd = `daml json-api --ledger-host localhost --ledger-port ${SANDBOX_PORT} --http-port ${JSON_API_PORT} --application-id ${APPLICATION_ID}`
-  jsonApiProc = exec(jsonApiCmd, cmdOpts, (error, stdout, stderr) => {
-    if (error && !error.killed) {
-      console.error(error);
-      fail();
-    }
-    if (stderr) {
-      console.error(stderr);
-      fail();
-    }
-  });
-  await waitOn({resources: [`tcp:localhost:${JSON_API_PORT}`]});
-
-  await createAndLookUpUser();
-});
-
-const createAndLookUpUser = async () => {
+test('create and look up user using ledger library', async () => {
   const credentials = computeCredentials('Alice');
   const ledger = new Ledger({token: credentials.token, httpBaseUrl: undefined, wsBaseUrl});
   await ledger.query(User);
@@ -82,4 +69,4 @@ const createAndLookUpUser = async () => {
   expect(userContract1).toEqual(userContract2);
   const events = await ledger.query(User);
   expect(events[0].contractId).toEqual(userContract1.contractId);
-}
+});
