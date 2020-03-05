@@ -22,7 +22,7 @@ beforeEach(async () => {
   const cmdOpts = { cwd: '..' };
 
   // Start sandbox
-  const sandboxCmd = `daml sandbox --wall-clock-time --port=${SANDBOX_PORT} --ledgerid=${LEDGER_ID} ${DAR_PATH}`;
+  const sandboxCmd = `daml sandbox --wall-clock-time --port=${SANDBOX_PORT} --ledgerid=${LEDGER_ID} ${DAR_PATH} --shutdown-stdin-close`;
   sandboxProc = exec(sandboxCmd, cmdOpts, (error, stdout, stderr) => {
     if (error && !error.killed) {
       throw(error);
@@ -34,7 +34,7 @@ beforeEach(async () => {
   await waitOn({resources: [`tcp:localhost:${SANDBOX_PORT}`]});
 
   // Start JSON API server
-  const jsonApiCmd = `daml json-api --ledger-host localhost --ledger-port ${SANDBOX_PORT} --http-port ${JSON_API_PORT} --application-id ${APPLICATION_ID}`
+  const jsonApiCmd = `daml json-api --ledger-host localhost --ledger-port ${SANDBOX_PORT} --http-port ${JSON_API_PORT} --application-id ${APPLICATION_ID} --shutdown-stdin-close`
   jsonApiProc = exec(jsonApiCmd, cmdOpts, (error, stdout, stderr) => {
     if (error && !error.killed) {
       throw error;
