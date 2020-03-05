@@ -41,9 +41,9 @@ const fail = () => expect(false).toBeTruthy();
 jest.setTimeout(20_000);
 
 it('starts sandbox and json api server', async () => {
-  // Set up enviroment to run daml assistant commands
-  const env = Object.assign(process.env, {PATH: process.env.HOME + '/.daml/bin:' + process.env.PATH});
-  const cmdOpts = { cwd: '..', env }; // run in root dir with extended path
+  // Start processes in create-daml-app root dir
+  // The path should already include '.daml/bin' in the environment where this is run
+  const cmdOpts = { cwd: '..' };
 
   // Start sandbox
   const sandboxCmd = `daml sandbox --wall-clock-time --port=${SANDBOX_PORT} --ledgerid=${LEDGER_ID} ${DAR_PATH}`;
