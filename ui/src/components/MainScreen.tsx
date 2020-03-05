@@ -24,7 +24,7 @@ const MainScreen: React.FC<Props> = ({onLogout}) => {
             size='mini'
           />
         </Menu.Item>
-        <Menu.Menu position='right'>
+        <Menu.Menu position='right' className='menu'>
           <Menu.Item position='right'>
             You are logged in as {useParty()}.
           </Menu.Item>

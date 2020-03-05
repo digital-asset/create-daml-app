@@ -5,11 +5,15 @@ import Ledger from '@daml/ledger';
 import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 import { computeCredentials } from './Credentials';
 
+import puppeteer from 'puppeteer';
+
 const LEDGER_ID = 'create-daml-app-sandbox';
 const SANDBOX_PORT = 6865;
 const JSON_API_PORT = 7575;
+const UI_PORT = 3000;
 
 let startProc: ChildProcess | undefined = undefined;
+let uiProc:    ChildProcess | undefined = undefined;
 
 // Start a fresh sandbox and json api server for each test to have a clean slate
 beforeEach(async () => {
@@ -54,3 +58,40 @@ test('create and look up user using ledger library', async () => {
   const users = await ledger.query(User);
   expect(users[0]).toEqual(userContract1);
 });
+
+test('open webpage using headless browser', async () => {
+  uiProc = spawn('yarn', ['start'], { stdio: 'inherit' });
+  await waitOn({resources: [`tcp:localhost:${UI_PORT}`]});
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(`http://localhost:${UI_PORT}`);
+
+  // Log in as Alice using the browser
+  const usernameField = await page.waitForSelector('input');
+  if (usernameField) {
+    await page.click('input');
+    await page.type('input', 'Alice');
+    const button = await page.$('button');
+    if (button) {
+      await page.click('button');
+      await page.waitForSelector('.menu');
+      console.log('Reached the main screen')
+    } else {
+      throw Error('Did not find button to login');
+    }
+  } else {
+    throw Error('Did not find username field to login');
+  }
+
+  // Check that the ledger contains Alice's User contract
+  const {party, token} = computeCredentials('Alice');
+  const ledger = new Ledger({token});
+  const users = await ledger.query(User);
+  expect(users.length).toEqual(1);
+  const userContract = await ledger.lookupByKey(User, party);
+  expect(userContract?.payload.username).toEqual('Alice');
+
+  browser.close();
+  uiProc.kill();
+}, 30_000);
