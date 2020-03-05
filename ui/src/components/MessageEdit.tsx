@@ -13,57 +13,48 @@ type Props = {
  */
 const MessageEdit: React.FC<Props> = ({friends}) => {
   const sender = useParty();
-  const [receiver, setReceiver] = React.useState('');
-  const [content, setContent] = React.useState('');
+  const [receiver, setReceiver] = React.useState<string | undefined>();
+  const [content, setContent] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [exerciseSendMessage] = useExerciseByKey(User.SendMessage);
 
-  const sendMessage = async (receiver: string, content: string): Promise<boolean> => {
+  const submitMessage = async (event: React.FormEvent) => {
     try {
-      await exerciseSendMessage(receiver, {sender, content});
-      return true;
-    } catch (error) {
-      alert("Error sending message:\n" + JSON.stringify(error));
-      return false;
-    }
-  }
-
-  const submitMessage = async (event?: React.FormEvent) => {
-    if (event) {
       event.preventDefault();
+      if (receiver === undefined) {
+        return;
+      }
+      setIsSubmitting(true);
+      await exerciseSendMessage(receiver, {sender, content});
+      setContent("");
+    } catch (error) {
+      alert(`Error sending message:\n${JSON.stringify(error)}`);
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(true);
-    const success = await sendMessage(receiver, content);
-    setIsSubmitting(false);
-    if (success) {
-      // Keep the receiver selected for follow-on messages
-      // but clear the message text.
-      setContent('');
-    }
-  }
-
-  // Options for dropdown menu
-  const friendOptions = friends.map(f => ({ key: f, text: f, value: f }));
+  };
 
   return (
     <Form onSubmit={submitMessage}>
       <Form.Dropdown
-        fluid
         selection
-        placeholder='Select friend'
-        options={friendOptions}
+        placeholder="Select a friend"
+        options={friends.map(friend => ({ key: friend, text: friend, value: friend }))}
         value={receiver}
-        onChange={(event) => setReceiver(event.currentTarget.textContent ?? '')}
+        onChange={event => setReceiver(event.currentTarget.textContent ?? undefined)}
       />
       <Form.Input
-        fluid
-        readOnly={isSubmitting}
-        loading={isSubmitting}
         placeholder="Write a message"
         value={content}
-        onChange={(event) => setContent(event.currentTarget.value)}
+        onChange={event => setContent(event.currentTarget.value)}
       />
-      <Button type="submit">Send</Button>
+      <Button
+        fluid
+        type="submit"
+        disabled={isSubmitting || receiver === undefined || content === ""}
+        loading={isSubmitting}
+        content="Send"
+      />
     </Form>
   );
 };
