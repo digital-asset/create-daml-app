@@ -46,7 +46,7 @@ beforeEach(async () => {
   await waitOn({resources: [`tcp:localhost:${JSON_API_PORT}`]});
 }, 10_000);
 
-afterEach(() => {
+afterEach((done) => {
   // Shut down running daml processes
   // TODO: Test/fix this for windows
   if (sandboxProc) {
@@ -57,6 +57,7 @@ afterEach(() => {
     jsonApiProc.kill("SIGTERM");
     console.log('Killed JSON API server');
   }
+  done();
 });
 
 test('create and look up user using ledger library', async () => {
