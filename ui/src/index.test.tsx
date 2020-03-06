@@ -60,14 +60,22 @@ test('create and look up user using ledger library', async () => {
 });
 
 test('open webpage using headless browser', async () => {
-  uiProc = spawn('yarn', ['start'], { stdio: 'inherit' });
+  // Start the UI process using `yarn start` in a shell.
+  // Disable automatically opening a browser using the env var described here:
+  // https://github.com/facebook/create-react-app/issues/873#issuecomment-266318338
+  let env = process.env;
+  env.BROWSER = 'none';
+  uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit' });
   await waitOn({resources: [`tcp:localhost:${UI_PORT}`]});
 
+  // Launch a headless Chrome browser:
+  // https://developers.google.com/web/updates/2017/04/headless-chrome
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(`http://localhost:${UI_PORT}`);
 
-  // Log in as Alice using the browser
+  // Log in as Alice by selecting the login elements using CSS selectors.
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors
   const usernameField = await page.waitForSelector('input');
   if (usernameField) {
     await page.click('input');
@@ -84,7 +92,7 @@ test('open webpage using headless browser', async () => {
     throw Error('Did not find username field to login');
   }
 
-  // Check that the ledger contains Alice's User contract
+  // Check that the ledger contains Alice's User contract.
   const {party, token} = computeCredentials('Alice');
   const ledger = new Ledger({token});
   const users = await ledger.query(User);
@@ -92,6 +100,9 @@ test('open webpage using headless browser', async () => {
   const userContract = await ledger.lookupByKey(User, party);
   expect(userContract?.payload.username).toEqual('Alice');
 
+  // Clean up.
+  // TODO: Wait for the UI process to be killed before exiting
+  // (instead of just sending the SIGTERM signal).
   browser.close();
   uiProc.kill();
 }, 30_000);
