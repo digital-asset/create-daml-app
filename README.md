@@ -118,25 +118,6 @@ To see your deployed instance of `create-daml-app` in action, follow the
 "Visit site" link at the top right corner of your "UI Assets" page.
 
 
-## Using the automation
-
-If you are a very popular and friendly person who is considered a friend
-by many other people and wants to reciprocate that friendship in the
-application, adding all these other people as friends can become quite
-tedious. That is where the automation with DAML triggers mentions above
-becomes handy. To fire up the trigger, we need to execute
-```
-./daml-trigger.sh Alice
-```
-at the root of the repository.
-
-To see the automation in action, we need to sign up as a new person, say
-`Charlie` and add `Alice` as our friend. If we log out and then log in as
-`Alice` again, we will see that we reciprocate `Charlie`'s friendship and
-consider him our friend too. We didn't have to do anything to get there,
-our DAML trigger has done that for us.
-
-
 ## Next steps
 
 There are many directions in which this application can be extended.
@@ -148,8 +129,6 @@ interesting ones to familiarize yourself with:
   a reflection of the types contained in the DAML model in TypeScript
 - [`src/components/MainView.tsx`](src/components/MainView.tsx):
   the React component using the Ledger API and rendering the main features
-- [`daml/Reciprocate.daml`](daml/Reciprocate.daml): the automation using
-  DAML triggers
 
 
 ## Useful resources
