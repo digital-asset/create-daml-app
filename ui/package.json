@@ -3,33 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@daml/types": "0.13.54",
     "@daml/ledger": "0.13.54",
     "@daml/react": "0.13.54",
+    "@daml/types": "0.13.54",
     "@daml2ts/create-daml-app": "0.13.54",
-    "@mojotech/json-type-validation": "^3.1.0",
-    "@types/jest": "24.0.18",
-    "@types/node": "12.7.12",
-    "@types/react": "16.9.5",
-    "@types/react-dom": "16.9.1",
-    "cross-fetch": "^3.0.4",
-    "immutable": "^4.0.0-rc.12",
     "jwt-simple": "^0.5.6",
     "react": "^16.10.2",
-    "react-async": "^9.0.0",
     "react-dom": "^16.10.2",
     "react-scripts": "^3.3.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.1",
-    "typescript": "^3.7.4"
+    "typescript": "~3.7.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --testURL='http://localhost:7575'",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
-    "storybook": "start-storybook -p 9001 -c .storybook"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,12 +39,10 @@
   },
   "proxy": "http://localhost:7575",
   "devDependencies": {
-    "@babel/core": "^7.6.4",
+    "@types/jest": "24.0.18",
     "@types/jwt-simple": "^0.5.33",
-    "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.0.6",
-    "json2typescript": "^1.2.3",
-    "react-docgen-typescript-loader": "^3.3.0",
-    "react-docgen-typescript-webpack-plugin": "^1.1.0"
+    "@types/node": "12.7.12",
+    "@types/react": "16.9.5",
+    "@types/react-dom": "16.9.1"
   }
 }
