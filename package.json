@@ -3,5 +3,8 @@
   "workspaces": [
     "daml-ts",
     "ui"
-  ]
+  ],
+  "scripts": {
+    "test": "yarn workspace create-daml-app run test"
+  }
 }
