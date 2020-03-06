@@ -3,7 +3,6 @@ import waitOn from 'wait-on';
 
 import Ledger from '@daml/ledger';
 import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
-import { wsBaseUrl } from './config';
 import { computeCredentials } from './Credentials';
 
 const DAR_PATH = '.daml/dist/create-daml-app-0.1.0.dar';
