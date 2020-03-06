@@ -46,13 +46,14 @@ afterEach(() => {
 });
 
 test('create and look up user using ledger library', async () => {
-  const credentials = computeCredentials('Alice');
-  const ledger = new Ledger({token: credentials.token, httpBaseUrl: undefined, wsBaseUrl});
-  await ledger.query(User);
-  const user: User = {username: credentials.party, friends: []};
+  const {party, token} = computeCredentials('Alice');
+  const ledger = new Ledger({token});
+  const users0 = await ledger.query(User);
+  expect(users0).toEqual([]);
+  const user: User = {username: party, friends: []};
   const userContract1 = await ledger.create(User, user);
-  const userContract2 = await ledger.lookupByKey(User, credentials.party);
+  const userContract2 = await ledger.lookupByKey(User, party);
   expect(userContract1).toEqual(userContract2);
-  const events = await ledger.query(User);
-  expect(events[0].contractId).toEqual(userContract1.contractId);
+  const users = await ledger.query(User);
+  expect(users[0].contractId).toEqual(userContract1.contractId);
 });
