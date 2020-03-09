@@ -15,6 +15,21 @@ const UI_PORT = 3000;
 let startProc: ChildProcess | undefined = undefined;
 let uiProc:    ChildProcess | undefined = undefined;
 
+// Headless Chrome browser:
+// https://developers.google.com/web/updates/2017/04/headless-chrome
+let browser: puppeteer.Browser | undefined = undefined;
+
+// Launch a browser just once for all tests.
+beforeAll(async () => {
+  browser = await puppeteer.launch();
+});
+
+afterAll(async () => {
+  if (browser) {
+    browser.close();
+  }
+});
+
 // Start a fresh sandbox and json api server for each test to have a clean slate
 beforeEach(async () => {
   // Run daml process in create-daml-app root dir.
@@ -68,9 +83,9 @@ test('open webpage using headless browser', async () => {
   uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit' });
   await waitOn({resources: [`tcp:localhost:${UI_PORT}`]});
 
-  // Launch a headless Chrome browser:
-  // https://developers.google.com/web/updates/2017/04/headless-chrome
-  const browser = await puppeteer.launch();
+  if (!browser) {
+    throw Error('Puppeteer browser has not been launched');
+  }
   const page = await browser.newPage();
   await page.goto(`http://localhost:${UI_PORT}`);
 
@@ -97,9 +112,7 @@ test('open webpage using headless browser', async () => {
   const userContract = await ledger.lookupByKey(User, party);
   expect(userContract?.payload.username).toEqual('Alice');
 
-  // Clean up.
   // TODO: Wait for the UI process to be killed before exiting
   // (instead of just sending the SIGTERM signal).
-  browser.close();
   uiProc.kill();
 }, 30_000);
