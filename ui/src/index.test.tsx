@@ -77,20 +77,17 @@ test('open webpage using headless browser', async () => {
   // Log in as Alice by selecting the login elements using CSS selectors.
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors
   const usernameField = await page.waitForSelector('input');
-  if (usernameField) {
-    await page.click('input');
-    await page.type('input', 'Alice');
-    const button = await page.$('button');
-    if (button) {
-      await page.click('button');
-      await page.waitForSelector('.menu');
-      console.log('Reached the main screen')
-    } else {
-      throw Error('Did not find button to login');
-    }
-  } else {
+  if (!usernameField) {
     throw Error('Did not find username field to login');
   }
+  await page.click('input');
+  await page.type('input', 'Alice');
+  const button = await page.$('button');
+  if (!button) {
+    throw Error('Did not find button to login');
+  }
+  await page.click('button');
+  await page.waitForSelector('.menu');
 
   // Check that the ledger contains Alice's User contract.
   const {party, token} = computeCredentials('Alice');
