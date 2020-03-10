@@ -108,7 +108,6 @@ test('log in as a new user', async () => {
   // Wait until we reach the main menu (meaning the login was successful) before
   // checking the ledger state.
   await page.waitForSelector('.test-select-main-menu');
-  await page.close();
 
   // Check that the ledger contains the new User contract.
   const {party, token} = computeCredentials(partyName);
@@ -117,4 +116,21 @@ test('log in as a new user', async () => {
   expect(users.length).toEqual(1);
   const userContract = await ledger.lookupByKey(User, party);
   expect(userContract?.payload.username).toEqual(partyName);
+
+  // Log out and check that we get back to the login screen
+  await page.click('.test-select-log-out');
+  await page.waitForSelector('.test-select-login-screen');
+
+  // Log in again as the same user
+  await page.click('.test-select-username-field');
+  await page.type('.test-select-username-field', partyName);
+  await page.click('.test-select-login-button');
+  await page.waitForSelector('.test-select-main-menu');
+
+  // Check we have the same one user
+  const usersFinal = await ledger.query(User);
+  expect(usersFinal.length).toEqual(1);
+  expect(usersFinal[0].payload.username).toEqual(partyName);
+
+  await page.close();
 }, 10_000);

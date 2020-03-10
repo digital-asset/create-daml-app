@@ -31,6 +31,7 @@ const MainScreen: React.FC<Props> = ({onLogout}) => {
           <Menu.Item
             position='right'
             active={false}
+            className='test-select-log-out'
             onClick={onLogout}
             icon='log out'
           />

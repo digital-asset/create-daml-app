@@ -74,7 +74,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
             App
           </Header.Content>
         </Header>
-        <Form size='large'>
+        <Form size='large' className='test-select-login-screen'>
           <Segment>
             {deploymentMode !== DeploymentMode.PROD_DABL
             ? <>
