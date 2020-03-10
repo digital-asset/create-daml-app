@@ -55,7 +55,7 @@ beforeAll(async () => {
 
   // Launch a browser once for all tests.
   browser = await puppeteer.launch();
-}, 20_000);
+}, 30_000);
 
 afterAll(async () => {
   // Kill the `daml start` and `yarn start` processes.
