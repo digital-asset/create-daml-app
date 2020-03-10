@@ -69,16 +69,17 @@ afterAll(async () => {
     uiProc.kill();
   }
 
-  // Unfortunately Puppeteer has an issue where a large number of Chromium helper processes
-  // are left running even after the browser is closed.
-  // See https://github.com/puppeteer/puppeteer/issues/1825.
   if (browser) {
     browser.close();
   }
 });
 
+// Note(cocreature): Once the party management service is exposed via the HTTP JSON API,
+// I would recommend to use the party management service to allocate parties. If you don’t
+// supply a party id hint you will always get a fresh party.
 test('create and look up user using ledger library', async () => {
-  const {party, token} = computeCredentials('Bob');
+  const partyName = 'Bob';
+  const {party, token} = computeCredentials(partyName);
   const ledger = new Ledger({token});
   const users0 = await ledger.query(User);
   expect(users0).toEqual([]);
@@ -91,32 +92,29 @@ test('create and look up user using ledger library', async () => {
 });
 
 test('log in as a new user', async () => {
+  const partyName = 'Alice'; // See Note(cocreature)
   if (!browser) {
     throw Error('Puppeteer browser has not been launched');
   }
   const page = await browser.newPage();
   await page.goto(`http://localhost:${UI_PORT}`);
 
-  // Log in as Alice by selecting the login elements using CSS selectors.
+  // Select the login elements using the CSS class names we gave specifically for testing.
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors
-  const usernameField = await page.waitForSelector('input');
-  if (!usernameField) {
-    throw Error('Did not find username field to login');
-  }
-  await page.click('input');
-  await page.type('input', 'Alice');
-  const button = await page.$('button');
-  if (!button) {
-    throw Error('Did not find button to login');
-  }
-  await page.click('button');
-  await page.waitForSelector('.menu');
+  await page.click('.test-select-username-field');
+  await page.type('.test-select-username-field', partyName);
+  await page.click('.test-select-login-button');
 
-  // Check that the ledger contains Alice's User contract.
-  const {party, token} = computeCredentials('Alice');
+  // Wait until we reach the main menu (meaning the login was successful) before
+  // checking the ledger state.
+  await page.waitForSelector('.test-select-main-menu');
+  await page.close();
+
+  // Check that the ledger contains the new User contract.
+  const {party, token} = computeCredentials(partyName);
   const ledger = new Ledger({token});
   const users = await ledger.query(User);
   expect(users.length).toEqual(1);
   const userContract = await ledger.lookupByKey(User, party);
-  expect(userContract?.payload.username).toEqual('Alice');
+  expect(userContract?.payload.username).toEqual(partyName);
 }, 10_000);

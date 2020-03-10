@@ -84,9 +84,14 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
                   iconPosition='left'
                   placeholder='Username'
                   value={username}
+                  className='test-select-username-field'
                   onChange={e => setUsername(e.currentTarget.value)}
                 />
-                <Button primary fluid onClick={handleLogin}>
+                <Button
+                  primary
+                  fluid
+                  className='test-select-login-button'
+                  onClick={handleLogin}>
                   Log in
                 </Button>
               </>
