@@ -39,20 +39,34 @@ beforeAll(async () => {
   const startOpts: SpawnOptions = { cwd: '..', stdio: 'inherit' };
   startProc = spawn('daml', startArgs, startOpts);
 
-  // We know that the processes are up and running once their ports become available.
-  await waitOn({resources: [`tcp:localhost:${SANDBOX_PORT}`, `tcp:localhost:${JSON_API_PORT}`]});
+  // Run `yarn start` in another shell.
+  // Disable automatically opening a browser using the env var described here:
+  // https://github.com/facebook/create-react-app/issues/873#issuecomment-266318338
+  let env = process.env;
+  env.BROWSER = 'none';
+  uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit' });
+
+  // We know the `daml start` and `yarn start` servers are ready once the relevant ports become available.
+  await waitOn({resources: [
+    `tcp:localhost:${SANDBOX_PORT}`,
+    `tcp:localhost:${JSON_API_PORT}`,
+    `tcp:localhost:${UI_PORT}`
+  ]});
 
   // Launch a browser once for all tests.
   browser = await puppeteer.launch();
 }, 20_000);
 
 afterAll(async () => {
-  // Kill the `daml start` process.
-  // This sends the kill signal but the actual process may take some time to die.
-  // TODO: Test/fix this on windows
+  // Kill the `daml start` and `yarn start` processes.
+  // Note that `kill()` sends the `SIGTERM` signal but the actual processes may
+  // not die immediately.
+  // TODO: Test/fix this for windows.
   if (startProc) {
-    startProc.kill("SIGTERM");
-    console.log('Killed daml start');
+    startProc.kill();
+  }
+  if (uiProc) {
+    uiProc.kill();
   }
 
   // Unfortunately Puppeteer has an issue where a large number of Chromium helper processes
@@ -77,14 +91,6 @@ test('create and look up user using ledger library', async () => {
 });
 
 test('log in as a new user', async () => {
-  // Start the UI process using `yarn start` in a shell.
-  // Disable automatically opening a browser using the env var described here:
-  // https://github.com/facebook/create-react-app/issues/873#issuecomment-266318338
-  let env = process.env;
-  env.BROWSER = 'none';
-  uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit' });
-  await waitOn({resources: [`tcp:localhost:${UI_PORT}`]});
-
   if (!browser) {
     throw Error('Puppeteer browser has not been launched');
   }
@@ -113,8 +119,4 @@ test('log in as a new user', async () => {
   expect(users.length).toEqual(1);
   const userContract = await ledger.lookupByKey(User, party);
   expect(userContract?.payload.username).toEqual('Alice');
-
-  // TODO: Wait for the UI process to be killed before exiting
-  // (instead of just sending the SIGTERM signal).
-  uiProc.kill();
-}, 30_000);
+}, 10_000);
