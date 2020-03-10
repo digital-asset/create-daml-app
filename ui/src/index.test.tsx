@@ -12,30 +12,18 @@ const SANDBOX_PORT = 6865;
 const JSON_API_PORT = 7575;
 const UI_PORT = 3000;
 
+// `daml start` process (which spawns a sandbox and JSON API server)
 let startProc: ChildProcess | undefined = undefined;
-let uiProc:    ChildProcess | undefined = undefined;
 
 // Headless Chrome browser:
 // https://developers.google.com/web/updates/2017/04/headless-chrome
 let browser: puppeteer.Browser | undefined = undefined;
 
-// Launch a browser just once for all tests.
+let uiProc: ChildProcess | undefined = undefined;
+
+// Use a single sandbox, JSON API server and browser for all tests for speed.
+// This means we need to use a different set of parties and a new browser page for each test.
 beforeAll(async () => {
-  browser = await puppeteer.launch();
-});
-
-afterAll(async () => {
-  if (browser) {
-    browser.close();
-  }
-});
-
-// Start a fresh sandbox and json api server for each test to have a clean slate
-beforeEach(async () => {
-  // Run daml process in create-daml-app root dir.
-  // The path should already include '.daml/bin' in the environment where this is run.
-  const opts: SpawnOptions = { cwd: '..', stdio: 'inherit' };
-
   // Use `daml start` to start up the sandbox and json api server.
   // This is what we recommend to our users (over running the two processes separately),
   // so we replicate it in these tests.
@@ -46,23 +34,37 @@ beforeEach(async () => {
     '--sandbox-option=--wall-clock-time',
     `--sandbox-option=--ledgerid=${LEDGER_ID}`,
   ];
-  startProc = spawn('daml', startArgs, opts);
+  // Run `daml start` from create-daml-app root dir.
+  // The path should already include '.daml/bin' in the environment where this is run.
+  const startOpts: SpawnOptions = { cwd: '..', stdio: 'inherit' };
+  startProc = spawn('daml', startArgs, startOpts);
 
   // We know that the processes are up and running once their ports become available.
   await waitOn({resources: [`tcp:localhost:${SANDBOX_PORT}`, `tcp:localhost:${JSON_API_PORT}`]});
+
+  // Launch a browser once for all tests.
+  browser = await puppeteer.launch();
 }, 20_000);
 
-afterEach(() => {
-  // Shut down `daml start` process
+afterAll(async () => {
+  // Kill the `daml start` process.
+  // This sends the kill signal but the actual process may take some time to die.
   // TODO: Test/fix this on windows
   if (startProc) {
     startProc.kill("SIGTERM");
     console.log('Killed daml start');
   }
+
+  // Unfortunately Puppeteer has an issue where a large number of Chromium helper processes
+  // are left running even after the browser is closed.
+  // See https://github.com/puppeteer/puppeteer/issues/1825.
+  if (browser) {
+    browser.close();
+  }
 });
 
 test('create and look up user using ledger library', async () => {
-  const {party, token} = computeCredentials('Alice');
+  const {party, token} = computeCredentials('Bob');
   const ledger = new Ledger({token});
   const users0 = await ledger.query(User);
   expect(users0).toEqual([]);
@@ -74,7 +76,7 @@ test('create and look up user using ledger library', async () => {
   expect(users[0]).toEqual(userContract1);
 });
 
-test('open webpage using headless browser', async () => {
+test('log in as a new user', async () => {
   // Start the UI process using `yarn start` in a shell.
   // Disable automatically opening a browser using the env var described here:
   // https://github.com/facebook/create-react-app/issues/873#issuecomment-266318338
