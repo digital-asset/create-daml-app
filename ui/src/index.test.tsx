@@ -160,6 +160,7 @@ test('log in as two different users and add each other as friends', async () => 
   await page2.goto(`http://localhost:${UI_PORT}`);
   await login(page2, party2);
 
+  // Party 1 should initially have no friends
   const noFriends1 = await page1.$$('.test-select-friend');
   expect(noFriends1).toEqual([]);
 
@@ -173,8 +174,9 @@ test('log in as two different users and add each other as friends', async () => 
   const noFriends2 = await page2.$$('.test-select-friend');
   expect(noFriends2).toEqual([]);
 
-  // Add Party 1 as a friend and check the friend list has one element
-  await addFriend(page2, party2, party1);
+  // Party 1 should now appear in the network of Party 2
+  // Add Party 1 as a friend using the icon and check the friend list has one element
+  await page2.click('.test-select-add-user-icon');
   await page2.waitForSelector('.test-select-friend');
   const friendList2 = await page2.$$('.test-select-friend');
   expect(friendList2.length).toEqual(1);

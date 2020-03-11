@@ -17,7 +17,11 @@ type Props = {
 const ListActionItem: React.FC<Props> = ({icon, action, outer, children}) => {
   const actionIcon =
     <List.Content floated='right'>
-      <Icon link name={action.icon} onClick={action.onClick} />
+      <Icon
+        link
+        className={outer ? 'test-select-add-user-icon' : 'test-select-add-friend-of-user-icon'}
+        name={action.icon}
+        onClick={action.onClick} />
     </List.Content>;
   return (
     <List.Item>
