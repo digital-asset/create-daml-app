@@ -91,6 +91,11 @@ test('create and look up user using ledger library', async () => {
   expect(users[0]).toEqual(userContract1);
 });
 
+// The following tests use the headless browser to interact with the app.
+// We select the relevant DOM elements using CSS class names that we embedded
+// specifically for testing.
+// See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors.
+
 test('log in as a new user', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
   if (!browser) {
@@ -99,15 +104,8 @@ test('log in as a new user', async () => {
   const page = await browser.newPage();
   await page.goto(`http://localhost:${UI_PORT}`);
 
-  // Select the login elements using the CSS class names we gave specifically for testing.
-  // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors
-  await page.click('.test-select-username-field');
-  await page.type('.test-select-username-field', partyName);
-  await page.click('.test-select-login-button');
-
-  // Wait until we reach the main menu (meaning the login was successful) before
-  // checking the ledger state.
-  await page.waitForSelector('.test-select-main-menu');
+  // Log in as a new user.
+  await login(page, partyName);
 
   // Check that the ledger contains the new User contract.
   const {party, token} = computeCredentials(partyName);
@@ -117,20 +115,25 @@ test('log in as a new user', async () => {
   const userContract = await ledger.lookupByKey(User, party);
   expect(userContract?.payload.username).toEqual(partyName);
 
-  // Log out and check that we get back to the login screen
+  // Log out and check that we get back to the login screen.
   await page.click('.test-select-log-out');
   await page.waitForSelector('.test-select-login-screen');
 
-  // Log in again as the same user
-  await page.click('.test-select-username-field');
-  await page.type('.test-select-username-field', partyName);
-  await page.click('.test-select-login-button');
-  await page.waitForSelector('.test-select-main-menu');
+  // Log in again as the same user.
+  await login(page, partyName);
 
-  // Check we have the same one user
+  // Check we have the same one user.
   const usersFinal = await ledger.query(User);
   expect(usersFinal.length).toEqual(1);
   expect(usersFinal[0].payload.username).toEqual(partyName);
 
   await page.close();
 }, 10_000);
+
+// Log in using the given party name and wait for the main screen to load.
+const login = async (page: puppeteer.Page, partyName: string) => {
+  await page.click('.test-select-username-field');
+  await page.type('.test-select-username-field', partyName);
+  await page.click('.test-select-login-button');
+  await page.waitForSelector('.test-select-main-menu');
+}
