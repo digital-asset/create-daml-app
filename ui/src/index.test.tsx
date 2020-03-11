@@ -5,7 +5,7 @@ import Ledger from '@daml/ledger';
 import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 import { computeCredentials } from './Credentials';
 
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
 
 const LEDGER_ID = 'create-daml-app-sandbox';
 const SANDBOX_PORT = 6865;
@@ -17,7 +17,7 @@ let startProc: ChildProcess | undefined = undefined;
 
 // Headless Chrome browser:
 // https://developers.google.com/web/updates/2017/04/headless-chrome
-let browser: puppeteer.Browser | undefined = undefined;
+let browser: Browser | undefined = undefined;
 
 let uiProc: ChildProcess | undefined = undefined;
 
@@ -97,11 +97,18 @@ test('create and look up user using ledger library', async () => {
 // See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors.
 
 // Log in using the given party name and wait for the main screen to load.
-const login = async (page: puppeteer.Page, partyName: string) => {
+const login = async (page: Page, partyName: string) => {
   await page.click('.test-select-username-field');
   await page.type('.test-select-username-field', partyName);
   await page.click('.test-select-login-button');
   await page.waitForSelector('.test-select-main-menu');
+}
+
+const addFriend = async (page: Page, partyName: string, friendName: string) => {
+  await page.click('.test-select-add-friend-input');
+  await page.type('.test-select-add-friend-input', friendName);
+  await page.click('.test-select-add-friend-button');
+  // TODO: wait for loading attribute of add friend input to be false
 }
 
 test('log in as a new user', async () => {
@@ -137,3 +144,41 @@ test('log in as a new user', async () => {
 
   await page.close();
 }, 10_000);
+
+test('log in as two different users and add each other as friends', async () => {
+  const party1 = 'P1';
+  const party2 = 'P2';
+
+  if (!browser) {
+    throw Error('Puppeteer browser has not been launched');
+  }
+  const page1 = await browser.newPage();
+  await page1.goto(`http://localhost:${UI_PORT}`);
+  await login(page1, party1);
+
+  const page2 = await browser.newPage();
+  await page2.goto(`http://localhost:${UI_PORT}`);
+  await login(page2, party2);
+
+  const noFriends1 = await page1.$$('.test-select-friend');
+  expect(noFriends1).toEqual([]);
+
+  // Add Party 2 as a friend and check the friend list has one element
+  await addFriend(page1, party1, party2);
+  await page1.waitForSelector('.test-select-friend');
+  const friendList1 = await page1.$$('.test-select-friend');
+  expect(friendList1.length).toEqual(1);
+
+  // Party 2 should still have no friends
+  const noFriends2 = await page2.$$('.test-select-friend');
+  expect(noFriends2).toEqual([]);
+
+  // Add Party 1 as a friend and check the friend list has one element
+  await addFriend(page2, party2, party1);
+  await page2.waitForSelector('.test-select-friend');
+  const friendList2 = await page2.$$('.test-select-friend');
+  expect(friendList2.length).toEqual(1);
+
+  await page1.close();
+  await page2.close();
+}, 20_000);
