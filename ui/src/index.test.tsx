@@ -91,10 +91,18 @@ test('create and look up user using ledger library', async () => {
   expect(users[0]).toEqual(userContract1);
 });
 
-// The following tests use the headless browser to interact with the app.
+// The tests following use the headless browser to interact with the app.
 // We select the relevant DOM elements using CSS class names that we embedded
 // specifically for testing.
 // See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors.
+
+// Log in using the given party name and wait for the main screen to load.
+const login = async (page: puppeteer.Page, partyName: string) => {
+  await page.click('.test-select-username-field');
+  await page.type('.test-select-username-field', partyName);
+  await page.click('.test-select-login-button');
+  await page.waitForSelector('.test-select-main-menu');
+}
 
 test('log in as a new user', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
@@ -129,11 +137,3 @@ test('log in as a new user', async () => {
 
   await page.close();
 }, 10_000);
-
-// Log in using the given party name and wait for the main screen to load.
-const login = async (page: puppeteer.Page, partyName: string) => {
-  await page.click('.test-select-username-field');
-  await page.type('.test-select-username-field', partyName);
-  await page.click('.test-select-login-button');
-  await page.waitForSelector('.test-select-main-menu');
-}
