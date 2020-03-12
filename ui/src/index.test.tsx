@@ -160,36 +160,52 @@ test('log in as a new user', async () => {
   await page.close();
 }, 10_000);
 
+// This tests adding friends in a few different ways:
+// - using the text box in the Friends panel
+// - using the icon in the Network panel
+// - while the friend is logged in
+// - while the friend is logged out
+// These are all successful cases.
 test('log in as two different users and add each other as friends', async () => {
   const party1 = 'P1';
   const party2 = 'P2';
 
+  // Log in as Party 1.
   const page1 = await newUiPage();
   await login(page1, party1);
 
-  const page2 = await newUiPage();
-  await login(page2, party2);
-
-  // Party 1 should initially have no friends
+  // Party 1 should initially have no friends.
   const noFriends1 = await page1.$$('.test-select-friend');
   expect(noFriends1).toEqual([]);
 
-  // Add Party 2 as a friend and check the friend list has one element
+  // Add Party 2 as a friend using the text input.
+  // This should work even though Party 2 has not logged in yet.
+  // Check the friend list has one element.
   await addFriend(page1, party2);
   await page1.waitForSelector('.test-select-friend');
   const friendList1 = await page1.$$('.test-select-friend');
   expect(friendList1.length).toEqual(1);
 
-  // Party 2 should still have no friends
+  // Log in as Party 2.
+  const page2 = await newUiPage();
+  await login(page2, party2);
+
+  // Party 2 should initially have no friends.
   const noFriends2 = await page2.$$('.test-select-friend');
   expect(noFriends2).toEqual([]);
 
-  // Party 1 should now appear in the network of Party 2
-  // Add Party 1 as a friend using the icon and check the friend list has one element
+  // However, Party 1 should appear in the network of Party 2.
+  // Add Party 1 as a friend using the icon (the first one on the page).
+  // Check the friend list has one element.
+  await page2.waitForSelector('.test-select-add-user-icon');
   await page2.click('.test-select-add-user-icon');
   await page2.waitForSelector('.test-select-friend');
   const friendList2 = await page2.$$('.test-select-friend');
   expect(friendList2.length).toEqual(1);
+
+  // Party 1 should now also see Party 2 in the network.
+  // Check this by finding the icon next to Party 2's name.
+  await page1.waitForSelector('.test-select-add-user-icon');
 
   await page1.close();
   await page2.close();
