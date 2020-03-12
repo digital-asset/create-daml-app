@@ -147,6 +147,12 @@ const sendMessageToFirst = async (page: Page, content: string) => {
   await page.waitForSelector('.test-select-message-send-button:not(.loading)');
 }
 
+const countMessages = async (page: Page) => {
+  await page.waitForSelector('.test-select-message');
+  const messages = await page.$$('.test-select-message');
+  return messages.length;
+}
+
 test('log in as a new user', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
 
@@ -269,26 +275,25 @@ test.only('send message', async () => {
 
   const page1 = await newUiPage();
   await login(page1, party1);
-  await addFriend(page1, party2);
 
   const page2 = await newUiPage();
   await login(page2, party2);
 
-  // Party 2 is a friend of Party 1 and hence can send a message.
+  // Once Party 2 is a friend of Party 1, Party 2 can send Party 1 a message.
+  await addFriend(page1, party2);
   await sendMessageToFirst(page2, `Hey ${party1}!`);
 
-  // Party 2 should see the message just sent.
-  await page2.waitForSelector('.test-select-message');
-  const messageList2 = await page2.$$('.test-select-message');
-  expect(messageList2.length).toEqual(1);
+  // Both parties should see the message.
+  expect(await countMessages(page2)).toEqual(1);
+  expect(await countMessages(page1)).toEqual(1);
 
-  // Party 1 should also see the message from Party 2.
-  await page1.screenshot({path: './messages.png'});
-  await page1.waitForSelector('.test-select-message');
-  const messageList1 = await page1.$$('.test-select-message');
-  expect(messageList1.length).toEqual(1);
-
+  // Once Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
   await addFriend(page2, party1);
+  await sendMessageToFirst(page1, `Hey ${party2}!`);
+
+  // Then both parties should see both messages.
+  expect(await countMessages(page1)).toEqual(2);
+  expect(await countMessages(page2)).toEqual(2);
 
   await page1.close();
   await page2.close();
