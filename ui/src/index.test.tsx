@@ -116,6 +116,12 @@ const login = async (page: Page, partyName: string) => {
   await page.waitForSelector('.test-select-main-menu');
 }
 
+// Log out and check that we get back to the login screen.
+const logout = async (page: Page) => {
+  await page.click('.test-select-log-out');
+  await page.waitForSelector('.test-select-login-screen');
+}
+
 const addFriend = async (page: Page, friendName: string) => {
   await page.click('.test-select-add-friend-input');
   await page.type('.test-select-add-friend-input', friendName);
@@ -129,7 +135,7 @@ const addFriend = async (page: Page, friendName: string) => {
   await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
 }
 
-test('log in as a new user', async () => {
+test('log in as a new user, log out and log back in', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
 
   const page = await newUiPage();
@@ -145,11 +151,8 @@ test('log in as a new user', async () => {
   const userContract = await ledger.lookupByKey(User, party);
   expect(userContract?.payload.username).toEqual(partyName);
 
-  // Log out and check that we get back to the login screen.
-  await page.click('.test-select-log-out');
-  await page.waitForSelector('.test-select-login-screen');
-
-  // Log in again as the same user.
+  // Log out and in again as the same user.
+  await logout(page);
   await login(page, partyName);
 
   // Check we have the same one user.
