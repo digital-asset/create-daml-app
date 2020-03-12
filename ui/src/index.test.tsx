@@ -209,3 +209,22 @@ test('error when adding self as a friend', async () => {
 
   await page.close();
 });
+
+test('error when adding existing friend', async () => {
+  const party1 = 'Q1';
+  const party2 = 'Q2';
+  const page = await newUiPage();
+
+  const dismissError = jest.fn(dialog => dialog.dismiss());
+  page.on('dialog', dismissError);
+
+  await login(page, party1);
+  // First attempt should succeed
+  await addFriend(page, party2);
+  // Second attempt should result in an error
+  await addFriend(page, party2);
+
+  expect(dismissError).toHaveBeenCalled();
+
+  await page.close();
+});
