@@ -101,14 +101,11 @@ const newUiPage = async (): Promise<Page> => {
     throw Error('Puppeteer browser has not been launched');
   }
   const page = await browser.newPage();
-
-  // Ignore the Response here as we only want the page
-  await page.goto(`http://localhost:${UI_PORT}`);
-
+  await page.goto(`http://localhost:${UI_PORT}`); // ignore the Response
   return page;
 }
 
-// Log in using the given party name and wait for the main screen to load.
+// Log in using a party name and wait for the main screen to load.
 const login = async (page: Page, partyName: string) => {
   await page.click('.test-select-username-field');
   await page.type('.test-select-username-field', partyName);
@@ -116,18 +113,19 @@ const login = async (page: Page, partyName: string) => {
   await page.waitForSelector('.test-select-main-menu');
 }
 
-// Log out and check that we get back to the login screen.
+// Log out and wait to get back to the login screen.
 const logout = async (page: Page) => {
   await page.click('.test-select-log-out');
   await page.waitForSelector('.test-select-login-screen');
 }
 
-const addFriend = async (page: Page, friendName: string) => {
+// Add a friend using the text input in the Friends panel.
+const addFriend = async (page: Page, friend: string) => {
   await page.click('.test-select-add-friend-input');
-  await page.type('.test-select-add-friend-input', friendName);
+  await page.type('.test-select-add-friend-input', friend);
   await page.click('.test-select-add-friend-button');
 
-  // Wait for the request to complete, either successfully or once the error
+  // Wait for the request to complete, either successfully or after the error
   // dialog has been handled.
   // We check this by the absence of the `loading` class.
   // (Both the `test-...` and `loading` classes appear in `div`s surrounding
