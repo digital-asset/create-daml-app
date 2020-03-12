@@ -129,6 +129,24 @@ const addFriend = async (page: Page, friendName: string) => {
   await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
 }
 
+// Send a message to the first friend appearing in the dropdown menu.
+const sendMessageToFirst = async (page: Page, content: string) => {
+  // Select the first option in the dropdown menu.
+  const dropdown = '.test-select-message-receiver > .dropdown';
+  const item = `${dropdown} > .menu > .item`;
+  await page.click(dropdown);
+  await page.waitForSelector(item);
+  await page.click(item);
+
+  // Type the message into the text input.
+  await page.click('.test-select-message-content');
+  await page.type('.test-select-message-content', content);
+
+  // Click send and wait for the request to complete.
+  await page.click('.test-select-message-send-button');
+  await page.waitForSelector('.test-select-message-send-button:not(.loading)');
+}
+
 test('log in as a new user', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
 
@@ -244,3 +262,34 @@ test('error when adding existing friend', async () => {
 
   await page.close();
 });
+
+test.only('send message', async () => {
+  const party1 = 'R1';
+  const party2 = 'R2';
+
+  const page1 = await newUiPage();
+  await login(page1, party1);
+  await addFriend(page1, party2);
+
+  const page2 = await newUiPage();
+  await login(page2, party2);
+
+  // Party 2 is a friend of Party 1 and hence can send a message.
+  await sendMessageToFirst(page2, `Hey ${party1}!`);
+
+  // Party 2 should see the message just sent.
+  await page2.waitForSelector('.test-select-message');
+  const messageList2 = await page2.$$('.test-select-message');
+  expect(messageList2.length).toEqual(1);
+
+  // Party 1 should also see the message from Party 2.
+  await page1.screenshot({path: './messages.png'});
+  await page1.waitForSelector('.test-select-message');
+  const messageList1 = await page1.$$('.test-select-message');
+  expect(messageList1.length).toEqual(1);
+
+  await addFriend(page2, party1);
+
+  await page1.close();
+  await page2.close();
+}, 10_000);

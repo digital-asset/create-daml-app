@@ -14,7 +14,9 @@ const MessageList: React.FC = () => {
       {messagesResult.contracts.map(message => {
         const {sender, receiver, content} = message.payload;
         return (
-          <ListItem key={message.contractId}>
+          <ListItem
+            className='test-select-message'
+            key={message.contractId}>
             <strong>{sender} &rarr; {receiver}:</strong> {content}
           </ListItem>
         );
