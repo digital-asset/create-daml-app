@@ -96,6 +96,18 @@ test('create and look up user using ledger library', async () => {
 // specifically for testing.
 // See https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors.
 
+const newUiPage = async (): Promise<Page> => {
+  if (!browser) {
+    throw Error('Puppeteer browser has not been launched');
+  }
+  const page = await browser.newPage();
+
+  // Ignore the Response here as we only want the page
+  await page.goto(`http://localhost:${UI_PORT}`);
+
+  return page;
+}
+
 // Log in using the given party name and wait for the main screen to load.
 const login = async (page: Page, partyName: string) => {
   await page.click('.test-select-username-field');
@@ -108,16 +120,19 @@ const addFriend = async (page: Page, friendName: string) => {
   await page.click('.test-select-add-friend-input');
   await page.type('.test-select-add-friend-input', friendName);
   await page.click('.test-select-add-friend-button');
-  // TODO: wait for loading attribute of add friend input to be false
+
+  // Wait for the request to complete, either successfully or once the error
+  // dialog has been handled.
+  // We check this by the absence of the `loading` class.
+  // (Both the `test-...` and `loading` classes appear in `div`s surrounding
+  // the `input`, due to the translation of Semantic UI's `Input` element.)
+  await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
 }
 
 test('log in as a new user', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
-  if (!browser) {
-    throw Error('Puppeteer browser has not been launched');
-  }
-  const page = await browser.newPage();
-  await page.goto(`http://localhost:${UI_PORT}`);
+
+  const page = await newUiPage();
 
   // Log in as a new user.
   await login(page, partyName);
@@ -149,15 +164,10 @@ test('log in as two different users and add each other as friends', async () => 
   const party1 = 'P1';
   const party2 = 'P2';
 
-  if (!browser) {
-    throw Error('Puppeteer browser has not been launched');
-  }
-  const page1 = await browser.newPage();
-  await page1.goto(`http://localhost:${UI_PORT}`);
+  const page1 = await newUiPage();
   await login(page1, party1);
 
-  const page2 = await browser.newPage();
-  await page2.goto(`http://localhost:${UI_PORT}`);
+  const page2 = await newUiPage();
   await login(page2, party2);
 
   // Party 1 should initially have no friends
@@ -184,3 +194,18 @@ test('log in as two different users and add each other as friends', async () => 
   await page1.close();
   await page2.close();
 }, 20_000);
+
+test('error when adding self as a friend', async () => {
+  const party = 'Self';
+  const page = await newUiPage();
+
+  const dismissError = jest.fn(dialog => dialog.dismiss());
+  page.on('dialog', dismissError);
+
+  await login(page, party);
+  await addFriend(page, party);
+
+  expect(dismissError).toHaveBeenCalled();
+
+  await page.close();
+});
