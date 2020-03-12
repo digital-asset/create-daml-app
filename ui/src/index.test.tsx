@@ -269,7 +269,7 @@ test('error when adding existing friend', async () => {
   await page.close();
 });
 
-test.only('send message', async () => {
+test('send messages between two friends', async () => {
   const party1 = 'R1';
   const party2 = 'R2';
 
