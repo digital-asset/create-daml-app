@@ -104,7 +104,7 @@ const login = async (page: Page, partyName: string) => {
   await page.waitForSelector('.test-select-main-menu');
 }
 
-const addFriend = async (page: Page, partyName: string, friendName: string) => {
+const addFriend = async (page: Page, friendName: string) => {
   await page.click('.test-select-add-friend-input');
   await page.type('.test-select-add-friend-input', friendName);
   await page.click('.test-select-add-friend-button');
@@ -165,7 +165,7 @@ test('log in as two different users and add each other as friends', async () => 
   expect(noFriends1).toEqual([]);
 
   // Add Party 2 as a friend and check the friend list has one element
-  await addFriend(page1, party1, party2);
+  await addFriend(page1, party2);
   await page1.waitForSelector('.test-select-friend');
   const friendList1 = await page1.$$('.test-select-friend');
   expect(friendList1.length).toEqual(1);
