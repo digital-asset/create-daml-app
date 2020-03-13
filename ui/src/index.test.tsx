@@ -101,14 +101,11 @@ const newUiPage = async (): Promise<Page> => {
     throw Error('Puppeteer browser has not been launched');
   }
   const page = await browser.newPage();
-
-  // Ignore the Response here as we only want the page
-  await page.goto(`http://localhost:${UI_PORT}`);
-
+  await page.goto(`http://localhost:${UI_PORT}`); // ignore the Response
   return page;
 }
 
-// Log in using the given party name and wait for the main screen to load.
+// Log in using a party name and wait for the main screen to load.
 const login = async (page: Page, partyName: string) => {
   await page.click('.test-select-username-field');
   await page.type('.test-select-username-field', partyName);
@@ -116,12 +113,19 @@ const login = async (page: Page, partyName: string) => {
   await page.waitForSelector('.test-select-main-menu');
 }
 
-const addFriend = async (page: Page, friendName: string) => {
+// Log out and wait to get back to the login screen.
+const logout = async (page: Page) => {
+  await page.click('.test-select-log-out');
+  await page.waitForSelector('.test-select-login-screen');
+}
+
+// Add a friend using the text input in the Friends panel.
+const addFriend = async (page: Page, friend: string) => {
   await page.click('.test-select-add-friend-input');
-  await page.type('.test-select-add-friend-input', friendName);
+  await page.type('.test-select-add-friend-input', friend);
   await page.click('.test-select-add-friend-button');
 
-  // Wait for the request to complete, either successfully or once the error
+  // Wait for the request to complete, either successfully or after the error
   // dialog has been handled.
   // We check this by the absence of the `loading` class.
   // (Both the `test-...` and `loading` classes appear in `div`s surrounding
@@ -158,7 +162,7 @@ const countMessagesNotZero = async (page: Page) => {
   return messages.length;
 }
 
-test('log in as a new user', async () => {
+test('log in as a new user, log out and log back in', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
 
   const page = await newUiPage();
@@ -174,11 +178,8 @@ test('log in as a new user', async () => {
   const userContract = await ledger.lookupByKey(User, party);
   expect(userContract?.payload.username).toEqual(partyName);
 
-  // Log out and check that we get back to the login screen.
-  await page.click('.test-select-log-out');
-  await page.waitForSelector('.test-select-login-screen');
-
-  // Log in again as the same user.
+  // Log out and in again as the same user.
+  await logout(page);
   await login(page, partyName);
 
   // Check we have the same one user.
@@ -295,8 +296,7 @@ test('send messages between two friends', async () => {
   // As Party 2, add Party 1 as a friend and log out.
   // This will test that a message is received even when logged out.
   await addFriend(page2, party1);
-  await page2.click('.test-select-log-out');
-  await page2.waitForSelector('.test-select-login-screen');
+  await logout(page2);
 
   // Now that Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
   await sendMessageToFirst(page1, `Hey ${party2}!`);
