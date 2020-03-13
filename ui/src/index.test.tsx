@@ -147,7 +147,11 @@ const sendMessageToFirst = async (page: Page, content: string) => {
   await page.waitForSelector('.test-select-message-send-button:not(.loading)');
 }
 
-const countMessages = async (page: Page) => {
+// Assuming there is *at least one* message on the page,
+// count the number of messages.
+// The restriction against zero messages is because we need to wait on the
+// class in the message item itself to get reliable results.
+const countMessagesNotZero = async (page: Page) => {
   await page.waitForSelector('.test-select-message');
   const messages = await page.$$('.test-select-message');
   return messages.length;
@@ -284,16 +288,24 @@ test('send messages between two friends', async () => {
   await sendMessageToFirst(page2, `Hey ${party1}!`);
 
   // Both parties should see the message.
-  expect(await countMessages(page2)).toEqual(1);
-  expect(await countMessages(page1)).toEqual(1);
+  expect(await countMessagesNotZero(page2)).toEqual(1);
+  expect(await countMessagesNotZero(page1)).toEqual(1);
 
-  // Once Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
+  // As Party 2, add Party 1 as a friend and log out.
+  // This will test that a message is received even when logged out.
   await addFriend(page2, party1);
+  await page2.click('.test-select-log-out');
+  await page2.waitForSelector('.test-select-login-screen');
+
+  // Now that Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
   await sendMessageToFirst(page1, `Hey ${party2}!`);
 
+  // Log back in as Party 2.
+  await login(page2, party2);
+
   // Then both parties should see both messages.
-  expect(await countMessages(page1)).toEqual(2);
-  expect(await countMessages(page2)).toEqual(2);
+  expect(await countMessagesNotZero(page1)).toEqual(2);
+  expect(await countMessagesNotZero(page2)).toEqual(2);
 
   await page1.close();
   await page2.close();
