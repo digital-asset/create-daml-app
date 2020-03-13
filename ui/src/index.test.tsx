@@ -296,8 +296,7 @@ test('send messages between two friends', async () => {
   // As Party 2, add Party 1 as a friend and log out.
   // This will test that a message is received even when logged out.
   await addFriend(page2, party1);
-  await page2.click('.test-select-log-out');
-  await page2.waitForSelector('.test-select-login-screen');
+  await logout(page2);
 
   // Now that Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
   await sendMessageToFirst(page1, `Hey ${party2}!`);
