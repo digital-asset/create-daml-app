@@ -147,13 +147,14 @@ const sendMessageToFirst = async (page: Page, content: string) => {
   await page.waitForSelector('.test-select-message-send-button:not(.loading)');
 }
 
-// Assuming there is *at least one* message on the page,
-// count the number of messages.
+// Count the number of messages on the page, assuming there is *at least one*.
 // The restriction against zero messages is because we need to wait on the
-// class in the message item itself to get reliable results.
+// class in the message item itself to get an accurate count.
+// Waiting on other selectors (e.g. on the Send button not loading, or the
+// message list instead of the items) doesn't seem to be effective.
 const countMessagesNotZero = async (page: Page) => {
-  await page.waitForSelector('.test-select-message');
-  const messages = await page.$$('.test-select-message');
+  await page.waitForSelector('.test-select-message-item');
+  const messages = await page.$$('.test-select-message-item');
   return messages.length;
 }
 
