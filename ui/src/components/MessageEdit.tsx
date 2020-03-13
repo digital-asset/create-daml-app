@@ -38,18 +38,21 @@ const MessageEdit: React.FC<Props> = ({friends}) => {
     <Form onSubmit={submitMessage}>
       <Form.Dropdown
         selection
+        className='test-select-message-receiver'
         placeholder="Select a friend"
         options={friends.map(friend => ({ key: friend, text: friend, value: friend }))}
         value={receiver}
         onChange={event => setReceiver(event.currentTarget.textContent ?? undefined)}
       />
       <Form.Input
+        className='test-select-message-content'
         placeholder="Write a message"
         value={content}
         onChange={event => setContent(event.currentTarget.value)}
       />
       <Button
         fluid
+        className='test-select-message-send-button'
         type="submit"
         disabled={isSubmitting || receiver === undefined || content === ""}
         loading={isSubmitting}

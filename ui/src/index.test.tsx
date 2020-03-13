@@ -129,6 +129,35 @@ const addFriend = async (page: Page, friendName: string) => {
   await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
 }
 
+// Send a message to the first friend appearing in the dropdown menu.
+const sendMessageToFirst = async (page: Page, content: string) => {
+  // Select the first option in the dropdown menu.
+  const dropdown = '.test-select-message-receiver > .dropdown';
+  const item = `${dropdown} > .menu > .item`;
+  await page.click(dropdown);
+  await page.waitForSelector(item);
+  await page.click(item);
+
+  // Type the message into the text input.
+  await page.click('.test-select-message-content');
+  await page.type('.test-select-message-content', content);
+
+  // Click send and wait for the request to complete.
+  await page.click('.test-select-message-send-button');
+  await page.waitForSelector('.test-select-message-send-button:not(.loading)');
+}
+
+// Count the number of messages on the page, assuming there is *at least one*.
+// The restriction against zero messages is because we need to wait on the
+// class in the message item itself to get an accurate count.
+// Waiting on other selectors (e.g. on the Send button not loading, or the
+// message list instead of the items) doesn't seem to be effective.
+const countMessagesNotZero = async (page: Page) => {
+  await page.waitForSelector('.test-select-message-item');
+  const messages = await page.$$('.test-select-message-item');
+  return messages.length;
+}
+
 test('log in as a new user', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
 
@@ -244,3 +273,41 @@ test('error when adding existing friend', async () => {
 
   await page.close();
 });
+
+test('send messages between two friends', async () => {
+  const party1 = 'R1';
+  const party2 = 'R2';
+
+  const page1 = await newUiPage();
+  await login(page1, party1);
+
+  const page2 = await newUiPage();
+  await login(page2, party2);
+
+  // Once Party 2 is a friend of Party 1, Party 2 can send Party 1 a message.
+  await addFriend(page1, party2);
+  await sendMessageToFirst(page2, `Hey ${party1}!`);
+
+  // Both parties should see the message.
+  expect(await countMessagesNotZero(page2)).toEqual(1);
+  expect(await countMessagesNotZero(page1)).toEqual(1);
+
+  // As Party 2, add Party 1 as a friend and log out.
+  // This will test that a message is received even when logged out.
+  await addFriend(page2, party1);
+  await page2.click('.test-select-log-out');
+  await page2.waitForSelector('.test-select-login-screen');
+
+  // Now that Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
+  await sendMessageToFirst(page1, `Hey ${party2}!`);
+
+  // Log back in as Party 2.
+  await login(page2, party2);
+
+  // Then both parties should see both messages.
+  expect(await countMessagesNotZero(page1)).toEqual(2);
+  expect(await countMessagesNotZero(page2)).toEqual(2);
+
+  await page1.close();
+  await page2.close();
+}, 10_000);
