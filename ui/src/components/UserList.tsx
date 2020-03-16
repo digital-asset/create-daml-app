@@ -18,7 +18,7 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
       {[...users].sort((x, y) => x.username.localeCompare(y.username)).map(user =>
         <List.Item key={user.username}>
           <List.Icon name='user' />
-          <List.Content className='test-select-user-in-network'>
+          <List.Content>
             <List.Content floated='right'>
               <Icon
                 name='add user'
@@ -26,7 +26,7 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
                 className='test-select-add-user-icon'
                 onClick={() => onAddFriend(user.username)} />
             </List.Content>
-            <List.Header>{user.username}</List.Header>
+            <List.Header className='test-select-user-in-network'>{user.username}</List.Header>
           </List.Content>
           <List.List>
             {[...user.friends].sort((x, y) => x.localeCompare(y)).map(friend =>
@@ -39,8 +39,8 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
                     onClick={() => onAddFriend(friend)} />
                 </List.Content>
                 <List.Icon name='user outline' />
-                <List.Content className='test-select-friend-of-user' >
-                  <List.Header>{friend}</List.Header>
+                <List.Content>
+                  <List.Header className='test-select-friend-of-user'>{friend}</List.Header>
                 </List.Content>
               </List.Item>
             )}
