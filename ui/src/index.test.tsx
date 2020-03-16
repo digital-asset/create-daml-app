@@ -215,6 +215,8 @@ test('log in as two different users and add each other as friends', async () => 
 
   // Party 1 should now also see Party 2 in the network.
   await page1.waitForSelector('.test-select-user-in-network');
+  const network1 = await page1.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
+  expect(network1).toEqual([party2]);
 
   await page1.close();
   await page2.close();
