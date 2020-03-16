@@ -145,8 +145,7 @@ test('log in as a new user, log out and log back in', async () => {
   const ledger = new Ledger({token});
   const users = await ledger.query(User);
   expect(users).toHaveLength(1);
-  const userContract = await ledger.lookupByKey(User, party);
-  expect(userContract?.payload.username).toEqual(partyName);
+  expect(users[0].payload.username).toEqual(partyName);
 
   // Log out and in again as the same user.
   await logout(page);
