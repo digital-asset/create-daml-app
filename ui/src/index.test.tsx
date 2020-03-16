@@ -144,7 +144,7 @@ test('log in as a new user, log out and log back in', async () => {
   const {party, token} = computeCredentials(partyName);
   const ledger = new Ledger({token});
   const users = await ledger.query(User);
-  expect(users.length).toEqual(1);
+  expect(users).toHaveLength(1);
   const userContract = await ledger.lookupByKey(User, party);
   expect(userContract?.payload.username).toEqual(partyName);
 
@@ -154,7 +154,7 @@ test('log in as a new user, log out and log back in', async () => {
 
   // Check we have the same one user.
   const usersFinal = await ledger.query(User);
-  expect(usersFinal.length).toEqual(1);
+  expect(usersFinal).toHaveLength(1);
   expect(usersFinal[0].payload.username).toEqual(partyName);
 
   await page.close();
@@ -184,7 +184,7 @@ test('log in as two different users and add each other as friends', async () => 
   await addFriend(page1, party2);
   await page1.waitForSelector('.test-select-friend');
   const friendList1 = await page1.$$('.test-select-friend');
-  expect(friendList1.length).toEqual(1);
+  expect(friendList1).toHaveLength(1);
 
   // Log in as Party 2.
   const page2 = await newUiPage();
@@ -201,7 +201,7 @@ test('log in as two different users and add each other as friends', async () => 
   await page2.click('.test-select-add-user-icon');
   await page2.waitForSelector('.test-select-friend');
   const friendList2 = await page2.$$('.test-select-friend');
-  expect(friendList2.length).toEqual(1);
+  expect(friendList2).toHaveLength(1);
 
   // Party 1 should now also see Party 2 in the network.
   // Check this by finding the icon next to Party 2's name.
