@@ -135,13 +135,12 @@ const addFriend = async (page: Page, friend: string) => {
 test('log in as a new user, log out and log back in', async () => {
   const partyName = 'Alice'; // See Note(cocreature)
 
-  const page = await newUiPage();
-
   // Log in as a new user.
+  const page = await newUiPage();
   await login(page, partyName);
 
   // Check that the ledger contains the new User contract.
-  const {party, token} = computeCredentials(partyName);
+  const {token} = computeCredentials(partyName);
   const ledger = new Ledger({token});
   const users = await ledger.query(User);
   expect(users).toHaveLength(1);
