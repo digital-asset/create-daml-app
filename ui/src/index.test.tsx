@@ -32,10 +32,7 @@ function getParty(): string {
 }
 
 test('Party names are unique', async () => {
-  let parties = new Set();
-  for (let i = 0; i < 10; i++) {
-    parties.add(getParty());
-  }
+  const parties = new Set(Array(10).fill({}).map(() => getParty()));
   expect(parties.size).toEqual(10);
 });
 
