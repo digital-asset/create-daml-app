@@ -285,8 +285,8 @@ test('error when adding existing friend', async () => {
 });
 
 test('send messages between two friends', async () => {
-  const party1 = 'R1';
-  const party2 = 'R2';
+  const party1 = getParty();
+  const party2 = getParty();
 
   const page1 = await newUiPage();
   await login(page1, party1);
