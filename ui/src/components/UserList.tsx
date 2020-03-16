@@ -40,7 +40,7 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
                 </List.Content>
                 <List.Icon name='user outline' />
                 <List.Content>
-                  <List.Header className='test-select-friend-of-user'>{friend}</List.Header>
+                  <List.Header>{friend}</List.Header>
                 </List.Content>
               </List.Item>
             )}
