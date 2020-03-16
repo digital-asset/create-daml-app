@@ -27,7 +27,9 @@ const ListActionItem: React.FC<Props> = ({icon, action, outer, children}) => {
     <List.Item>
       {outer ? null : actionIcon}
       <List.Icon name={icon} />
-      <List.Content>
+      <List.Content
+        className={outer ? 'test-select-user-in-network' : 'test-select-friend-of-user'}
+        >
         {outer ? actionIcon : null}
         {children}
       </List.Content>
