@@ -42,8 +42,7 @@ beforeAll(async () => {
   // Run `yarn start` in another shell.
   // Disable automatically opening a browser using the env var described here:
   // https://github.com/facebook/create-react-app/issues/873#issuecomment-266318338
-  let env = process.env;
-  env.BROWSER = 'none';
+  const env = {...process.env, BROWSER: 'none'};
   uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit' });
 
   // We know the `daml start` and `yarn start` servers are ready once the relevant ports become available.
