@@ -214,8 +214,7 @@ test('log in as two different users and add each other as friends', async () => 
   expect(friendList2).toHaveLength(1);
 
   // Party 1 should now also see Party 2 in the network.
-  // Check this by finding the icon next to Party 2's name.
-  await page1.waitForSelector('.test-select-add-user-icon');
+  await page1.waitForSelector('.test-select-user-in-network');
 
   await page1.close();
   await page2.close();
