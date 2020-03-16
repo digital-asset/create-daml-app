@@ -26,7 +26,7 @@ let uiProc: ChildProcess | undefined = undefined;
 // in the HTTP JSON API.
 let nextPartyId = 1;
 function getParty(): string {
-  const party = 'P' + nextPartyId.toString();
+  const party = `P${nextPartyId}`;
   nextPartyId++;
   return party;
 }
