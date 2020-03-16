@@ -1,6 +1,5 @@
 import React from 'react'
 import { Icon, List } from 'semantic-ui-react'
-import ListActionItem from './ListActionItem';
 import { Party } from '@daml/types';
 import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
 
@@ -30,17 +29,20 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
             <List.Header>{user.username}</List.Header>
           </List.Content>
           <List.List>
-            {[...user.friends].sort((x, y) => x.localeCompare(y)).map((friend) =>
-              <ListActionItem
-                key={friend}
-                icon='user outline'
-                action={{
-                  icon: 'add user',
-                  onClick: () => onAddFriend(friend),
-                }}
-              >
-                <List.Header>{friend}</List.Header>
-              </ListActionItem>
+            {[...user.friends].sort((x, y) => x.localeCompare(y)).map(friend =>
+              <List.Item key={friend}>
+                <List.Content floated='right'>
+                  <Icon
+                    link
+                    className='test-select-add-friend-of-user-icon'
+                    name={'add user'}
+                    onClick={() => onAddFriend(friend)} />
+                </List.Content>
+                <List.Icon name='user outline' />
+                <List.Content className='test-select-friend-of-user' >
+                  <List.Header>{friend}</List.Header>
+                </List.Content>
+              </List.Item>
             )}
           </List.List>
         </List.Item>
