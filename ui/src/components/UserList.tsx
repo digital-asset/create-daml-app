@@ -17,13 +17,13 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
     <List divided relaxed>
       {[...users].sort((x, y) => x.username.localeCompare(y.username)).map(user =>
         <List.Item key={user.username}>
-          <List.Icon name={'user'} />
-          <List.Content className='test-select-user-in-network' >
+          <List.Icon name='user' />
+          <List.Content className='test-select-user-in-network'>
             <List.Content floated='right'>
               <Icon
+                name='add user'
                 link
                 className='test-select-add-user-icon'
-                name='add user'
                 onClick={() => onAddFriend(user.username)} />
             </List.Content>
             <List.Header>{user.username}</List.Header>
@@ -33,9 +33,9 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
               <List.Item key={friend}>
                 <List.Content floated='right'>
                   <Icon
+                    name='add user'
                     link
                     className='test-select-add-friend-of-user-icon'
-                    name={'add user'}
                     onClick={() => onAddFriend(friend)} />
                 </List.Content>
                 <List.Icon name='user outline' />
