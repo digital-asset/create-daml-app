@@ -209,11 +209,13 @@ test('log in as two different users and add each other as friends', async () => 
   const network2 = await page2.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
   expect(network2).toEqual([party1]);
 
-  // Add Party 1 as a friend using the 'add friend' icon next to the name.
-  // Note this only works as the first icon on the page is for Party 1.
-  // TODO: Select the icon corresponding to any given party.
+  // Add Party 1 as a friend using the 'add friend' icon on the right.
+  // We select the first icon corresponding to a user (not one from a friend
+  // list), but if we have more users we could choose by its order on the page.
   await page2.waitForSelector('.test-select-add-user-icon');
-  await page2.click('.test-select-add-user-icon');
+  const userIcons = await page2.$$('.test-select-add-user-icon');
+  expect(userIcons).toHaveLength(1);
+  await userIcons[0].click();
 
   // Check the friend list is updated correctly.
   await page2.waitForSelector('.test-select-friend');
