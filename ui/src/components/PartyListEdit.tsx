@@ -34,7 +34,7 @@ const PartyListEdit: React.FC<Props> = ({parties, onAddParty}) => {
         >
           <List.Icon name='user outline' />
           <List.Content>
-            <List.Header className='test-select-friend'>
+            <List.Header className='test-select-follower'>
               {party}
             </List.Header>
           </List.Content>
@@ -46,15 +46,15 @@ const PartyListEdit: React.FC<Props> = ({parties, onAddParty}) => {
           fluid
           readOnly={isSubmitting}
           loading={isSubmitting}
-          className='test-select-add-friend-input'
-          placeholder="Friend's name"
+          className='test-select-follow-input'
+          placeholder="Username to follow"
           value={newParty}
           onChange={(event) => setNewParty(event.currentTarget.value)}
         />
         <Button
           type='submit'
-          className='test-select-add-friend-button'>
-          Add Friend
+          className='test-select-follow-button'>
+          Follow
         </Button>
       </Form>
     </List>

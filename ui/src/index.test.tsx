@@ -94,7 +94,7 @@ test('create and look up user using ledger library', async () => {
   const ledger = new Ledger({token});
   const users0 = await ledger.query(User);
   expect(users0).toEqual([]);
-  const user: User = {username: party, friends: []};
+  const user: User = {username: party, following: []};
   const userContract1 = await ledger.create(User, user);
   const userContract2 = await ledger.lookupByKey(User, party);
   expect(userContract1).toEqual(userContract2);
@@ -130,18 +130,18 @@ const logout = async (page: Page) => {
   await page.waitForSelector('.test-select-login-screen');
 }
 
-// Add a friend using the text input in the Friends panel.
-const addFriend = async (page: Page, friend: string) => {
-  await page.click('.test-select-add-friend-input');
-  await page.type('.test-select-add-friend-input', friend);
-  await page.click('.test-select-add-friend-button');
+// Follow a user using the text input in the follow panel.
+const follow = async (page: Page, friend: string) => {
+  await page.click('.test-select-follow-input');
+  await page.type('.test-select-follow-input', friend);
+  await page.click('.test-select-follow-button');
 
   // Wait for the request to complete, either successfully or after the error
   // dialog has been handled.
   // We check this by the absence of the `loading` class.
   // (Both the `test-...` and `loading` classes appear in `div`s surrounding
   // the `input`, due to the translation of Semantic UI's `Input` element.)
-  await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
+  await page.waitForSelector('.test-select-follow-input > :not(.loading)');
 }
 
 test('log in as a new user, log out and log back in', async () => {
@@ -170,13 +170,13 @@ test('log in as a new user, log out and log back in', async () => {
   await page.close();
 }, 10_000);
 
-// This tests adding friends in a few different ways:
-// - using the text box in the Friends panel
+// This tests following users in a few different ways:
+// - using the text box in the Follow panel
 // - using the icon in the Network panel
-// - while the friend is logged in
-// - while the friend is logged out
+// - while the user that is followed is logged in
+// - while the user that is followed is logged out
 // These are all successful cases.
-test('log in as two different users and add each other as friends', async () => {
+test('log in as two different users and start following each other', async () => {
   const party1 = getParty();
   const party2 = getParty();
 
@@ -184,41 +184,41 @@ test('log in as two different users and add each other as friends', async () => 
   const page1 = await newUiPage();
   await login(page1, party1);
 
-  // Party 1 should initially have no friends.
-  const noFriends1 = await page1.$$('.test-select-friend');
-  expect(noFriends1).toEqual([]);
+  // Party 1 should initially follow no one.
+  const noFollowing1 = await page1.$$('.test-select-friend');
+  expect(noFollowing1).toEqual([]);
 
-  // Add Party 2 as a friend using the text input.
+  // Follow Party 2 using the text input.
   // This should work even though Party 2 has not logged in yet.
-  // Check Party 1's friend list contains exactly Party 2.
-  await addFriend(page1, party2);
+  // Check Party 1's following list contains exactly Party 2.
+  await follow(page1, party2);
   await page1.waitForSelector('.test-select-friend');
-  const friendList1 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
-  expect(friendList1).toEqual([party2]);
+  const followingList1 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
+  expect(followingList1).toEqual([party2]);
 
   // Log in as Party 2.
   const page2 = await newUiPage();
   await login(page2, party2);
 
-  // Party 2 should initially have no friends.
-  const noFriends2 = await page2.$$('.test-select-friend');
-  expect(noFriends2).toEqual([]);
+  // Party 2 should initially follow no one.
+  const noFollowing2 = await page2.$$('.test-select-friend');
+  expect(noFollowing2).toEqual([]);
 
   // However, Party 2 should see Party 1 in the network.
   await page2.waitForSelector('.test-select-user-in-network');
   const network2 = await page2.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
   expect(network2).toEqual([party1]);
 
-  // Add Party 1 as a friend using the 'add friend' icon next to the name.
+  // Follow Party 1 using the 'follow' icon next to the name.
   // Note this only works as the first icon on the page is for Party 1.
   // TODO: Select the icon corresponding to any given party.
-  await page2.waitForSelector('.test-select-add-user-icon');
-  await page2.click('.test-select-add-user-icon');
+  await page2.waitForSelector('.test-select-follow-icon');
+  await page2.click('.test-select-follow-icon');
 
-  // Check the friend list is updated correctly.
-  await page2.waitForSelector('.test-select-friend');
-  const friendList2 = await page2.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
-  expect(friendList2).toEqual([party1]);
+  // Check the followers list is updated correctly.
+  await page2.waitForSelector('.test-select-follower');
+  const followersList2 = await page2.$$eval('.test-select-follower', friends => friends.map(e => e.innerHTML));
+  expect(followersList2).toEqual([party1]);
 
   // Party 1 should now also see Party 2 in the network.
   await page1.waitForSelector('.test-select-user-in-network');
@@ -229,7 +229,7 @@ test('log in as two different users and add each other as friends', async () => 
   await page2.close();
 }, 20_000);
 
-test('error when adding self as a friend', async () => {
+test('error when following self', async () => {
   const party = getParty();
   const page = await newUiPage();
 
@@ -237,14 +237,14 @@ test('error when adding self as a friend', async () => {
   page.on('dialog', dismissError);
 
   await login(page, party);
-  await addFriend(page, party);
+  await follow(page, party);
 
   expect(dismissError).toHaveBeenCalled();
 
   await page.close();
 });
 
-test('error when adding existing friend', async () => {
+test('error when adding a user that you are already following', async () => {
   const party1 = getParty();
   const party2 = getParty();
   const page = await newUiPage();
@@ -254,9 +254,9 @@ test('error when adding existing friend', async () => {
 
   await login(page, party1);
   // First attempt should succeed
-  await addFriend(page, party2);
+  await follow(page, party2);
   // Second attempt should result in an error
-  await addFriend(page, party2);
+  await follow(page, party2);
 
   expect(dismissError).toHaveBeenCalled();
 

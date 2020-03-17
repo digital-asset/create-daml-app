@@ -21,7 +21,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
       const ledger = new Ledger({token: credentials.token, httpBaseUrl, wsBaseUrl});
       let userContract = await ledger.lookupByKey(User, credentials.party);
       if (userContract === null) {
-        const user = {username: credentials.party, friends: []};
+        const user = {username: credentials.party, following: []};
         userContract = await ledger.create(User, user);
       }
       onLogin(credentials);

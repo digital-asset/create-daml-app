@@ -3,19 +3,19 @@ module User where
 
 template User with
     username: Party
-    friends: [Party]
+    following: [Party]
   where
     signatory username
-    observer friends
+    observer following
 
     key username: Party
     maintainer key
 
-    nonconsuming choice AddFriend: ContractId User with
-        friend: Party
+    nonconsuming choice Follow: ContractId User with
+        userToFollow: Party
       controller username
       do
-        assertMsg "You cannot add yourself as a friend" (friend /= username)
-        assertMsg "You cannot add a friend twice" (friend `notElem` friends)
+        assertMsg "You cannot follow yourself" (userToFollow /= username)
+        assertMsg "You cannot follow the same user twice" (userToFollow `notElem` following)
         archive self
-        create this with friends = friend :: friends
+        create this with following = userToFollow :: following

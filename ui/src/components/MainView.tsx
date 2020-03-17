@@ -12,19 +12,19 @@ const MainView: React.FC = () => {
   const myUser = myUserResult.contract?.payload;
   const allUsers = useStreamQuery(User).contracts;
 
-  // Sorted list of friends of the current user
-  const friends = useMemo(() =>
+  // Sorted list of users that the current user is following
+  const following = useMemo(() =>
     allUsers
     .map(user => user.payload)
     .filter(user => user.username !== username)
     .sort((x, y) => x.username.localeCompare(y.username)),
     [allUsers, username]);
 
-  const [exerciseAddFriend] = useExerciseByKey(User.AddFriend);
+  const [exerciseFollow] = useExerciseByKey(User.Follow);
 
-  const addFriend = async (friend: Party): Promise<boolean> => {
+  const follow = async (userToFollow: Party): Promise<boolean> => {
     try {
-      await exerciseAddFriend(username, {friend});
+      await exerciseFollow(username, {userToFollow});
       return true;
     } catch (error) {
       alert("Unknown error:\n" + JSON.stringify(error));
@@ -46,13 +46,13 @@ const MainView: React.FC = () => {
                 <Icon name='user' />
                 <Header.Content>
                   {myUser?.username ?? 'Loading...'}
-                  <Header.Subheader>Me and my friends</Header.Subheader>
+                  <Header.Subheader>Users I'm following</Header.Subheader>
                 </Header.Content>
               </Header>
               <Divider />
               <PartyListEdit
-                parties={myUser?.friends ?? []}
-                onAddParty={addFriend}
+                parties={myUser?.following ?? []}
+                onAddParty={follow}
               />
             </Segment>
             <Segment>
@@ -60,13 +60,13 @@ const MainView: React.FC = () => {
                 <Icon name='globe' />
                 <Header.Content>
                   The Network
-                  <Header.Subheader>Others and their friends</Header.Subheader>
+                  <Header.Subheader>My followers and users they are following</Header.Subheader>
                 </Header.Content>
               </Header>
               <Divider />
               <UserList
-                users={friends}
-                onAddFriend={addFriend}
+                users={following}
+                onFollow={follow}
               />
             </Segment>
           </Grid.Column>
