@@ -130,10 +130,11 @@ const logout = async (page: Page) => {
   await page.waitForSelector('.test-select-login-screen');
 }
 
-// Add a friend using the text input in the Friends panel.
+// Add a friend using the text input and button in the Friends panel.
 const addFriend = async (page: Page, friend: string) => {
-  await page.click('.test-select-add-friend-input');
-  await page.type('.test-select-add-friend-input', friend);
+  const friendInput = await page.waitForSelector('.test-select-add-friend-input');
+  await friendInput.click();
+  await friendInput.type(friend);
   await page.click('.test-select-add-friend-button');
 
   // Wait for the request to complete, either successfully or after the error
