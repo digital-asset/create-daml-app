@@ -154,8 +154,9 @@ const sendMessageToFirst = async (page: Page, content: string) => {
   await page.click(item);
 
   // Type the message into the text input.
-  await page.click('.test-select-message-content');
-  await page.type('.test-select-message-content', content);
+  const messageInput = await page.waitForSelector('.test-select-message-content');
+  await messageInput.click();
+  await messageInput.type(content);
 
   // Click send and wait for the request to complete.
   await page.click('.test-select-message-send-button');
