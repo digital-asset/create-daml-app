@@ -118,8 +118,9 @@ const newUiPage = async (): Promise<Page> => {
 
 // Log in using a party name and wait for the main screen to load.
 const login = async (page: Page, partyName: string) => {
-  await page.click('.test-select-username-field');
-  await page.type('.test-select-username-field', partyName);
+  const usernameInput = await page.waitForSelector('.test-select-username-field');
+  await usernameInput.click();
+  await usernameInput.type(partyName);
   await page.click('.test-select-login-button');
   await page.waitForSelector('.test-select-main-menu');
 }
