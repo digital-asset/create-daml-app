@@ -24,7 +24,8 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
                 name='add user'
                 link
                 className='test-select-add-user-icon'
-                onClick={() => onAddFriend(user.username)} />
+                onClick={() => onAddFriend(user.username)}
+              />
             </List.Content>
             <List.Header className='test-select-user-in-network'>{user.username}</List.Header>
           </List.Content>
@@ -36,7 +37,8 @@ const UserList: React.FC<Props> = ({users, onAddFriend}) => {
                     name='add user'
                     link
                     className='test-select-add-friend-of-user-icon'
-                    onClick={() => onAddFriend(friend)} />
+                    onClick={() => onAddFriend(friend)}
+                  />
                 </List.Content>
                 <List.Icon name='user outline' />
                 <List.Content>
