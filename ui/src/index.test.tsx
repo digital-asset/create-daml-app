@@ -144,14 +144,21 @@ const addFriend = async (page: Page, friend: string) => {
   await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
 }
 
-// Send a message to the first friend appearing in the dropdown menu.
-const sendMessageToFirst = async (page: Page, content: string) => {
-  // Select the first option in the dropdown menu.
+// Send a message to another user by their 0-based index in the dropdown menu.
+// There must be at least one user available to message otherwise the function
+// will hang waiting for the selector to match.
+const sendMessage = async (page: Page, content: string, index: number) => {
+  // Selectors for the dropdown and the items inside it.
   const dropdown = '.test-select-message-receiver > .dropdown';
   const item = `${dropdown} > .menu > .item`;
+
+  // After clicking the dropdown, we need to wait for the choices to appear.
   await page.click(dropdown);
   await page.waitForSelector(item);
-  await page.click(item);
+
+  // Choose a friend based on the given index.
+  const receivers = await page.$$(item);
+  await receivers[index].click();
 
   // Type the message into the text input.
   const messageInput = await page.waitForSelector('.test-select-message-content');
@@ -305,7 +312,7 @@ test('send messages between two friends', async () => {
 
   // Once Party 2 is a friend of Party 1, Party 2 can send Party 1 a message.
   await addFriend(page1, party2);
-  await sendMessageToFirst(page2, `Hey ${party1}!`);
+  await sendMessage(page2, `Hey ${party1}!`, 0);
 
   // Both parties should see the message.
   expect(await countMessagesNotZero(page2)).toEqual(1);
@@ -317,7 +324,7 @@ test('send messages between two friends', async () => {
   await logout(page2);
 
   // Now that Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
-  await sendMessageToFirst(page1, `Hey ${party2}!`);
+  await sendMessage(page1, `Hey ${party2}!`, 0);
 
   // Log back in as Party 2.
   await login(page2, party2);
