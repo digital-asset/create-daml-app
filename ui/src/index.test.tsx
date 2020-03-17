@@ -193,8 +193,8 @@ test('log in as two different users and add each other as friends', async () => 
   // Check the friend list has one element.
   await addFriend(page1, party2);
   await page1.waitForSelector('.test-select-friend');
-  const friendList1 = await page1.$$('.test-select-friend');
-  expect(friendList1).toHaveLength(1);
+  const friendList1 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
+  expect(friendList1).toEqual([party2]);
 
   // Log in as Party 2.
   const page2 = await newUiPage();
@@ -210,8 +210,8 @@ test('log in as two different users and add each other as friends', async () => 
   await page2.waitForSelector('.test-select-add-user-icon');
   await page2.click('.test-select-add-user-icon');
   await page2.waitForSelector('.test-select-friend');
-  const friendList2 = await page2.$$('.test-select-friend');
-  expect(friendList2).toHaveLength(1);
+  const friendList2 = await page2.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
+  expect(friendList2).toEqual([party1]);
 
   // Party 1 should now also see Party 2 in the network.
   await page1.waitForSelector('.test-select-user-in-network');
