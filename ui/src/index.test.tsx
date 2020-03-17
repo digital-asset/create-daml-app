@@ -21,6 +21,21 @@ let browser: Browser | undefined = undefined;
 
 let uiProc: ChildProcess | undefined = undefined;
 
+// Function to generate unique party names for us.
+// This should be replaced by the party management service once that is exposed
+// in the HTTP JSON API.
+let nextPartyId = 1;
+function getParty(): string {
+  const party = `P${nextPartyId}`;
+  nextPartyId++;
+  return party;
+}
+
+test('Party names are unique', async () => {
+  const parties = new Set(Array(10).fill({}).map(() => getParty()));
+  expect(parties.size).toEqual(10);
+});
+
 // Use a single sandbox, JSON API server and browser for all tests for speed.
 // This means we need to use a different set of parties and a new browser page for each test.
 beforeAll(async () => {
@@ -42,8 +57,7 @@ beforeAll(async () => {
   // Run `yarn start` in another shell.
   // Disable automatically opening a browser using the env var described here:
   // https://github.com/facebook/create-react-app/issues/873#issuecomment-266318338
-  let env = process.env;
-  env.BROWSER = 'none';
+  const env = {...process.env, BROWSER: 'none'};
   uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit' });
 
   // We know the `daml start` and `yarn start` servers are ready once the relevant ports become available.
@@ -74,11 +88,8 @@ afterAll(async () => {
   }
 });
 
-// Note(cocreature): Once the party management service is exposed via the HTTP JSON API,
-// I would recommend to use the party management service to allocate parties. If you don’t
-// supply a party id hint you will always get a fresh party.
 test('create and look up user using ledger library', async () => {
-  const partyName = 'Bob';
+  const partyName = getParty();
   const {party, token} = computeCredentials(partyName);
   const ledger = new Ledger({token});
   const users0 = await ledger.query(User);
@@ -163,20 +174,18 @@ const countMessagesNotZero = async (page: Page) => {
 }
 
 test('log in as a new user, log out and log back in', async () => {
-  const partyName = 'Alice'; // See Note(cocreature)
-
-  const page = await newUiPage();
+  const partyName = getParty();
 
   // Log in as a new user.
+  const page = await newUiPage();
   await login(page, partyName);
 
   // Check that the ledger contains the new User contract.
-  const {party, token} = computeCredentials(partyName);
+  const {token} = computeCredentials(partyName);
   const ledger = new Ledger({token});
   const users = await ledger.query(User);
-  expect(users.length).toEqual(1);
-  const userContract = await ledger.lookupByKey(User, party);
-  expect(userContract?.payload.username).toEqual(partyName);
+  expect(users).toHaveLength(1);
+  expect(users[0].payload.username).toEqual(partyName);
 
   // Log out and in again as the same user.
   await logout(page);
@@ -184,7 +193,7 @@ test('log in as a new user, log out and log back in', async () => {
 
   // Check we have the same one user.
   const usersFinal = await ledger.query(User);
-  expect(usersFinal.length).toEqual(1);
+  expect(usersFinal).toHaveLength(1);
   expect(usersFinal[0].payload.username).toEqual(partyName);
 
   await page.close();
@@ -197,8 +206,8 @@ test('log in as a new user, log out and log back in', async () => {
 // - while the friend is logged out
 // These are all successful cases.
 test('log in as two different users and add each other as friends', async () => {
-  const party1 = 'P1';
-  const party2 = 'P2';
+  const party1 = getParty();
+  const party2 = getParty();
 
   // Log in as Party 1.
   const page1 = await newUiPage();
@@ -210,11 +219,11 @@ test('log in as two different users and add each other as friends', async () => 
 
   // Add Party 2 as a friend using the text input.
   // This should work even though Party 2 has not logged in yet.
-  // Check the friend list has one element.
+  // Check Party 1's friend list contains exactly Party 2.
   await addFriend(page1, party2);
   await page1.waitForSelector('.test-select-friend');
-  const friendList1 = await page1.$$('.test-select-friend');
-  expect(friendList1.length).toEqual(1);
+  const friendList1 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
+  expect(friendList1).toEqual([party2]);
 
   // Log in as Party 2.
   const page2 = await newUiPage();
@@ -224,25 +233,33 @@ test('log in as two different users and add each other as friends', async () => 
   const noFriends2 = await page2.$$('.test-select-friend');
   expect(noFriends2).toEqual([]);
 
-  // However, Party 1 should appear in the network of Party 2.
-  // Add Party 1 as a friend using the icon (the first one on the page).
-  // Check the friend list has one element.
+  // However, Party 2 should see Party 1 in the network.
+  await page2.waitForSelector('.test-select-user-in-network');
+  const network2 = await page2.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
+  expect(network2).toEqual([party1]);
+
+  // Add Party 1 as a friend using the 'add friend' icon next to the name.
+  // Note this only works as the first icon on the page is for Party 1.
+  // TODO: Select the icon corresponding to any given party.
   await page2.waitForSelector('.test-select-add-user-icon');
   await page2.click('.test-select-add-user-icon');
+
+  // Check the friend list is updated correctly.
   await page2.waitForSelector('.test-select-friend');
-  const friendList2 = await page2.$$('.test-select-friend');
-  expect(friendList2.length).toEqual(1);
+  const friendList2 = await page2.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
+  expect(friendList2).toEqual([party1]);
 
   // Party 1 should now also see Party 2 in the network.
-  // Check this by finding the icon next to Party 2's name.
-  await page1.waitForSelector('.test-select-add-user-icon');
+  await page1.waitForSelector('.test-select-user-in-network');
+  const network1 = await page1.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
+  expect(network1).toEqual([party2]);
 
   await page1.close();
   await page2.close();
 }, 20_000);
 
 test('error when adding self as a friend', async () => {
-  const party = 'Self';
+  const party = getParty();
   const page = await newUiPage();
 
   const dismissError = jest.fn(dialog => dialog.dismiss());
@@ -257,8 +274,8 @@ test('error when adding self as a friend', async () => {
 });
 
 test('error when adding existing friend', async () => {
-  const party1 = 'Q1';
-  const party2 = 'Q2';
+  const party1 = getParty();
+  const party2 = getParty();
   const page = await newUiPage();
 
   const dismissError = jest.fn(dialog => dialog.dismiss());
@@ -276,8 +293,8 @@ test('error when adding existing friend', async () => {
 });
 
 test('send messages between two friends', async () => {
-  const party1 = 'R1';
-  const party2 = 'R2';
+  const party1 = getParty();
+  const party2 = getParty();
 
   const page1 = await newUiPage();
   await login(page1, party1);
