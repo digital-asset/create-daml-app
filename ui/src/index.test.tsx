@@ -190,7 +190,7 @@ test('log in as two different users and add each other as friends', async () => 
 
   // Add Party 2 as a friend using the text input.
   // This should work even though Party 2 has not logged in yet.
-  // Check the friend list has one element.
+  // Check Party 1's friend list contains exactly Party 2.
   await addFriend(page1, party2);
   await page1.waitForSelector('.test-select-friend');
   const friendList1 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
@@ -204,11 +204,18 @@ test('log in as two different users and add each other as friends', async () => 
   const noFriends2 = await page2.$$('.test-select-friend');
   expect(noFriends2).toEqual([]);
 
-  // However, Party 1 should appear in the network of Party 2.
-  // Add Party 1 as a friend using the icon (the first one on the page).
-  // Check the friend list has one element.
+  // However, Party 2 should see Party 1 in the network.
+  await page2.waitForSelector('.test-select-user-in-network');
+  const network2 = await page2.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
+  expect(network2).toEqual([party1]);
+
+  // Add Party 1 as a friend using the 'add friend' icon next to the name.
+  // Note this only works as the first icon on the page is for Party 1.
+  // TODO: Select the icon corresponding to any given party.
   await page2.waitForSelector('.test-select-add-user-icon');
   await page2.click('.test-select-add-user-icon');
+
+  // Check the friend list is updated correctly.
   await page2.waitForSelector('.test-select-friend');
   const friendList2 = await page2.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
   expect(friendList2).toEqual([party1]);
