@@ -319,30 +319,32 @@ test('send messages between two friends', async () => {
   await addFriend(page1, party2);
 
   // Party 2 has two choices of whom to message.
-  // Party 2 chooses to send Party 1 a message.
+  // Party 2 sends two messages to Party 1.
   await sendMessage(page2, `Hey ${party1}!`, 1);
+  await sendMessage(page2, `What's up?`, 1);
 
-  // Both Party 1 and 2 should see the message.
+  // Both Party 1 and 2 should see the messages.
   // Note: It's not obvious how to test that the message list is empty for Party
   // 0 as even when we get a message we need to wait a bit for it to render.
-  expect(await countMessagesNotZero(page1)).toEqual(1);
-  expect(await countMessagesNotZero(page2)).toEqual(1);
+  expect(await countMessagesNotZero(page1)).toEqual(2);
+  expect(await countMessagesNotZero(page2)).toEqual(2);
 
   // As Party 2, add Party 1 as a friend and log out.
-  // This will test that a message is received even when logged out.
+  // We will test that a message is received even when logged out.
   await addFriend(page2, party1);
   await logout(page2);
 
-  // Now that Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
+  // Party 1 can now send Party 2 a message.
   await sendMessage(page1, `Hey ${party2}!`, 0);
 
   // Log back in as Party 2.
   await login(page2, party2);
 
-  // Then both parties should see both messages.
-  expect(await countMessagesNotZero(page1)).toEqual(2);
-  expect(await countMessagesNotZero(page2)).toEqual(2);
+  // Now both Party 1 and 2 can see all the messages.
+  expect(await countMessagesNotZero(page1)).toEqual(3);
+  expect(await countMessagesNotZero(page2)).toEqual(3);
 
+  await page0.close();
   await page1.close();
   await page2.close();
 }, 10_000);
