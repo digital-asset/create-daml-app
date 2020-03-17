@@ -301,8 +301,12 @@ test('error when adding existing friend', async () => {
 });
 
 test('send messages between two friends', async () => {
+  const party0 = getParty();
   const party1 = getParty();
   const party2 = getParty();
+
+  const page0 = await newUiPage();
+  await login(page0, party0);
 
   const page1 = await newUiPage();
   await login(page1, party1);
@@ -310,13 +314,19 @@ test('send messages between two friends', async () => {
   const page2 = await newUiPage();
   await login(page2, party2);
 
-  // Once Party 2 is a friend of Party 1, Party 2 can send Party 1 a message.
+  // Both Party 0 and 1 add Party 2 as a friend.
+  await addFriend(page0, party2);
   await addFriend(page1, party2);
-  await sendMessage(page2, `Hey ${party1}!`, 0);
 
-  // Both parties should see the message.
-  expect(await countMessagesNotZero(page2)).toEqual(1);
+  // Party 2 has two choices of whom to message.
+  // Party 2 chooses to send Party 1 a message.
+  await sendMessage(page2, `Hey ${party1}!`, 1);
+
+  // Both Party 1 and 2 should see the message.
+  // Note: It's not obvious how to test that the message list is empty for Party
+  // 0 as even when we get a message we need to wait a bit for it to render.
   expect(await countMessagesNotZero(page1)).toEqual(1);
+  expect(await countMessagesNotZero(page2)).toEqual(1);
 
   // As Party 2, add Party 1 as a friend and log out.
   // This will test that a message is received even when logged out.
