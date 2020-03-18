@@ -131,9 +131,9 @@ const logout = async (page: Page) => {
 }
 
 // Follow a user using the text input in the follow panel.
-const follow = async (page: Page, friend: string) => {
+const follow = async (page: Page, userToFollow: string) => {
   await page.click('.test-select-follow-input');
-  await page.type('.test-select-follow-input', friend);
+  await page.type('.test-select-follow-input', userToFollow);
   await page.click('.test-select-follow-button');
 
   // Wait for the request to complete, either successfully or after the error
@@ -185,15 +185,15 @@ test('log in as two different users and start following each other', async () =>
   await login(page1, party1);
 
   // Party 1 should initially follow no one.
-  const noFollowing1 = await page1.$$('.test-select-friend');
+  const noFollowing1 = await page1.$$('.test-select-follow');
   expect(noFollowing1).toEqual([]);
 
   // Follow Party 2 using the text input.
   // This should work even though Party 2 has not logged in yet.
   // Check Party 1's following list contains exactly Party 2.
   await follow(page1, party2);
-  await page1.waitForSelector('.test-select-friend');
-  const followingList1 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
+  await page1.waitForSelector('.test-select-follow');
+  const followingList1 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
   expect(followingList1).toEqual([party2]);
 
   // Log in as Party 2.
@@ -201,7 +201,7 @@ test('log in as two different users and start following each other', async () =>
   await login(page2, party2);
 
   // Party 2 should initially follow no one.
-  const noFollowing2 = await page2.$$('.test-select-friend');
+  const noFollowing2 = await page2.$$('.test-select-follow');
   expect(noFollowing2).toEqual([]);
 
   // However, Party 2 should see Party 1 in the network.
@@ -216,8 +216,8 @@ test('log in as two different users and start following each other', async () =>
   await page2.click('.test-select-follow-icon');
 
   // Check the followers list is updated correctly.
-  await page2.waitForSelector('.test-select-follower');
-  const followersList2 = await page2.$$eval('.test-select-follower', friends => friends.map(e => e.innerHTML));
+  await page2.waitForSelector('.test-select-follow');
+  const followersList2 = await page2.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
   expect(followersList2).toEqual([party1]);
 
   // Party 1 should now also see Party 2 in the network.
