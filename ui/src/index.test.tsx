@@ -144,10 +144,11 @@ const addFriend = async (page: Page, friend: string) => {
   await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
 }
 
-// Send a message to another user by their 0-based index in the dropdown menu.
-// There must be at least one user available to message otherwise the function
-// will hang waiting for the selector to match.
-const sendMessage = async (page: Page, content: string, index: number) => {
+// Send a message to the given user.
+// Does nothing if the user does not appear in the dropdown menu.
+// NOTE: There must be at least one user available in the dropdown,
+// otherwise the function hangs waiting for the selector to match.
+const sendMessage = async (page: Page, receiver: string, content: string) => {
   // Selectors for the dropdown and the items inside it.
   const dropdown = '.test-select-message-receiver > .dropdown';
   const item = `${dropdown} > .menu > .item`;
@@ -156,9 +157,16 @@ const sendMessage = async (page: Page, content: string, index: number) => {
   await page.click(dropdown);
   await page.waitForSelector(item);
 
-  // Choose a friend based on the given index.
+  // Select the dropdown items and extract their names.
   const receivers = await page.$$(item);
-  await receivers[index].click();
+  const names = await Promise.all(receivers.map(e => e.$eval('.text', name => name.innerHTML)));
+
+  // Find which item corresponds to the given user and click it.
+  const receiverIndex = names.indexOf(receiver);
+  if (receiverIndex < 0) {
+    return;
+  }
+  await receivers[receiverIndex].click();
 
   // Type the message into the text input.
   const messageInput = await page.waitForSelector('.test-select-message-content');
@@ -320,8 +328,8 @@ test('send messages between two friends', async () => {
 
   // Party 2 has two choices of whom to message.
   // Party 2 sends two messages to Party 1.
-  await sendMessage(page2, `Hey ${party1}!`, 1);
-  await sendMessage(page2, `What's up?`, 1);
+  await sendMessage(page2, party1, `Hey ${party1}!`);
+  await sendMessage(page2, party1, `What's up?`);
 
   // Both Party 1 and 2 should see the messages.
   // Note: It's not obvious how to test that the message list is empty for Party
@@ -335,7 +343,7 @@ test('send messages between two friends', async () => {
   await logout(page2);
 
   // Party 1 can now send Party 2 a message.
-  await sendMessage(page1, `Hey ${party2}!`, 0);
+  await sendMessage(page1, party2, `Hey ${party2}!`);
 
   // Log back in as Party 2.
   await login(page2, party2);
