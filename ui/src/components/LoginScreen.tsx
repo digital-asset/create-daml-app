@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Button, Form, Grid, Header, Image, Segment } from 'semantic-ui-react'
 import Credentials, { computeCredentials } from '../Credentials';
 import Ledger from '@daml/ledger';
-import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
+import { User } from '@daml-ts/create-daml-app-0.1.0/lib/User';
 import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl, wsBaseUrl } from '../config';
 import { useEffect } from 'react';
 
