@@ -40,10 +40,10 @@ First, we need to generate TypeScript code bindings for the compiled DAML model.
 At the root of the repository, run
 ```
 daml build
-daml codegen ts .daml/dist/create-daml-app-0.1.0.dar -o daml-ts/src
+daml codegen ts .daml/dist/create-daml-app-0.1.0.dar -o daml-ts -p package.json
 ```
-The latter command writes TypeScript files into the `daml-ts` workspace on which
-`create-daml-app` depends.
+The latter command generates TypeScript packages in the `daml-ts` directory and
+updates the `package.json` with the new dependencies.
 
 Next, install all dependencies and build the app by running
 ```
