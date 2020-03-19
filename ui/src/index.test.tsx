@@ -144,18 +144,34 @@ const addFriend = async (page: Page, friend: string) => {
   await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
 }
 
-// Send a message to the first friend appearing in the dropdown menu.
-const sendMessageToFirst = async (page: Page, content: string) => {
-  // Select the first option in the dropdown menu.
+// Send a message to the given user.
+// NOTE: There must be at least one user available in the dropdown,
+// otherwise the function hangs waiting for the selector to match.
+// Throws an exception if the given user does not appear in the dropdown menu.
+const sendMessage = async (page: Page, receiver: string, content: string) => {
+  // Selectors for the dropdown and the items inside it.
   const dropdown = '.test-select-message-receiver > .dropdown';
   const item = `${dropdown} > .menu > .item`;
+
+  // After clicking the dropdown, we need to wait for the choices to appear.
   await page.click(dropdown);
   await page.waitForSelector(item);
-  await page.click(item);
+
+  // Select the dropdown items and extract their names.
+  const receivers = await page.$$(item);
+  const names = await Promise.all(receivers.map(e => e.$eval('.text', name => name.innerHTML)));
+
+  // Find which item corresponds to the given user and click it.
+  const receiverIndex = names.indexOf(receiver);
+  if (receiverIndex < 0) {
+    throw Error(`sendMessage: '${receiver}' does not appear in the dropdown menu`);
+  }
+  await receivers[receiverIndex].click();
 
   // Type the message into the text input.
-  await page.click('.test-select-message-content');
-  await page.type('.test-select-message-content', content);
+  const messageInput = await page.waitForSelector('.test-select-message-content');
+  await messageInput.click();
+  await messageInput.type(content);
 
   // Click send and wait for the request to complete.
   await page.click('.test-select-message-send-button');
@@ -293,8 +309,12 @@ test('error when adding existing friend', async () => {
 });
 
 test('send messages between two friends', async () => {
+  const party0 = getParty();
   const party1 = getParty();
   const party2 = getParty();
+
+  const page0 = await newUiPage();
+  await login(page0, party0);
 
   const page1 = await newUiPage();
   await login(page1, party1);
@@ -302,29 +322,37 @@ test('send messages between two friends', async () => {
   const page2 = await newUiPage();
   await login(page2, party2);
 
-  // Once Party 2 is a friend of Party 1, Party 2 can send Party 1 a message.
+  // Both Party 0 and 1 add Party 2 as a friend.
+  await addFriend(page0, party2);
   await addFriend(page1, party2);
-  await sendMessageToFirst(page2, `Hey ${party1}!`);
 
-  // Both parties should see the message.
-  expect(await countMessagesNotZero(page2)).toEqual(1);
-  expect(await countMessagesNotZero(page1)).toEqual(1);
+  // Party 2 has two choices of whom to message.
+  // Party 2 sends two messages to Party 1.
+  await sendMessage(page2, party1, `Hey ${party1}!`);
+  await sendMessage(page2, party1, `What's up?`);
+
+  // Both Party 1 and 2 should see the messages.
+  // Note: It's not obvious how to test that the message list is empty for Party
+  // 0 as even when we get a message we need to wait a bit for it to render.
+  expect(await countMessagesNotZero(page1)).toEqual(2);
+  expect(await countMessagesNotZero(page2)).toEqual(2);
 
   // As Party 2, add Party 1 as a friend and log out.
-  // This will test that a message is received even when logged out.
+  // We will test that a message is received even when logged out.
   await addFriend(page2, party1);
   await logout(page2);
 
-  // Now that Party 1 is a friend of Party 2, Party 1 can send Party 2 a message.
-  await sendMessageToFirst(page1, `Hey ${party2}!`);
+  // Party 1 can now send Party 2 a message.
+  await sendMessage(page1, party2, `Hey ${party2}!`);
 
   // Log back in as Party 2.
   await login(page2, party2);
 
-  // Then both parties should see both messages.
-  expect(await countMessagesNotZero(page1)).toEqual(2);
-  expect(await countMessagesNotZero(page2)).toEqual(2);
+  // Now both Party 1 and 2 can see all the messages.
+  expect(await countMessagesNotZero(page1)).toEqual(3);
+  expect(await countMessagesNotZero(page2)).toEqual(3);
 
+  await page0.close();
   await page1.close();
   await page2.close();
 }, 10_000);
