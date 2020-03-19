@@ -23,7 +23,7 @@ const UserList: React.FC<Props> = ({users, onFollow}) => {
               <Icon
                 name='add user'
                 link
-                className='test-select-follow-icon'
+                className='test-select-add-user-icon'
                 onClick={() => onFollow(user.username)} />
             </List.Content>
             <List.Header className='test-select-user-in-network'>{user.username}</List.Header>

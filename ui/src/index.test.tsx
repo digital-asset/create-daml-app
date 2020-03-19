@@ -221,8 +221,8 @@ test('log in as three different users and start following each other', async () 
   expect(network2).toEqual([party1]);
 
   // Follow Party 1 using the 'add user' icon on the right.
-  await page2.waitForSelector('.test-select-follow-icon');
-  const userIcons = await page2.$$('.test-select-follow-icon');
+  await page2.waitForSelector('.test-select-add-user-icon');
+  const userIcons = await page2.$$('.test-select-add-user-icon');
   expect(userIcons).toHaveLength(1);
   await userIcons[0].click();
 
