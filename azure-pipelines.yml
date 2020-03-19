@@ -62,7 +62,7 @@ jobs:
           yarn install --frozen-lockfile
           yarn workspaces run build
           yarn workspaces run lint
-          CI=yes yarn workspaces run test --ci --all
+          CI=yes yarn run test --ci --all
         displayName: build-and-test-ts
 
       - bash: |
