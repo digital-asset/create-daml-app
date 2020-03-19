@@ -12,8 +12,8 @@ const MainView: React.FC = () => {
   const myUser = myUserResult.contract?.payload;
   const allUsers = useStreamQuery(User).contracts;
 
-  // Sorted list of users that the current user is following
-  const following = useMemo(() =>
+  // Sorted list of users that are following the current user
+  const followers = useMemo(() =>
     allUsers
     .map(user => user.payload)
     .filter(user => user.username !== username)
@@ -65,7 +65,7 @@ const MainView: React.FC = () => {
               </Header>
               <Divider />
               <UserList
-                users={following}
+                users={followers}
                 onFollow={follow}
               />
             </Segment>
