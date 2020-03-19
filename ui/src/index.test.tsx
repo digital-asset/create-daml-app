@@ -178,7 +178,7 @@ test('log in as a new user, log out and log back in', async () => {
 // - while the user that is followed is logged out
 // These are all successful cases.
 
-test('log in as two different users and start following each other', async () => {
+test('log in as three different users and start following each other', async () => {
   const party1 = getParty();
   const party2 = getParty();
   const party3 = getParty();
@@ -199,11 +199,13 @@ test('log in as two different users and start following each other', async () =>
   const followingList1 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
   expect(followingList1).toEqual([party2]);
 
-  await page1.waitForSelector('.test-select-friend');
-  const friendList11 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
-  expect(friendList11).toHaveLength(2);
-  expect(friendList11).toContain(party2);
-  expect(friendList11).toContain(party3);
+   // Add Party 3 as well and check both are in the list.
+   await follow(page1, party3);
+   await page1.waitForSelector('.test-select-follow');
+   const followingList11 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+   expect(followingList11).toHaveLength(2);
+   expect(followingList11).toContain(party2);
+   expect(followingList11).toContain(party3);
 
   // Log in as Party 2.
   const page2 = await newUiPage();
@@ -218,34 +220,42 @@ test('log in as two different users and start following each other', async () =>
   const network2 = await page2.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
   expect(network2).toEqual([party1]);
 
-  // Follow Party 1 using the 'follow' icon next to the name.
-  // Note this only works as the first icon on the page is for Party 1.
-  // TODO: Select the icon corresponding to any given party.
+  // Follow Party 1 using the 'add user' icon on the right.
   await page2.waitForSelector('.test-select-follow-icon');
-  await page2.click('.test-select-follow-icon');
+  const userIcons = await page2.$$('.test-select-follow-icon');
+  expect(userIcons).toHaveLength(1);
+  await userIcons[0].click();
 
-  // Check the followers list is updated correctly.
+  // Also follow Party 3 using the text input.
+  // Note that we can also use the icon to follow Party 3 as they appear in the
+  // Party 1's Network panel, but that's harder to test at the
+  // moment because there is no loading indicator to tell when it's done.
+  await follow(page2, party3);
+
+  // Check the following list is updated correctly.
   await page2.waitForSelector('.test-select-follow');
-  const followersList2 = await page2.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
-  expect(followersList2).toEqual([party1]);
+  const followingList2 = await page2.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+  expect(followingList2).toHaveLength(2);
+  expect(followingList2).toContain(party1);
+  expect(followingList2).toContain(party3);
 
   // Party 1 should now also see Party 2 in the network (but not Party 3 as they
-  // didn't yet add Party 1 as a friend).
+  // didn't yet started following Party 1).
   await page1.waitForSelector('.test-select-user-in-network');
-  const network1 = await page1.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
+  const network1 = await page1.$$eval('.test-select-user-in-network', following => following.map(e => e.innerHTML));
   expect(network1).toEqual([party2]);
 
   // Log in as Party 3.
   const page3 = await newUiPage();
   await login(page3, party3);
 
-  // Party 3 should have no friends.
-  const noFriends3 = await page3.$$('.test-select-friend');
-  expect(noFriends3).toEqual([]);
+  // Party 3 should follow no one.
+  const noFollowing3 = await page3.$$('.test-select-follow');
+  expect(noFollowing3).toEqual([]);
 
   // However, Party 3 should see both Party 1 and Party 2 in the network.
   await page3.waitForSelector('.test-select-user-in-network');
-  const network3 = await page3.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
+  const network3 = await page3.$$eval('.test-select-user-in-network', following => following.map(e => e.innerHTML));
   expect(network3).toHaveLength(2);
   expect(network3).toContain(party1);
   expect(network3).toContain(party2);
