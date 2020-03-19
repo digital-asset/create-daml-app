@@ -118,8 +118,9 @@ const newUiPage = async (): Promise<Page> => {
 
 // Log in using a party name and wait for the main screen to load.
 const login = async (page: Page, partyName: string) => {
-  await page.click('.test-select-username-field');
-  await page.type('.test-select-username-field', partyName);
+  const usernameInput = await page.waitForSelector('.test-select-username-field');
+  await usernameInput.click();
+  await usernameInput.type(partyName);
   await page.click('.test-select-login-button');
   await page.waitForSelector('.test-select-main-menu');
 }
@@ -176,9 +177,11 @@ test('log in as a new user, log out and log back in', async () => {
 // - while the user that is followed is logged in
 // - while the user that is followed is logged out
 // These are all successful cases.
+
 test('log in as two different users and start following each other', async () => {
   const party1 = getParty();
   const party2 = getParty();
+  const party3 = getParty();
 
   // Log in as Party 1.
   const page1 = await newUiPage();
@@ -195,6 +198,14 @@ test('log in as two different users and start following each other', async () =>
   await page1.waitForSelector('.test-select-follow');
   const followingList1 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
   expect(followingList1).toEqual([party2]);
+
+  // Add Party 3 as well and check both friends are in the list.
+  await addFriend(page1, party3);
+  await page1.waitForSelector('.test-select-friend');
+  const friendList11 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
+  expect(friendList11).toHaveLength(2);
+  expect(friendList11).toContain(party2);
+  expect(friendList11).toContain(party3);
 
   // Log in as Party 2.
   const page2 = await newUiPage();
@@ -220,14 +231,31 @@ test('log in as two different users and start following each other', async () =>
   const followersList2 = await page2.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
   expect(followersList2).toEqual([party1]);
 
-  // Party 1 should now also see Party 2 in the network.
+  // Party 1 should now also see Party 2 in the network (but not Party 3 as they
+  // didn't yet add Party 1 as a friend).
   await page1.waitForSelector('.test-select-user-in-network');
   const network1 = await page1.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
   expect(network1).toEqual([party2]);
 
+  // Log in as Party 3.
+  const page3 = await newUiPage();
+  await login(page3, party3);
+
+  // Party 3 should have no friends.
+  const noFriends3 = await page3.$$('.test-select-friend');
+  expect(noFriends3).toEqual([]);
+
+  // However, Party 3 should see both Party 1 and Party 2 in the network.
+  await page3.waitForSelector('.test-select-user-in-network');
+  const network3 = await page3.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
+  expect(network3).toHaveLength(2);
+  expect(network3).toContain(party1);
+  expect(network3).toContain(party2);
+
   await page1.close();
   await page2.close();
-}, 20_000);
+  await page3.close();
+}, 30_000);
 
 test('error when following self', async () => {
   const party = getParty();
