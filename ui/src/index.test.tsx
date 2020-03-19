@@ -199,8 +199,6 @@ test('log in as two different users and start following each other', async () =>
   const followingList1 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
   expect(followingList1).toEqual([party2]);
 
-  // Add Party 3 as well and check both friends are in the list.
-  await addFriend(page1, party3);
   await page1.waitForSelector('.test-select-friend');
   const friendList11 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
   expect(friendList11).toHaveLength(2);
