@@ -35,7 +35,7 @@ const UserList: React.FC<Props> = ({users, onFollow}) => {
                   <Icon
                     name='add user'
                     link
-                    className='test-select-add-friend-of-user-icon'
+                    className='test-select-add-user-following-icon'
                     onClick={() => onFollow(userToFollow)} />
                 </List.Content>
                 <List.Icon name='user outline' />
