@@ -1,7 +1,7 @@
 import React from 'react'
 import { Icon, List } from 'semantic-ui-react'
 import { Party } from '@daml/types';
-import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
+import { User } from '@daml-ts/create-daml-app-0.1.0/lib/User';
 
 type Props = {
   users: User[];
