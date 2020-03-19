@@ -94,7 +94,7 @@ test('create and look up user using ledger library', async () => {
   const ledger = new Ledger({token});
   const users0 = await ledger.query(User);
   expect(users0).toEqual([]);
-  const user: User = {username: party, friends: []};
+  const user: User = {username: party, following: []};
   const userContract1 = await ledger.create(User, user);
   const userContract2 = await ledger.lookupByKey(User, party);
   expect(userContract1).toEqual(userContract2);
@@ -118,8 +118,9 @@ const newUiPage = async (): Promise<Page> => {
 
 // Log in using a party name and wait for the main screen to load.
 const login = async (page: Page, partyName: string) => {
-  await page.click('.test-select-username-field');
-  await page.type('.test-select-username-field', partyName);
+  const usernameInput = await page.waitForSelector('.test-select-username-field');
+  await usernameInput.click();
+  await usernameInput.type(partyName);
   await page.click('.test-select-login-button');
   await page.waitForSelector('.test-select-main-menu');
 }
@@ -130,18 +131,18 @@ const logout = async (page: Page) => {
   await page.waitForSelector('.test-select-login-screen');
 }
 
-// Add a friend using the text input in the Friends panel.
-const addFriend = async (page: Page, friend: string) => {
-  await page.click('.test-select-add-friend-input');
-  await page.type('.test-select-add-friend-input', friend);
-  await page.click('.test-select-add-friend-button');
+// Follow a user using the text input in the Following panel.
+const follow = async (page: Page, userToFollow: string) => {
+  await page.click('.test-select-follow-input');
+  await page.type('.test-select-follow-input', userToFollow);
+  await page.click('.test-select-follow-button');
 
   // Wait for the request to complete, either successfully or after the error
   // dialog has been handled.
   // We check this by the absence of the `loading` class.
   // (Both the `test-...` and `loading` classes appear in `div`s surrounding
   // the `input`, due to the translation of Semantic UI's `Input` element.)
-  await page.waitForSelector('.test-select-add-friend-input > :not(.loading)');
+  await page.waitForSelector('.test-select-follow-input > :not(.loading)');
 }
 
 // Send a message to the given user.
@@ -215,66 +216,100 @@ test('log in as a new user, log out and log back in', async () => {
   await page.close();
 }, 10_000);
 
-// This tests adding friends in a few different ways:
-// - using the text box in the Friends panel
+// This tests following users in a few different ways:
+// - using the text box in the Follow panel
 // - using the icon in the Network panel
-// - while the friend is logged in
-// - while the friend is logged out
+// - while the user that is followed is logged in
+// - while the user that is followed is logged out
 // These are all successful cases.
-test('log in as two different users and add each other as friends', async () => {
+test('log in as three different users and start following each other', async () => {
   const party1 = getParty();
   const party2 = getParty();
+  const party3 = getParty();
 
   // Log in as Party 1.
   const page1 = await newUiPage();
   await login(page1, party1);
 
-  // Party 1 should initially have no friends.
-  const noFriends1 = await page1.$$('.test-select-friend');
-  expect(noFriends1).toEqual([]);
+  // Party 1 should initially follow no one.
+  const noFollowing1 = await page1.$$('.test-select-follow');
+  expect(noFollowing1).toEqual([]);
 
-  // Add Party 2 as a friend using the text input.
+  // Follow Party 2 using the text input.
   // This should work even though Party 2 has not logged in yet.
-  // Check Party 1's friend list contains exactly Party 2.
-  await addFriend(page1, party2);
-  await page1.waitForSelector('.test-select-friend');
-  const friendList1 = await page1.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
-  expect(friendList1).toEqual([party2]);
+  // Check Party 1 follows exactly Party 2.
+  await follow(page1, party2);
+  await page1.waitForSelector('.test-select-follow');
+  const followingList1 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+  expect(followingList1).toEqual([party2]);
+
+   // Add Party 3 as well and check both are in the list.
+   await follow(page1, party3);
+   await page1.waitForSelector('.test-select-follow');
+   const followingList11 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+   expect(followingList11).toHaveLength(2);
+   expect(followingList11).toContain(party2);
+   expect(followingList11).toContain(party3);
 
   // Log in as Party 2.
   const page2 = await newUiPage();
   await login(page2, party2);
 
-  // Party 2 should initially have no friends.
-  const noFriends2 = await page2.$$('.test-select-friend');
-  expect(noFriends2).toEqual([]);
+  // Party 2 should initially follow no one.
+  const noFollowing2 = await page2.$$('.test-select-follow');
+  expect(noFollowing2).toEqual([]);
 
   // However, Party 2 should see Party 1 in the network.
   await page2.waitForSelector('.test-select-user-in-network');
   const network2 = await page2.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
   expect(network2).toEqual([party1]);
 
-  // Add Party 1 as a friend using the 'add friend' icon next to the name.
-  // Note this only works as the first icon on the page is for Party 1.
-  // TODO: Select the icon corresponding to any given party.
+  // Follow Party 1 using the 'add user' icon on the right.
   await page2.waitForSelector('.test-select-add-user-icon');
-  await page2.click('.test-select-add-user-icon');
+  const userIcons = await page2.$$('.test-select-add-user-icon');
+  expect(userIcons).toHaveLength(1);
+  await userIcons[0].click();
 
-  // Check the friend list is updated correctly.
-  await page2.waitForSelector('.test-select-friend');
-  const friendList2 = await page2.$$eval('.test-select-friend', friends => friends.map(e => e.innerHTML));
-  expect(friendList2).toEqual([party1]);
+  // Also follow Party 3 using the text input.
+  // Note that we can also use an 'add user' icon to follow Party 3 as they
+  // appear in the Party 1's Network panel, but that's harder to test at the
+  // moment because there is no loading indicator to tell when it's done.
+  await follow(page2, party3);
 
-  // Party 1 should now also see Party 2 in the network.
+  // Check the following list is updated correctly.
+  await page2.waitForSelector('.test-select-follow');
+  const followingList2 = await page2.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+  expect(followingList2).toHaveLength(2);
+  expect(followingList2).toContain(party1);
+  expect(followingList2).toContain(party3);
+
+  // Party 1 should now also see Party 2 in the network (but not Party 3 as they
+  // aren't following Party 1).
   await page1.waitForSelector('.test-select-user-in-network');
-  const network1 = await page1.$$eval('.test-select-user-in-network', users => users.map(e => e.innerHTML));
+  const network1 = await page1.$$eval('.test-select-user-in-network', following => following.map(e => e.innerHTML));
   expect(network1).toEqual([party2]);
+
+  // Log in as Party 3.
+  const page3 = await newUiPage();
+  await login(page3, party3);
+
+  // Party 3 should follow no one.
+  const noFollowing3 = await page3.$$('.test-select-follow');
+  expect(noFollowing3).toEqual([]);
+
+  // However, Party 3 should see both Party 1 and Party 2 in the network.
+  await page3.waitForSelector('.test-select-user-in-network');
+  const network3 = await page3.$$eval('.test-select-user-in-network', following => following.map(e => e.innerHTML));
+  expect(network3).toHaveLength(2);
+  expect(network3).toContain(party1);
+  expect(network3).toContain(party2);
 
   await page1.close();
   await page2.close();
-}, 20_000);
+  await page3.close();
+}, 30_000);
 
-test('error when adding self as a friend', async () => {
+test('error when following self', async () => {
   const party = getParty();
   const page = await newUiPage();
 
@@ -282,14 +317,14 @@ test('error when adding self as a friend', async () => {
   page.on('dialog', dismissError);
 
   await login(page, party);
-  await addFriend(page, party);
+  await follow(page, party);
 
   expect(dismissError).toHaveBeenCalled();
 
   await page.close();
 });
 
-test('error when adding existing friend', async () => {
+test('error when following a user that you already follow', async () => {
   const party1 = getParty();
   const party2 = getParty();
   const page = await newUiPage();
@@ -299,16 +334,16 @@ test('error when adding existing friend', async () => {
 
   await login(page, party1);
   // First attempt should succeed
-  await addFriend(page, party2);
+  await follow(page, party2);
   // Second attempt should result in an error
-  await addFriend(page, party2);
+  await follow(page, party2);
 
   expect(dismissError).toHaveBeenCalled();
 
   await page.close();
 });
 
-test('send messages between two friends', async () => {
+test('send messages between users', async () => {
   const party0 = getParty();
   const party1 = getParty();
   const party2 = getParty();
@@ -322,9 +357,9 @@ test('send messages between two friends', async () => {
   const page2 = await newUiPage();
   await login(page2, party2);
 
-  // Both Party 0 and 1 add Party 2 as a friend.
-  await addFriend(page0, party2);
-  await addFriend(page1, party2);
+  // Party 0 and 1 both follow Party 2.
+  await follow(page0, party2);
+  await follow(page1, party2);
 
   // Party 2 has two choices of whom to message.
   // Party 2 sends two messages to Party 1.
@@ -337,9 +372,9 @@ test('send messages between two friends', async () => {
   expect(await countMessagesNotZero(page1)).toEqual(2);
   expect(await countMessagesNotZero(page2)).toEqual(2);
 
-  // As Party 2, add Party 1 as a friend and log out.
+  // As Party 2, follow Party 1 and log out.
   // We will test that a message is received even when logged out.
-  await addFriend(page2, party1);
+  await follow(page2, party1);
   await logout(page2);
 
   // Party 1 can now send Party 2 a message.
