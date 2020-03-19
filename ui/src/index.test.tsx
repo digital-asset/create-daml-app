@@ -188,21 +188,21 @@ test('log in as three different users and start following each other', async () 
   await login(page1, party1);
 
   // Party 1 should initially follow no one.
-  const noFollowing1 = await page1.$$('.test-select-follow');
+  const noFollowing1 = await page1.$$('.test-select-following');
   expect(noFollowing1).toEqual([]);
 
   // Follow Party 2 using the text input.
   // This should work even though Party 2 has not logged in yet.
   // Check Party 1 follows exactly Party 2.
   await follow(page1, party2);
-  await page1.waitForSelector('.test-select-follow');
-  const followingList1 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+  await page1.waitForSelector('.test-select-following');
+  const followingList1 = await page1.$$eval('.test-select-following', following => following.map(e => e.innerHTML));
   expect(followingList1).toEqual([party2]);
 
    // Add Party 3 as well and check both are in the list.
    await follow(page1, party3);
-   await page1.waitForSelector('.test-select-follow');
-   const followingList11 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+   await page1.waitForSelector('.test-select-following');
+   const followingList11 = await page1.$$eval('.test-select-following', following => following.map(e => e.innerHTML));
    expect(followingList11).toHaveLength(2);
    expect(followingList11).toContain(party2);
    expect(followingList11).toContain(party3);
@@ -212,7 +212,7 @@ test('log in as three different users and start following each other', async () 
   await login(page2, party2);
 
   // Party 2 should initially follow no one.
-  const noFollowing2 = await page2.$$('.test-select-follow');
+  const noFollowing2 = await page2.$$('.test-select-following');
   expect(noFollowing2).toEqual([]);
 
   // However, Party 2 should see Party 1 in the network.
@@ -233,8 +233,8 @@ test('log in as three different users and start following each other', async () 
   await follow(page2, party3);
 
   // Check the following list is updated correctly.
-  await page2.waitForSelector('.test-select-follow');
-  const followingList2 = await page2.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+  await page2.waitForSelector('.test-select-following');
+  const followingList2 = await page2.$$eval('.test-select-following', following => following.map(e => e.innerHTML));
   expect(followingList2).toHaveLength(2);
   expect(followingList2).toContain(party1);
   expect(followingList2).toContain(party3);
@@ -250,7 +250,7 @@ test('log in as three different users and start following each other', async () 
   await login(page3, party3);
 
   // Party 3 should follow no one.
-  const noFollowing3 = await page3.$$('.test-select-follow');
+  const noFollowing3 = await page3.$$('.test-select-following');
   expect(noFollowing3).toEqual([]);
 
   // However, Party 3 should see both Party 1 and Party 2 in the network.
