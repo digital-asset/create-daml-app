@@ -145,9 +145,9 @@ const addFriend = async (page: Page, friend: string) => {
 }
 
 // Send a message to the given user.
-// Does nothing if the user does not appear in the dropdown menu.
 // NOTE: There must be at least one user available in the dropdown,
 // otherwise the function hangs waiting for the selector to match.
+// Throws an exception if the given user does not appear in the dropdown menu.
 const sendMessage = async (page: Page, receiver: string, content: string) => {
   // Selectors for the dropdown and the items inside it.
   const dropdown = '.test-select-message-receiver > .dropdown';
@@ -164,7 +164,7 @@ const sendMessage = async (page: Page, receiver: string, content: string) => {
   // Find which item corresponds to the given user and click it.
   const receiverIndex = names.indexOf(receiver);
   if (receiverIndex < 0) {
-    return;
+    throw Error(`sendMessage: '${receiver}' does not appear in the dropdown menu`);
   }
   await receivers[receiverIndex].click();
 
