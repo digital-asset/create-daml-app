@@ -190,7 +190,7 @@ test('log in as two different users and start following each other', async () =>
 
   // Follow Party 2 using the text input.
   // This should work even though Party 2 has not logged in yet.
-  // Check Party 1's following list contains exactly Party 2.
+  // Check Party 1 follows exactly Party 2.
   await follow(page1, party2);
   await page1.waitForSelector('.test-select-follow');
   const followingList1 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
