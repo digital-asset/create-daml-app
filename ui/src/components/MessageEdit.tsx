@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Button } from 'semantic-ui-react';
 import { Party } from '@daml/types';
-import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
+import { User } from '@daml-ts/create-daml-app-0.1.0/lib/User';
 import { useParty, useExerciseByKey } from '@daml/react';
 
 type Props = {
@@ -16,7 +16,7 @@ const MessageEdit: React.FC<Props> = ({friends}) => {
   const [receiver, setReceiver] = React.useState<string | undefined>();
   const [content, setContent] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [exerciseSendMessage] = useExerciseByKey(User.SendMessage);
+  const exerciseSendMessage = useExerciseByKey(User.SendMessage);
 
   const submitMessage = async (event: React.FormEvent) => {
     try {
