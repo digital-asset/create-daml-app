@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Container, Grid, Header, Icon, Segment, Divider } from 'semantic-ui-react';
 import { Party } from '@daml/types';
-import { User } from '@daml2ts/create-daml-app/lib/create-daml-app-0.1.0/User';
+import { User } from '@daml-ts/create-daml-app-0.1.0/lib/User';
 import { useParty, useExerciseByKey, useStreamFetchByKey, useStreamQuery } from '@daml/react';
 import UserList from './UserList';
 import PartyListEdit from './PartyListEdit';
@@ -14,19 +14,19 @@ const MainView: React.FC = () => {
   const myUser = myUserResult.contract?.payload;
   const allUsers = useStreamQuery(User).contracts;
 
-  // Sorted list of friends of the current user
-  const friends = useMemo(() =>
+  // Sorted list of users that are following the current user
+  const followers = useMemo(() =>
     allUsers
     .map(user => user.payload)
     .filter(user => user.username !== username)
     .sort((x, y) => x.username.localeCompare(y.username)),
     [allUsers, username]);
 
-  const [exerciseAddFriend] = useExerciseByKey(User.AddFriend);
+  const exerciseFollow = useExerciseByKey(User.Follow);
 
-  const addFriend = async (friend: Party): Promise<boolean> => {
+  const follow = async (userToFollow: Party): Promise<boolean> => {
     try {
-      await exerciseAddFriend(username, {friend});
+      await exerciseFollow(username, {userToFollow});
       return true;
     } catch (error) {
       alert("Unknown error:\n" + JSON.stringify(error));
@@ -48,13 +48,13 @@ const MainView: React.FC = () => {
                 <Icon name='user' />
                 <Header.Content>
                   {myUser?.username ?? 'Loading...'}
-                  <Header.Subheader>Me and my friends</Header.Subheader>
+                  <Header.Subheader>Users I'm following</Header.Subheader>
                 </Header.Content>
               </Header>
               <Divider />
               <PartyListEdit
-                parties={myUser?.friends ?? []}
-                onAddParty={addFriend}
+                parties={myUser?.following ?? []}
+                onAddParty={follow}
               />
             </Segment>
             <Segment>
@@ -62,13 +62,13 @@ const MainView: React.FC = () => {
                 <Icon name='globe' />
                 <Header.Content>
                   The Network
-                  <Header.Subheader>Others and their friends</Header.Subheader>
+                  <Header.Subheader>My followers and users they are following</Header.Subheader>
                 </Header.Content>
               </Header>
               <Divider />
               <UserList
-                users={friends}
-                onAddFriend={addFriend}
+                users={followers}
+                onFollow={follow}
               />
             </Segment>
             <Segment>
@@ -76,11 +76,11 @@ const MainView: React.FC = () => {
                 <Icon name='pencil square' />
                 <Header.Content>
                   Messages
-                  <Header.Subheader>Send a message to a friend</Header.Subheader>
+                  <Header.Subheader>Send a message to a follower</Header.Subheader>
                 </Header.Content>
               </Header>
               <MessageEdit
-                friends={friends.map(user => user.username)}
+                friends={followers.map(follower => follower.username)}
               />
               <Divider />
               <MessageList />

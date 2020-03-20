@@ -10,13 +10,8 @@
 This repository contains a template to get started with developing full-stack
 [DAML](https://daml.com/) applications. The demo application covers the following aspects:
 
-1. A [DAML](https://docs.daml.com/index.html) model (of a simplistic social network)
-2. Automation using [DAML triggers](https://docs.daml.com/triggers/index.html)
-3. A UI written in [TypeScript](https://www.typescriptlang.org/)
-
-The application showcases a variety of experimental DAML SDK features such as
-[DAML triggers](https://docs.daml.com/triggers/index.html) and the
-[HTTP JSON API service](https://docs.daml.com/json-api/index.html).
+1. A [DAML](https://docs.daml.com/index.html) model of a simple social network
+2. A UI written in [TypeScript](https://www.typescriptlang.org/) and [React](https://reactjs.org/)
 
 The UI is developed using [React](https://reactjs.org/),
 [Semantic UI](https://react.semantic-ui.com/) and its
@@ -31,10 +26,8 @@ replacable.
 ## Getting started
 
 Before you can run the application, you need to install the
-[DAML SDK](https://docs.daml.com/getting-started/installation.html) and a
-package manager for JavaScript. For the development of this project we have
-used [yarn](https://yarnpkg.com/en/docs/install), but others might work
-equally well.
+[DAML SDK](https://docs.daml.com/getting-started/installation.html) and [yarn](https://yarnpkg.com/en/docs/install)
+package manager for JavaScript. 
 
 You can make a copy of this project either by clicking the
 "Use this template" button above or by cloning this repository directly via
@@ -47,10 +40,10 @@ First, we need to generate TypeScript code bindings for the compiled DAML model.
 At the root of the repository, run
 ```
 daml build
-daml codegen ts .daml/dist/create-daml-app-0.1.0.dar -o daml-ts/src
+daml codegen ts .daml/dist/create-daml-app-0.1.0.dar -o daml-ts -p package.json
 ```
-The latter command writes TypeScript files into the `daml-ts` workspace on which
-`create-daml-app` depends.
+The latter command generates TypeScript packages in the `daml-ts` directory and
+updates the `package.json` with the new dependencies.
 
 Next, install all dependencies and build the app by running
 ```
@@ -76,17 +69,14 @@ If it doesn't, you can manually point your browser to http://localhost:3000.
 
 ## A quick tour
 
-You can log into the app by providing a user name, say `Alice`, clicking
-on the calculator icon to generate an access token for the DAML ledger,
-and finally clicking on "Sign up". You will be greeted by a screen
-indicating that you don't have any friends yet. You can change this by
-adding a friend in the upper box, say `Bob`. Both boxes on the screen
-then reflect the fact that you consider `Bob` a friend. After that, let's
-log out in the top right corner and sign up as `Bob`.
+You can log into the app by providing a user name, say `Alice`. For simplicity 
+of this app, there is no password or sign-up required. You will be greeted by 
+a screen indicating that you're not following anyone and that you don't have 
+any followers yet. You can change this by following someone in the upper box, 
+say `Bob`. After that, let's log out in the top right corner and log in as `Bob`.
 
-As `Bob`, we can see that we don't have any friends yet and that `Alice`
-considers us a friend nevertheless. We can make `Alice` a friend by
-clicking the plus symbol to the right of here name.
+As `Bob`, we can see that we are not following anyone and that `Alice` is follwing
+us. We can follow `Alice` by clicking the plus symbol to the right of here name.
 
 
 ## Deploying to DABL
