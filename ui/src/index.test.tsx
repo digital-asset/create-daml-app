@@ -48,7 +48,9 @@ beforeAll(async () => {
   // Disable automatically opening a browser using the env var described here:
   // https://github.com/facebook/create-react-app/issues/873#issuecomment-266318338
   const env = {...process.env, BROWSER: 'none'};
-  uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit' });
+  uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit', detached: true});
+  // Note(kill-yarn-start): The `detached` flag starts the process in a new process group.
+  // This allows us to kill the process with all its descendents after the tests finish.
 
   // We know the `daml start` and `yarn start` servers are ready once the relevant ports become available.
   await waitOn({resources: [
@@ -62,15 +64,19 @@ beforeAll(async () => {
 }, 40_000);
 
 afterAll(async () => {
-  // Kill the `daml start` and `yarn start` processes.
+  // Kill the `daml start` process.
   // Note that `kill()` sends the `SIGTERM` signal but the actual processes may
   // not die immediately.
   // TODO: Test/fix this for windows.
   if (startProc) {
     startProc.kill();
   }
+
+  // Kill the `yarn start` process including all its descendents.
+  // The `-` indicates to kill all processes in the process group.
+  // See Note(kill-yarn-start).
   if (uiProc) {
-    uiProc.kill();
+    process.kill(-uiProc.pid)
   }
 
   if (browser) {
