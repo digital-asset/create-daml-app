@@ -67,7 +67,7 @@ afterAll(async () => {
   // Kill the `daml start` process.
   // Note that `kill()` sends the `SIGTERM` signal but the actual processes may
   // not die immediately.
-  // TODO: Test/fix this for windows.
+  // TODO: Test this on Windows.
   if (startProc) {
     startProc.kill();
   }
@@ -75,6 +75,7 @@ afterAll(async () => {
   // Kill the `yarn start` process including all its descendents.
   // The `-` indicates to kill all processes in the process group.
   // See Note(kill-yarn-start).
+  // TODO: Test this on Windows.
   if (uiProc) {
     process.kill(-uiProc.pid)
   }
