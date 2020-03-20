@@ -54,8 +54,9 @@ yarn workspaces run build
 To start the application, there are again two steps.
 First start a DAML ledger using
 ```
-./daml-start.sh
+daml start --start-navigator=no
 ```
+(We're not using DAML Navigator here, hence we don't start it.)
 This must continue running to serve ledger requests.
 
 Then in another terminal window, start the UI server via
