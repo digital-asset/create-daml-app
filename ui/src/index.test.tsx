@@ -7,7 +7,6 @@ import { computeCredentials } from './Credentials';
 
 import puppeteer, { Browser, Page } from 'puppeteer';
 
-const LEDGER_ID = 'create-daml-app-sandbox';
 const SANDBOX_PORT = 6865;
 const JSON_API_PORT = 7575;
 const UI_PORT = 3000;
@@ -39,20 +38,11 @@ test('Party names are unique', async () => {
 // Use a single sandbox, JSON API server and browser for all tests for speed.
 // This means we need to use a different set of parties and a new browser page for each test.
 beforeAll(async () => {
-  // Use `daml start` to start up the sandbox and json api server.
-  // This is what we recommend to our users (over running the two processes separately),
-  // so we replicate it in these tests.
-  const startArgs = [
-    'start',
-    '--open-browser=no',
-    '--start-navigator=no',
-    '--sandbox-option=--wall-clock-time',
-    `--sandbox-option=--ledgerid=${LEDGER_ID}`,
-  ];
-  // Run `daml start` from create-daml-app root dir.
+  // Run `daml start --start-navigator=no` to start up the sandbox and json api server.
+  // Run it from the repository root, where the `daml.yaml` lives.
   // The path should already include '.daml/bin' in the environment where this is run.
   const startOpts: SpawnOptions = { cwd: '..', stdio: 'inherit' };
-  startProc = spawn('daml', startArgs, startOpts);
+  startProc = spawn('daml', ['start', '--start-navigator=no'], startOpts);
 
   // Run `yarn start` in another shell.
   // Disable automatically opening a browser using the env var described here:
