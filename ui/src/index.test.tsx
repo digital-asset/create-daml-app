@@ -50,7 +50,8 @@ beforeAll(async () => {
   const env = {...process.env, BROWSER: 'none'};
   uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit', detached: true});
   // Note(kill-yarn-start): The `detached` flag starts the process in a new process group.
-  // This allows us to kill the process with all its descendents after the tests finish.
+  // This allows us to kill the process with all its descendents after the tests finish,
+  // following https://azimi.me/2014/12/31/kill-child_process-node-js.html.
 
   // We know the `daml start` and `yarn start` servers are ready once the relevant ports become available.
   await waitOn({resources: [
