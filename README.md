@@ -1,4 +1,4 @@
-**DISCLAIMER: This work in progress!**
+**DISCLAIMER: This is a work in progress!**
 
 [![DAML logo](https://daml.com/static/images/logo.png)](https://www.daml.com)
 
@@ -20,7 +20,7 @@ The whole project was bootstrapped with
 [Create React App](https://github.com/facebook/create-react-app).
 Regardless of these choices, all DAML specific aspects of the UI client are
 written in plain TypeScript and the UI framework should hence be easily
-replacable.
+replaceable.
 
 
 ## Getting started
@@ -103,7 +103,7 @@ yarn workspaces run build
 ```
 at the root of the repository. Afterwards, select the "UI Assets" tab of your
 chosen ledger on the DABL website, upload the ZIP file
-`create-daml-app-ui.zip` you have just created and publish it.
+(`create-daml-app-ui.zip`) you have just created and publish it.
 
 To see your deployed instance of `create-daml-app` in action, follow the
 "Visit site" link at the top right corner of your "UI Assets" page.
