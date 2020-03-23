@@ -118,7 +118,7 @@ interesting ones to familiarize yourself with:
 - [`daml/User.daml`](daml/User.daml): the DAML model of the social network
 - [`daml-ts/src/create-daml-app-0.1.0/User.ts`](src/daml/User.ts) (once you've generated it):
   a reflection of the types contained in the DAML model in TypeScript
-- [`src/components/MainView.tsx`](src/components/MainView.tsx):
+- [`ui/src/components/MainView.tsx`](ui/src/components/MainView.tsx):
   the React component using the Ledger API and rendering the main features
 
 
