@@ -27,7 +27,7 @@ replaceable.
 
 Before you can run the application, you need to install the
 [DAML SDK](https://docs.daml.com/getting-started/installation.html) and [yarn](https://yarnpkg.com/en/docs/install)
-package manager for JavaScript. 
+package manager for JavaScript.
 
 You can make a copy of this project either by clicking the
 "Use this template" button above or by cloning this repository directly via
@@ -70,10 +70,10 @@ If it doesn't, you can manually point your browser to http://localhost:3000.
 
 ## A quick tour
 
-You can log into the app by providing a user name, say `Alice`. For simplicity 
-of this app, there is no password or sign-up required. You will be greeted by 
-a screen indicating that you're not following anyone and that you don't have 
-any followers yet. You can change this by following someone in the upper box, 
+You can log into the app by providing a user name, say `Alice`. For simplicity
+of this app, there is no password or sign-up required. You will be greeted by
+a screen indicating that you're not following anyone and that you don't have
+any followers yet. You can change this by following someone in the upper box,
 say `Bob`. After that, let's log out in the top right corner and log in as `Bob`.
 
 As `Bob`, we can see that we are not following anyone and that `Alice` is follwing
