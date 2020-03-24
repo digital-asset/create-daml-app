@@ -119,7 +119,7 @@ interesting ones to familiarize yourself with:
 - [`daml-ts/src/create-daml-app-0.1.0/User.ts`](src/daml/User.ts) (once you've generated it):
   a reflection of the types contained in the DAML model in TypeScript
 - [`ui/src/components/MainView.tsx`](ui/src/components/MainView.tsx):
-  the React component using the Ledger API and rendering the main features
+  a React component using the HTTP Ledger API and rendering the main features
 
 
 ## Useful resources
