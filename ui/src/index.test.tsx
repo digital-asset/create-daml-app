@@ -7,7 +7,6 @@ import { computeCredentials } from './Credentials';
 
 import puppeteer, { Browser, Page } from 'puppeteer';
 
-const LEDGER_ID = 'create-daml-app-sandbox';
 const SANDBOX_PORT = 6865;
 const JSON_API_PORT = 7575;
 const UI_PORT = 3000;
@@ -39,26 +38,20 @@ test('Party names are unique', async () => {
 // Use a single sandbox, JSON API server and browser for all tests for speed.
 // This means we need to use a different set of parties and a new browser page for each test.
 beforeAll(async () => {
-  // Use `daml start` to start up the sandbox and json api server.
-  // This is what we recommend to our users (over running the two processes separately),
-  // so we replicate it in these tests.
-  const startArgs = [
-    'start',
-    '--open-browser=no',
-    '--start-navigator=no',
-    '--sandbox-option=--wall-clock-time',
-    `--sandbox-option=--ledgerid=${LEDGER_ID}`,
-  ];
-  // Run `daml start` from create-daml-app root dir.
+  // Run `daml start --start-navigator=no` to start up the sandbox and json api server.
+  // Run it from the repository root, where the `daml.yaml` lives.
   // The path should already include '.daml/bin' in the environment where this is run.
   const startOpts: SpawnOptions = { cwd: '..', stdio: 'inherit' };
-  startProc = spawn('daml', startArgs, startOpts);
+  startProc = spawn('daml', ['start', '--start-navigator=no'], startOpts);
 
   // Run `yarn start` in another shell.
   // Disable automatically opening a browser using the env var described here:
   // https://github.com/facebook/create-react-app/issues/873#issuecomment-266318338
   const env = {...process.env, BROWSER: 'none'};
-  uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit' });
+  uiProc = spawn('yarn', ['start'], { env, stdio: 'inherit', detached: true});
+  // Note(kill-yarn-start): The `detached` flag starts the process in a new process group.
+  // This allows us to kill the process with all its descendents after the tests finish,
+  // following https://azimi.me/2014/12/31/kill-child_process-node-js.html.
 
   // We know the `daml start` and `yarn start` servers are ready once the relevant ports become available.
   await waitOn({resources: [
@@ -72,15 +65,20 @@ beforeAll(async () => {
 }, 40_000);
 
 afterAll(async () => {
-  // Kill the `daml start` and `yarn start` processes.
+  // Kill the `daml start` process.
   // Note that `kill()` sends the `SIGTERM` signal but the actual processes may
   // not die immediately.
-  // TODO: Test/fix this for windows.
+  // TODO: Test this on Windows.
   if (startProc) {
     startProc.kill();
   }
+
+  // Kill the `yarn start` process including all its descendents.
+  // The `-` indicates to kill all processes in the process group.
+  // See Note(kill-yarn-start).
+  // TODO: Test this on Windows.
   if (uiProc) {
-    uiProc.kill();
+    process.kill(-uiProc.pid)
   }
 
   if (browser) {
@@ -232,21 +230,21 @@ test('log in as three different users and start following each other', async () 
   await login(page1, party1);
 
   // Party 1 should initially follow no one.
-  const noFollowing1 = await page1.$$('.test-select-follow');
+  const noFollowing1 = await page1.$$('.test-select-following');
   expect(noFollowing1).toEqual([]);
 
   // Follow Party 2 using the text input.
   // This should work even though Party 2 has not logged in yet.
   // Check Party 1 follows exactly Party 2.
   await follow(page1, party2);
-  await page1.waitForSelector('.test-select-follow');
-  const followingList1 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+  await page1.waitForSelector('.test-select-following');
+  const followingList1 = await page1.$$eval('.test-select-following', following => following.map(e => e.innerHTML));
   expect(followingList1).toEqual([party2]);
 
    // Add Party 3 as well and check both are in the list.
    await follow(page1, party3);
-   await page1.waitForSelector('.test-select-follow');
-   const followingList11 = await page1.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+   await page1.waitForSelector('.test-select-following');
+   const followingList11 = await page1.$$eval('.test-select-following', following => following.map(e => e.innerHTML));
    expect(followingList11).toHaveLength(2);
    expect(followingList11).toContain(party2);
    expect(followingList11).toContain(party3);
@@ -256,7 +254,7 @@ test('log in as three different users and start following each other', async () 
   await login(page2, party2);
 
   // Party 2 should initially follow no one.
-  const noFollowing2 = await page2.$$('.test-select-follow');
+  const noFollowing2 = await page2.$$('.test-select-following');
   expect(noFollowing2).toEqual([]);
 
   // However, Party 2 should see Party 1 in the network.
@@ -277,8 +275,8 @@ test('log in as three different users and start following each other', async () 
   await follow(page2, party3);
 
   // Check the following list is updated correctly.
-  await page2.waitForSelector('.test-select-follow');
-  const followingList2 = await page2.$$eval('.test-select-follow', following => following.map(e => e.innerHTML));
+  await page2.waitForSelector('.test-select-following');
+  const followingList2 = await page2.$$eval('.test-select-following', following => following.map(e => e.innerHTML));
   expect(followingList2).toHaveLength(2);
   expect(followingList2).toContain(party1);
   expect(followingList2).toContain(party3);
@@ -294,7 +292,7 @@ test('log in as three different users and start following each other', async () 
   await login(page3, party3);
 
   // Party 3 should follow no one.
-  const noFollowing3 = await page3.$$('.test-select-follow');
+  const noFollowing3 = await page3.$$('.test-select-following');
   expect(noFollowing3).toEqual([]);
 
   // However, Party 3 should see both Party 1 and Party 2 in the network.
