@@ -34,7 +34,7 @@ const PartyListEdit: React.FC<Props> = ({parties, onAddParty}) => {
         >
           <List.Icon name='user outline' />
           <List.Content>
-            <List.Header className='test-select-follow'>
+            <List.Header className='test-select-following'>
               {party}
             </List.Header>
           </List.Content>

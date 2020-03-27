@@ -1,4 +1,4 @@
-**DISCLAIMER: This work in progress!**
+**DISCLAIMER: This is a work in progress!**
 
 [![DAML logo](https://daml.com/static/images/logo.png)](https://www.daml.com)
 
@@ -20,14 +20,14 @@ The whole project was bootstrapped with
 [Create React App](https://github.com/facebook/create-react-app).
 Regardless of these choices, all DAML specific aspects of the UI client are
 written in plain TypeScript and the UI framework should hence be easily
-replacable.
+replaceable.
 
 
 ## Getting started
 
 Before you can run the application, you need to install the
 [DAML SDK](https://docs.daml.com/getting-started/installation.html) and [yarn](https://yarnpkg.com/en/docs/install)
-package manager for JavaScript. 
+package manager for JavaScript.
 
 You can make a copy of this project either by clicking the
 "Use this template" button above or by cloning this repository directly via
@@ -54,8 +54,9 @@ yarn workspaces run build
 To start the application, there are again two steps.
 First start a DAML ledger using
 ```
-./daml-start.sh
+daml start --start-navigator=no
 ```
+(We're not using DAML Navigator here, hence we don't start it.)
 This must continue running to serve ledger requests.
 
 Then in another terminal window, start the UI server via
@@ -69,10 +70,10 @@ If it doesn't, you can manually point your browser to http://localhost:3000.
 
 ## A quick tour
 
-You can log into the app by providing a user name, say `Alice`. For simplicity 
-of this app, there is no password or sign-up required. You will be greeted by 
-a screen indicating that you're not following anyone and that you don't have 
-any followers yet. You can change this by following someone in the upper box, 
+You can log into the app by providing a user name, say `Alice`. For simplicity
+of this app, there is no password or sign-up required. You will be greeted by
+a screen indicating that you're not following anyone and that you don't have
+any followers yet. You can change this by following someone in the upper box,
 say `Bob`. After that, let's log out in the top right corner and log in as `Bob`.
 
 As `Bob`, we can see that we are not following anyone and that `Alice` is follwing
@@ -102,7 +103,7 @@ yarn workspaces run build
 ```
 at the root of the repository. Afterwards, select the "UI Assets" tab of your
 chosen ledger on the DABL website, upload the ZIP file
-`create-daml-app-ui.zip` you have just created and publish it.
+(`create-daml-app-ui.zip`) you have just created and publish it.
 
 To see your deployed instance of `create-daml-app` in action, follow the
 "Visit site" link at the top right corner of your "UI Assets" page.
@@ -117,8 +118,8 @@ interesting ones to familiarize yourself with:
 - [`daml/User.daml`](daml/User.daml): the DAML model of the social network
 - [`daml-ts/src/create-daml-app-0.1.0/User.ts`](src/daml/User.ts) (once you've generated it):
   a reflection of the types contained in the DAML model in TypeScript
-- [`src/components/MainView.tsx`](src/components/MainView.tsx):
-  the React component using the Ledger API and rendering the main features
+- [`ui/src/components/MainView.tsx`](ui/src/components/MainView.tsx):
+  a React component using the HTTP Ledger API and rendering the main features
 
 
 ## Useful resources

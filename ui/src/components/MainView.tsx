@@ -80,7 +80,7 @@ const MainView: React.FC = () => {
                 </Header.Content>
               </Header>
               <MessageEdit
-                friends={followers.map(follower => follower.username)}
+                followers={followers.map(follower => follower.username)}
               />
               <Divider />
               <MessageList />
