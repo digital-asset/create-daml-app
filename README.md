@@ -1,3 +1,7 @@
+# Archived
+
+This repository has been archived and will not be maintained anymore. The content lives on as a [template in the main DAML SDK repo](https://github.com/digital-asset/daml/tree/master/templates/create-daml-app). See [the documentation](https://docs.daml.com/getting-started/index.html) for the latest instructions.
+
 **DISCLAIMER: This is a work in progress!**
 
 [![DAML logo](https://daml.com/static/images/logo.png)](https://www.daml.com)
